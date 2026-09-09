@@ -1,0 +1,239 @@
+@baseUrl = http://localhost:5000
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YTlkMTg0NjUzYjFkY2JiYTFhMjcwNmMiLCJlbWFpbCI6ImFkbWluQG5zb2x1dGlvbnMuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzg4ODAyNzU0LCJleHAiOjE3ODk0MDc1NTR9.zf2-SnmfbskI7SsJbGtKZckyN0TymTxe_wM0hJWgPak
+@projectImage = C:/Users/USER/OneDrive/Pictures/Krishna.jpeg
+
+### Health Check
+GET {{baseUrl}}/health
+
+### 1. Admin Register
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+X-Admin-Registration-Key: {{$dotenv ADMIN_REGISTRATION_KEY}}
+
+{
+  "name": "NSolutions Admin",
+  "email": "admin@nsolutions.com",
+  "password": "StrongPassword123"
+}
+
+### 2. Admin Login
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@nsolutions.com",
+  "password": "StrongPassword123"
+}
+
+### 3. Dashboard Statistics
+GET {{baseUrl}}/api/dashboard/stats
+Authorization: Bearer {{adminToken}}
+
+### 4.  Recent Enquiries
+GET {{baseUrl}}/api/dashboard/recent-enquiries?limit=10
+Authorization: Bearer {{adminToken}}
+
+### 5. Recent Leads
+GET {{baseUrl}}/api/dashboard/recent-leads?limit=10
+Authorization: Bearer {{adminToken}}
+
+### 6. Add Lead
+POST {{baseUrl}}/api/leads
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "Rahul Kumar",
+  "company": "ABC Industries",
+  "type": "industrial",
+  "location": "Visakhapatnam",
+  "status": "new"
+}
+
+### 7. Get All Leads
+GET {{baseUrl}}/api/leads
+Authorization: Bearer {{adminToken}}
+
+### 8. Get One Lead
+GET {{baseUrl}}/api/leads/6aa17723268f6f5c8193e974
+Authorization: Bearer {{adminToken}}
+
+### 9. Update Lead
+PUT {{baseUrl}}/api/leads/6aa17723268f6f5c8193e974
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "status": "qualified"
+}
+
+### 10. Delete Lead
+DELETE {{baseUrl}}/api/leads/6aa17768268f6f5c8193e983
+Authorization: Bearer {{adminToken}}
+
+### 11. Add Project (multipart/form-data)
+POST {{baseUrl}}/api/projects
+Authorization: Bearer {{adminToken}}
+Content-Type: multipart/form-data; boundary=ProjectBoundary
+
+--ProjectBoundary
+Content-Disposition: form-data; name="title"
+
+Visakhapatnam Solar Installation
+--ProjectBoundary
+Content-Disposition: form-data; name="category"
+
+industrial
+--ProjectBoundary
+Content-Disposition: form-data; name="location"
+
+Visakhapatnam
+--ProjectBoundary
+Content-Disposition: form-data; name="description"
+
+Industrial rooftop solar installation project.
+--ProjectBoundary
+Content-Disposition: form-data; name="services"
+
+["Solar Installation","System Design","Maintenance"]
+--ProjectBoundary
+Content-Disposition: form-data; name="status"
+
+in_progress
+--ProjectBoundary
+Content-Disposition: form-data; name="image"; filename="project-image.jpg"
+Content-Type: image/jpeg
+
+< {{projectImage}}
+--ProjectBoundary--
+
+### 12. Get All Projects
+GET {{baseUrl}}/api/projects
+Authorization: Bearer {{adminToken}}
+
+### 13. Get One Project
+GET {{baseUrl}}/api/projects/6aa17768268f6f5c8193e983
+Authorization: Bearer {{adminToken}}
+
+
+### 14. Get Public Projects
+GET {{baseUrl}}/api/public/projects
+
+### 15. Get Public Project
+GET {{baseUrl}}/api/public/projects/6aa17768268f6f5c8193e983
+
+### 16. Invalid Public Project ID
+GET {{baseUrl}}/api/public/projects/not-a-valid-id
+
+### 17. Update Project Status
+PATCH {{baseUrl}}/api/projects/6aa17768268f6f5c8193e983/status
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "status": "completed"
+}
+
+### 18. Delete Project
+DELETE {{baseUrl}}/api/projects/6a9db3e00e1d1f60d51b2d32
+Authorization: Bearer {{adminToken}}
+
+
+### 19. Add Product (multipart/form-data)
+POST {{baseUrl}}/api/products
+Authorization: Bearer {{adminToken}}
+Content-Type: multipart/form-data; boundary=ProductBoundary
+
+--ProductBoundary
+Content-Disposition: form-data; name="name"
+
+Monocrystalline Solar Panel
+--ProductBoundary
+Content-Disposition: form-data; name="category"
+
+Solar Panels
+--ProductBoundary
+Content-Disposition: form-data; name="brand"
+
+NSolutions
+--ProductBoundary
+Content-Disposition: form-data; name="description"
+
+High-efficiency rooftop solar panel designed for residential and commercial applications.
+--ProductBoundary
+Content-Disposition: form-data; name="applications"
+
+["Residential rooftops","Commercial rooftops","Ground-mounted systems"]
+--ProductBoundary
+Content-Disposition: form-data; name="image"; filename="product-image.jpg"
+Content-Type: image/jpeg
+
+< {{projectImage}}
+--ProductBoundary--
+
+### 20. Get All Products
+GET {{baseUrl}}/api/products
+Authorization: Bearer {{adminToken}}
+
+### 21. Get One Product
+GET {{baseUrl}}/api/products/6aa0297bf2235c24c27b39c9
+Authorization: Bearer {{adminToken}}
+
+### 22. Delete Product
+DELETE {{baseUrl}}/api/products/6aa0297bf2235c24c27b39c9
+Authorization: Bearer {{adminToken}}
+
+### 23. Get Public Products
+GET {{baseUrl}}/api/public/products
+
+### 24. Public Submit Enquiry
+POST {{baseUrl}}/api/enquiries
+Content-Type: application/json
+
+{
+  "fullName": "Mohan Das",
+  "companyName": "ABC Industries",
+  "phoneNumber": "9876543210",
+  "emailAddress": "mohan@example.com",
+  "projectLocation": "Visakhapatnam",
+  "projectType": "Commercial Solar",
+  "monthlyElectricityBill": 45000,
+  "message": "Interested in installing a rooftop solar system."
+}
+
+### 25. Public Submit Enquiry with invalid email
+POST {{baseUrl}}/api/enquiries
+Content-Type: application/json
+
+{
+  "fullName": "Mohan Das",
+  "phoneNumber": "9876543210",
+  "emailAddress": "not-an-email",
+  "projectType": "Commercial Solar"
+}
+
+### 26. Get All Enquiries (Admin)
+GET {{baseUrl}}/api/enquiries
+Authorization: Bearer {{adminToken}}
+
+### 27. Get One Enquiry (Admin)
+GET {{baseUrl}}/api/enquiries/6aa1790a268f6f5c8193e9aa
+Authorization: Bearer {{adminToken}}
+
+### 28. Resolve Enquiry (Admin)
+PATCH {{baseUrl}}/api/enquiries/6aa1790a268f6f5c8193e9aa/status
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "status": "Resolved"
+}
+
+### 29. Delete Enquiry (Admin)
+DELETE {{baseUrl}}/api/enquiries/6aa1790a268f6f5c8193e9aa
+Authorization: Bearer {{adminToken}}
+
+### 30. Unauthorized Enquiries List
+GET {{baseUrl}}/api/enquiries
+
+
