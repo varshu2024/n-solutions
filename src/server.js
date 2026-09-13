@@ -5,9 +5,10 @@ import { Enquiry } from './models/Enquiry.js';
 import { Lead } from './models/Lead.js';
 import { Product } from './models/Product.js';
 import { Project } from './models/Project.js';
+import { Job } from './models/Job.js';
 import { registerDashboardModels } from './config/dashboardModels.js';
 
-registerDashboardModels({ Lead, Project, Product, Enquiry });
+registerDashboardModels({ Lead, Project, Product, Enquiry, Position: Job });
 
 const startServer = async () => {
   await connectDatabase();

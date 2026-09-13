@@ -33,4 +33,10 @@ export const login = async (request, response) => {
   return sendSuccess(response, 200, 'Login successful.', data);
 };
 
+export const logout = async (request, response) => sendSuccess(
+  response,
+  200,
+  'Logout successful.'
+);
+
 export const getRegistrationConfig = () => ({ mode: env.adminRegistrationMode });

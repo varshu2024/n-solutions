@@ -37,8 +37,8 @@ const findPublicProject = async (id) => {
   return project;
 };
 
-export const listPublicProjects = async () => {
-  const projects = await Project.find({})
+export const listPublicProjects = async (category) => {
+  const projects = await Project.find(category ? { category } : {})
     .sort({ createdAt: -1 })
     .select('title category location description services image createdAt')
     .lean();

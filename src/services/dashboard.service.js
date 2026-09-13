@@ -13,7 +13,7 @@ export const getDashboardStats = async () => {
     countDocuments(Lead),
     countDocuments(Project, { status: 'in_progress' }),
     countDocuments(Product),
-    countDocuments(Position, { status: 'open' })
+    countDocuments(Position, { jobStatus: 'Open' })
   ]);
 
   return { totalLeads, activeProjects, productsListed, openPositions };
