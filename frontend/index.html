@@ -1,0 +1,1782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>N Solutions - Premier Solar EPC Company | Commercial, Industrial & Rooftop Solar</title>
+  <meta name="description" content="N Solutions is an A-Grade Licensed Electrical Contractor & Solar EPC company. Specializing in Commercial, Industrial, Residential Rooftop, PM Surya Ghar (500+ sites completed), and Government Solar Plants across 9 states.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/prototype.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23F4B942'><path d='M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41'/><circle cx='12' cy='12' r='4'/></svg>">
+</head>
+<body>
+  <!-- Global Scroll Progress Bar -->
+  <div class="scroll-progress-indicator" id="scroll-progress-bar"></div>
+
+  <!-- ==========================================
+       APP HEADER / NAVBAR
+       ========================================== -->
+  <header class="app-header">
+    <div class="header-inner">
+      <!-- Logo / Branding -->
+      <button class="brand-wrapper" id="nav-brand" data-view="home">
+        <div class="brand-icon-box">
+          <span class="brand-monogram">N</span>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">N SOLUTIONS</span>
+          <span class="brand-subtitle">SOLAR EPC EXCELLENCE</span>
+        </div>
+      </button>
+
+      <!-- Desktop Navigation Tabs -->
+      <nav class="nav-tabs" role="tablist" id="main-nav">
+        <button class="nav-tab-btn active" data-view="home" role="tab">
+          <i data-lucide="home"></i>
+          <span>Home</span>
+        </button>
+        <button class="nav-tab-btn" data-view="about" role="tab">
+          <i data-lucide="building-2"></i>
+          <span>About Us</span>
+        </button>
+        <button class="nav-tab-btn" data-view="products" role="tab">
+          <i data-lucide="package"></i>
+          <span>Products</span>
+        </button>
+        <button class="nav-tab-btn" data-view="services" role="tab">
+          <i data-lucide="wrench"></i>
+          <span>Services</span>
+        </button>
+        <button class="nav-tab-btn" data-view="projects" role="tab">
+          <i data-lucide="grid-3x3"></i>
+          <span>Our Projects</span>
+        </button>
+        <button class="nav-tab-btn" data-view="media" role="tab">
+          <i data-lucide="image"></i>
+          <span>Media</span>
+        </button>
+        <button class="nav-tab-btn" data-view="careers" role="tab">
+          <i data-lucide="briefcase"></i>
+          <span>Careers</span>
+        </button>
+        <button class="nav-tab-btn" data-view="contact" role="tab">
+          <i data-lucide="phone"></i>
+          <span>Contact</span>
+        </button>
+      </nav>
+
+      <!-- Right Action Controls -->
+      <div class="header-actions">
+        <button class="btn-consultation" id="btn-quick-consult" data-view="contact">
+          <i data-lucide="zap"></i>
+          <span>Get Solar Consultation</span>
+        </button>
+        
+        <button class="admin-gear-btn" data-view="admin" title="Admin Portal Dashboard">
+          <i data-lucide="settings"></i>
+        </button>
+
+        <button class="icon-btn active" id="btn-sound-toggle" title="Toggle Sound Feedback">
+          <i data-lucide="volume-2"></i>
+          <span class="audio-equalizer-bars">
+            <span class="eq-bar eq-1"></span>
+            <span class="eq-bar eq-2"></span>
+            <span class="eq-bar eq-3"></span>
+          </span>
+        </button>
+
+        <!-- Mobile Drawer Toggle -->
+        <button class="icon-btn mobile-menu-btn" id="btn-mobile-menu" title="Menu">
+          <i data-lucide="menu"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Drawer Menu -->
+    <div class="mobile-drawer" id="mobile-drawer">
+      <div class="mobile-drawer-nav">
+        <button class="mobile-nav-link active" data-view="home">Home</button>
+        <button class="mobile-nav-link" data-view="about">About Us</button>
+        <button class="mobile-nav-link" data-view="products">Products</button>
+        <button class="mobile-nav-link" data-view="services">Services / Solutions</button>
+        <button class="mobile-nav-link" data-view="projects">Our Projects</button>
+        <button class="mobile-nav-link" data-view="media">Media & Milestones</button>
+        <button class="mobile-nav-link" data-view="careers">Careers</button>
+        <button class="mobile-nav-link" data-view="contact">Contact Us</button>
+        <button class="mobile-nav-link" data-view="admin">Admin Portal</button>
+      </div>
+      <div class="mobile-drawer-footer">
+        <button class="btn-primary w-full" data-view="contact">Get a Solar Consultation</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Bottom Sticky Quick Action Bar -->
+  <div class="mobile-sticky-bar">
+    <button class="mobile-sticky-consult-btn" data-view="contact">
+      <i data-lucide="zap"></i>
+      <span>Free Consultation</span>
+    </button>
+    <a href="tel:+919440123456" class="mobile-sticky-icon-btn" title="Call Us">
+      <i data-lucide="phone"></i>
+    </a>
+    <a href="https://wa.me/919440123456" target="_blank" rel="noopener noreferrer" class="mobile-sticky-whatsapp-btn" title="WhatsApp Chat">
+      <i data-lucide="message-circle"></i>
+    </a>
+  </div>
+
+  <!-- ==========================================
+       MAIN VIEWPORT CONTAINER
+       ========================================== -->
+  <main class="main-viewport">
+
+    <!-- ========================================
+         PAGE 1: HOME PAGE
+         ======================================== -->
+    <section id="view-home" class="view-section active-view">
+      <!-- 1. Hero Section -->
+      <div class="home-hero-container">
+        <!-- Ambient Animated Glow Spheres -->
+        <div class="hero-aurora-glow glow-1"></div>
+        <div class="hero-aurora-glow glow-2"></div>
+        <div class="hero-bg-overlay"></div>
+
+        <!-- Floating High-Tech Telemetry Chips -->
+        <div class="hero-floating-chip chip-top-right">
+          <div class="chip-icon-box cyan">
+            <i data-lucide="activity"></i>
+          </div>
+          <div class="chip-content">
+            <div class="chip-header">
+              <span class="pulse-dot"></span>
+              <span class="chip-title">Live Grid Telemetry</span>
+            </div>
+            <span class="chip-val">99.2% Generation Uptime</span>
+          </div>
+        </div>
+
+        <div class="hero-floating-chip chip-bottom-right">
+          <div class="chip-icon-box gold">
+            <i data-lucide="sun"></i>
+          </div>
+          <div class="chip-content">
+            <div class="chip-header">
+              <span class="chip-badge-label">Vizianagaram Hub</span>
+            </div>
+            <span class="chip-val">500+ Sites in 7 Mos</span>
+          </div>
+        </div>
+
+        <div class="hero-content">
+          <div class="hero-badge">
+            <span class="pulse-dot"></span>
+            <span>A-GRADE ELECTRICAL CONTRACTOR • MNRE & PM SURYA GHAR EMPANELED</span>
+          </div>
+
+          <h1 class="hero-main-title">
+            Powering India’s Clean Energy Future with <span class="highlight-gold">Solar EPC Excellence</span>
+          </h1>
+
+          <p class="hero-lead-text">
+            Over 16 years of engineering heritage, <strong>500+ PM Surya Ghar residential sites</strong> delivered in Vizianagaram within 7 months, and high-efficiency Commercial & Industrial solar power plants deployed across 9 states.
+          </p>
+
+          <div class="hero-cta-group">
+            <button class="btn-primary" data-view="contact">
+              <span>Get Free Solar Consultation</span>
+              <i data-lucide="arrow-right"></i>
+            </button>
+            <button class="btn-secondary" data-view="projects">
+              <span>Explore Our Projects</span>
+              <i data-lucide="arrow-up-right"></i>
+            </button>
+          </div>
+
+          <!-- Hero Metrics Bar -->
+          <div class="hero-metrics-grid">
+            <div class="hero-stat-box">
+              <span class="metric-big-val gold">16+</span>
+              <span class="metric-label">Years Experience</span>
+              <span class="metric-sublabel">Engineering legacy</span>
+            </div>
+            <div class="hero-stat-box">
+              <span class="metric-big-val cyan">9</span>
+              <span class="metric-label">States Across India</span>
+              <span class="metric-sublabel">Pan-India execution</span>
+            </div>
+            <div class="hero-stat-box">
+              <span class="metric-big-val green">500+</span>
+              <span class="metric-label">PM Surya Ghar Sites</span>
+              <span class="metric-sublabel">Delivered at Vizianagaram</span>
+            </div>
+            <div class="hero-stat-box">
+              <span class="metric-big-val purple">120+</span>
+              <span class="metric-label">MW Scale Capability</span>
+              <span class="metric-sublabel">Rooftop & ground-mount</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Who We Are Section -->
+      <div class="section-block">
+        <div class="section-two-col">
+          <div class="section-text-col">
+            <span class="label-tag">WHO WE ARE</span>
+            <h2 class="section-heading">
+              Engineering Reliability Built on <span class="highlight-cyan">Decades of Power Excellence</span>
+            </h2>
+            <p class="section-desc">
+              N Solutions is an A-Grade licensed electrical contracting and Solar EPC company. Combining deep technical mastery with uncompromised component selection, we design, build, and operate high-performance solar generation assets for commercial establishments, manufacturing plants, residential communities, and government utilities.
+            </p>
+            
+            <div class="feature-bullets-grid">
+              <div class="feature-bullet-item">
+                <i data-lucide="check-circle-2"></i>
+                <span>A-Grade Electrical Contractor License (AP Electrical Licensing Board)</span>
+              </div>
+              <div class="feature-bullet-item">
+                <i data-lucide="check-circle-2"></i>
+                <span>Officially empaneled for PM Surya Ghar: Muft Bijli Yojana</span>
+              </div>
+              <div class="feature-bullet-item">
+                <i data-lucide="check-circle-2"></i>
+                <span>Tier-1 ALMM modules & DCR-compliant photovoltaic cells only</span>
+              </div>
+              <div class="feature-bullet-item">
+                <i data-lucide="check-circle-2"></i>
+                <span>Turnkey DISCOM net-metering approvals & CEIG clearances</span>
+              </div>
+              <div class="feature-bullet-item">
+                <i data-lucide="check-circle-2"></i>
+                <span>25-year linear performance warranty & proactive 24/7 O&M</span>
+              </div>
+            </div>
+
+            <div style="margin-top: 1.5rem;">
+              <button class="btn-secondary" data-view="about">
+                <span>Learn More About Our Company</span>
+                <i data-lucide="arrow-right"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="section-media-col">
+            <div class="media-card-wrap">
+              <img src="https://images.unsplash.com/photo-1786913507799-0ddbb3e7dbb6?w=900&h=650&fit=crop&auto=format" alt="Industrial Solar Rooftop Installation by N Solutions" class="rounded-img">
+              <div class="floating-experience-badge">
+                <span class="exp-val">16+</span>
+                <span class="exp-lbl">Years of Solar Operations & Project Execution</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. What We Do (Services) Section -->
+      <div class="section-block">
+        <div class="section-header-center">
+          <span class="label-tag">WHAT WE DO</span>
+          <h2 class="section-heading">End-to-End Clean Energy & Solar EPC Solutions</h2>
+          <p class="section-subtext">Tailored photovoltaic systems engineered for maximum kilowatt-hour yield, rapid financial payback, and 25-year operational reliability.</p>
+        </div>
+
+        <div class="services-cards-grid">
+          <!-- Card 1 -->
+          <div class="service-panel-card">
+            <div class="service-card-header">
+              <div class="service-icon-box gold"><i data-lucide="building-2"></i></div>
+              <span class="service-card-num">01</span>
+            </div>
+            <h3 class="service-card-title">Commercial Solar Installation</h3>
+            <p class="service-card-desc">High-yield rooftop solar for corporate offices, shopping malls, hospitals, and schools. Slashing commercial tariffs from ₹11+/unit to under ₹3/unit levelized.</p>
+            <ul class="service-key-points">
+              <li>Grid-connected with bi-directional net metering</li>
+              <li>Up to 75% electricity cost reduction</li>
+              <li>Minimal rooftop space with high-efficiency TOPCon modules</li>
+            </ul>
+            <button class="service-action-link" data-view="services">
+              <span>View Service Scope</span>
+              <i data-lucide="chevron-right"></i>
+            </button>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="service-panel-card">
+            <div class="service-card-header">
+              <div class="service-icon-box green"><i data-lucide="home"></i></div>
+              <span class="service-card-num">02</span>
+            </div>
+            <h3 class="service-card-title">Residential Rooftop Solar</h3>
+            <p class="service-card-desc">Complete rooftop solar systems for independent houses, villas, and apartments under PM Surya Ghar with up to ₹78,000 direct central government subsidy.</p>
+            <ul class="service-key-points">
+              <li>Near-zero electricity bills every month</li>
+              <li>Low-interest collateral-free bank loans</li>
+              <li>DCR-compliant tier-1 bifacial panels</li>
+            </ul>
+            <button class="service-action-link" data-view="services">
+              <span>View Service Scope</span>
+              <i data-lucide="chevron-right"></i>
+            </button>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="service-panel-card">
+            <div class="service-card-header">
+              <div class="service-icon-box cyan"><i data-lucide="factory"></i></div>
+              <span class="service-card-num">03</span>
+            </div>
+            <h3 class="service-card-title">Industrial Solar EPC</h3>
+            <p class="service-card-desc">High-capacity captive solar power plants for manufacturing plants, cold storages, textile mills, and cement factories with rapid 3.5-year simple payback.</p>
+            <ul class="service-key-points">
+              <li>40% accelerated depreciation tax savings</li>
+              <li>Seamless synchronization with DG sets & grid</li>
+              <li>Heavy-duty structures rated for 180 km/h wind speeds</li>
+            </ul>
+            <button class="service-action-link" data-view="services">
+              <span>View Service Scope</span>
+              <i data-lucide="chevron-right"></i>
+            </button>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="service-panel-card">
+            <div class="service-card-header">
+              <div class="service-icon-box purple"><i data-lucide="award"></i></div>
+              <span class="service-card-num">04</span>
+            </div>
+            <h3 class="service-card-title">PM Surya Ghar Implementation</h3>
+            <p class="service-card-desc">Dedicated national portal empaneled wing. Successfully executed 500+ residential sites in Vizianagaram in just 7 months with 250+ in active queue.</p>
+            <ul class="service-key-points">
+              <li>Fast-track site survey within 48 hours</li>
+              <li>End-to-end portal paperwork & subsidy release</li>
+              <li>DISCOM net-meter installation assistance</li>
+            </ul>
+            <button class="service-action-link" data-view="services">
+              <span>View Service Scope</span>
+              <i data-lucide="chevron-right"></i>
+            </button>
+          </div>
+
+          <!-- Card 5 -->
+          <div class="service-panel-card">
+            <div class="service-card-header">
+              <div class="service-icon-box amber"><i data-lucide="wrench"></i></div>
+              <span class="service-card-num">05</span>
+            </div>
+            <h3 class="service-card-title">Operation & Maintenance (O&M)</h3>
+            <p class="service-card-desc">Comprehensive preventive and corrective maintenance to keep plant uptime above 99% and maintain peak solar generation throughout 25 operational years.</p>
+            <ul class="service-key-points">
+              <li>Drone thermography for micro-crack & hot-spot scans</li>
+              <li>Regular demineralized module washing</li>
+              <li>Earthing pit resistance & inverter health audits</li>
+            </ul>
+            <button class="service-action-link" data-view="services">
+              <span>View Service Scope</span>
+              <i data-lucide="chevron-right"></i>
+            </button>
+          </div>
+
+          <!-- Card 6 -->
+          <div class="service-panel-card">
+            <div class="service-card-header">
+              <div class="service-icon-box teal"><i data-lucide="package"></i></div>
+              <span class="service-card-num">06</span>
+            </div>
+            <h3 class="service-card-title">Solar Product Supply</h3>
+            <p class="service-card-desc">Wholesale supply of tier-1 ALMM panels, smart on-grid and hybrid inverters, chemical earth pits, ESE lightning arrestors, and UV-grade DC cables.</p>
+            <ul class="service-key-points">
+              <li>Authorized dealer for Vikram, Goldi, Deye, Polycab</li>
+              <li>Bulk regional warehouse stocks with GST bills</li>
+              <li>Pan-India logistics and site delivery</li>
+            </ul>
+            <button class="service-action-link" data-view="products">
+              <span>Browse Products</span>
+              <i data-lucide="chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. How We Work (Work Process) Section -->
+      <div class="section-block">
+        <div class="section-header-center">
+          <span class="label-tag">OUR WORK PROCESS</span>
+          <h2 class="section-heading">How We Work — From Feasibility to 25-Year Power</h2>
+          <p class="section-subtext">A disciplined 5-phase engineering methodology guaranteeing timely execution, safety, and peak generation yield.</p>
+        </div>
+
+        <div class="process-steps-row">
+          <div class="process-step-card">
+            <div class="process-step-num">01</div>
+            <h4 class="process-step-title">Site Assessment</h4>
+            <p class="process-step-desc">Shadow analysis, structural load calculation, electrical room audit, and 3D irradiance modeling.</p>
+          </div>
+          <div class="process-step-card">
+            <div class="process-step-num">02</div>
+            <h4 class="process-step-title">Engineering & Design</h4>
+            <p class="process-step-desc">Custom Single Line Diagrams (SLD), PVsyst simulations, and optimal string voltage matching.</p>
+          </div>
+          <div class="process-step-card">
+            <div class="process-step-num">03</div>
+            <h4 class="process-step-title">Approvals & Subsidy</h4>
+            <p class="process-step-desc">Turnkey DISCOM net-metering feasibility, CEIG safety clearances, and PM Surya Ghar portal filing.</p>
+          </div>
+          <div class="process-step-card">
+            <div class="process-step-num">04</div>
+            <h4 class="process-step-title">Precision Installation</h4>
+            <p class="process-step-desc">Erection of hot-dip galvanized mounting structures, chemical earthing pits, and DC wiring by A-Grade licensed teams.</p>
+          </div>
+          <div class="process-step-card">
+            <div class="process-step-num">05</div>
+            <h4 class="process-step-title">Commissioning & O&M</h4>
+            <p class="process-step-desc">Grid synchronization, bidirectional meter commissioning, real-time app telemetry setup, and scheduled cleaning.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Energy Flow Topology Widget -->
+      <div class="section-block">
+        <div class="panel-card">
+          <div class="panel-card-header">
+            <div class="panel-card-title">
+              <i data-lucide="network" style="color: var(--solar-gold);"></i>
+              <span>Solar Energy Generation & Power Flow Architecture</span>
+            </div>
+            <div class="live-badge">
+              <span class="pulse-dot"></span>
+              <span>GRID SYNCHRONIZED (98.4% EFFICIENCY)</span>
+            </div>
+          </div>
+
+          <div class="energy-flow-visualizer">
+            <div class="flow-node">
+              <div class="flow-icon-circle gold"><i data-lucide="sun"></i></div>
+              <span class="flow-title">1. Sun Irradiance</span>
+              <span class="flow-detail">Peak 1,000 W/m² (AM 1.5)</span>
+            </div>
+            <div class="flow-arrow"><i data-lucide="arrow-right"></i></div>
+
+            <div class="flow-node">
+              <div class="flow-icon-circle cyan"><i data-lucide="grid-3x3"></i></div>
+              <span class="flow-title">2. PV Modules</span>
+              <span class="flow-detail">DC Electricity Generation</span>
+            </div>
+            <div class="flow-arrow"><i data-lucide="arrow-right"></i></div>
+
+            <div class="flow-node">
+              <div class="flow-icon-circle purple"><i data-lucide="cpu"></i></div>
+              <span class="flow-title">3. Solar Inverter</span>
+              <span class="flow-detail">DC to AC (415V/230V)</span>
+            </div>
+            <div class="flow-arrow"><i data-lucide="arrow-right"></i></div>
+
+            <div class="flow-node">
+              <div class="flow-icon-circle amber"><i data-lucide="zap"></i></div>
+              <span class="flow-title">4. Electrical Panel</span>
+              <span class="flow-detail">ACDB & Net Metering</span>
+            </div>
+            <div class="flow-arrow"><i data-lucide="arrow-right"></i></div>
+
+            <div class="flow-node">
+              <div class="flow-icon-circle green"><i data-lucide="building-2"></i></div>
+              <span class="flow-title">5. Loads & Grid</span>
+              <span class="flow-detail">Facility Use + Export</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. Chairman Message (Owner) Section -->
+      <div class="section-block">
+        <div class="chairman-message-card">
+          <div class="chairman-img-wrap">
+            <div class="chairman-avatar-badge" aria-label="N. Srinivasa Rao">
+              <span class="avatar-initials">NSR</span>
+            </div>
+            <div class="chairman-credentials">
+              <span class="name">N. Srinivasa Rao</span>
+              <span class="title">Chairman & Managing Director</span>
+              <span class="org">N Solutions Solar Company</span>
+            </div>
+          </div>
+
+          <div class="chairman-quote-content">
+            <div class="quote-mark">“</div>
+            <h3 class="chairman-quote-heading">
+              "Clean Solar Power is the Engine of Financial Freedom and National Sovereignty"
+            </h3>
+            <p class="chairman-quote-body">
+              At N Solutions, we have spent over 16 years building robust electrical and solar infrastructure across 9 Indian states. When the Prime Minister launched the PM Surya Ghar: Muft Bijli Yojana, we stepped forward with our entire engineering force to deliver <strong>500+ residential rooftop sites in Vizianagaram within just 7 months</strong>.
+            </p>
+            <p class="chairman-quote-body">
+              Whether it is a 3 kW system for an independent home or a 5 MW captive power plant for an industrial conglomerate, our promise remains unwavering: <em>A-Grade engineering standards, tier-1 ALMM components, 100% regulatory compliance, and a lifetime of dependable clean energy.</em>
+            </p>
+            <div class="chairman-sig-badge">
+              <i data-lucide="shield-check" style="color: var(--aurora-emerald);"></i>
+              <span>Committed to Zero-Defect Solar Engineering</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7. Our Latest Projects (Filterable Showcase) -->
+      <div class="section-block">
+        <div class="section-header-split">
+          <div>
+            <span class="label-tag">OUR LATEST PROJECTS</span>
+            <h2 class="section-heading">Proven Track Record Across Key Sectors</h2>
+          </div>
+          <div class="filter-pills-row" id="home-project-filters">
+            <button class="filter-pill-btn active" data-filter="All">All Projects</button>
+            <button class="filter-pill-btn" data-filter="Commercial">Commercial</button>
+            <button class="filter-pill-btn" data-filter="Industrial">Industrial</button>
+            <button class="filter-pill-btn" data-filter="Residential">Residential</button>
+            <button class="filter-pill-btn" data-filter="Government">Government</button>
+          </div>
+        </div>
+
+        <div class="projects-showcase-grid" id="home-projects-container">
+          <!-- Populated dynamically via JS from solarData.js -->
+        </div>
+
+        <div style="text-align: center; margin-top: 2rem;">
+          <button class="btn-secondary" data-view="projects">
+            <span>View All Completed & Pipeline Projects</span>
+            <i data-lucide="arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 8. Interactive Solar PV Sizing & Bill Savings Calculator -->
+      <div class="section-block">
+        <div class="calc-box-wrapper">
+          <div class="section-header-center">
+            <span class="label-tag">SOLAR ROI & SAVINGS CALCULATOR</span>
+            <h2 class="section-heading">Estimate Your Solar Capacity, Subsidy & 25-Year Savings</h2>
+            <p class="section-subtext">Move the sliders below to calculate recommended system size, PM Surya Ghar subsidy, and return on investment.</p>
+          </div>
+
+          <div class="calculator-inner-grid">
+            <!-- Left Inputs -->
+            <div class="calc-inputs-panel">
+              <div class="calc-field-group">
+                <label class="calc-label">Consumer Category</label>
+                <div class="category-toggle-group" id="calc-consumer-category">
+                  <button class="cat-toggle-btn active" data-cat="residential">Residential (PM Surya Ghar)</button>
+                  <button class="cat-toggle-btn" data-cat="commercial">Commercial EPC</button>
+                  <button class="cat-toggle-btn" data-cat="industrial">Industrial Plant</button>
+                </div>
+              </div>
+
+              <!-- Monthly Electricity Bill Slider -->
+              <div class="calc-field-group">
+                <div class="slider-header-row">
+                  <span class="calc-label">Monthly Electricity Bill</span>
+                  <span class="slider-val-badge" id="calc-bill-display">₹4,500 / month</span>
+                </div>
+                <input type="range" class="slider-custom" id="calc-bill-slider" min="1000" max="150000" step="500" value="4500">
+                <div class="slider-minmax-row">
+                  <span>₹1,000</span>
+                  <span>₹1,50,000+</span>
+                </div>
+              </div>
+
+              <!-- Rooftop Area Slider -->
+              <div class="calc-field-group">
+                <div class="slider-header-row">
+                  <span class="calc-label">Available Rooftop Area</span>
+                  <span class="slider-val-badge" id="calc-area-display">400 sq. ft (37 m²)</span>
+                </div>
+                <input type="range" class="slider-custom" id="calc-area-slider" min="100" max="10000" step="50" value="400">
+                <div class="slider-minmax-row">
+                  <span>100 sq. ft</span>
+                  <span>10,000+ sq. ft</span>
+                </div>
+              </div>
+
+              <!-- Module Technology -->
+              <div class="calc-field-group">
+                <label class="calc-label">Photovoltaic Panel Technology</label>
+                <select class="select-custom" id="calc-tech-select">
+                  <option value="topcon" selected>N-Type TOPCon 440W-550W (22.8% Eff - Recommended)</option>
+                  <option value="bifacial">Bifacial Dual-Glass 430W (22.2% Eff)</option>
+                  <option value="mono">Mono PERC 410W (21.4% Eff)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Right Results -->
+            <div class="calc-output-panel">
+              <div class="calc-kpi-row">
+                <div class="calc-kpi-card">
+                  <span class="kpi-label">Recommended Capacity</span>
+                  <span class="kpi-val gold" id="calc-res-capacity">3.0 kWp</span>
+                  <span class="kpi-sub" id="calc-res-panels">~7 Panels</span>
+                </div>
+                <div class="calc-kpi-card">
+                  <span class="kpi-label">Govt. Subsidy (PM Surya Ghar)</span>
+                  <span class="kpi-val green" id="calc-res-subsidy">₹78,000</span>
+                  <span class="kpi-sub">Direct bank credit</span>
+                </div>
+                <div class="calc-kpi-card">
+                  <span class="kpi-label">Estimated Annual Savings</span>
+                  <span class="kpi-val cyan" id="calc-res-annual-savings">₹48,600 / yr</span>
+                  <span class="kpi-sub">Payback in ~3.2 yrs</span>
+                </div>
+              </div>
+
+              <div class="calc-table-box">
+                <div class="calc-table-row">
+                  <span>Estimated Monthly Generation:</span>
+                  <strong id="calc-res-monthly-gen">360 kWh / Month</strong>
+                </div>
+                <div class="calc-table-row">
+                  <span>Gross Turnkey Project Cost:</span>
+                  <strong id="calc-res-gross-cost">₹1,85,000</strong>
+                </div>
+                <div class="calc-table-row highlight">
+                  <span>Net Cost to Customer (Post-Subsidy):</span>
+                  <strong class="highlight-green" id="calc-res-net-cost">₹1,07,000</strong>
+                </div>
+                <div class="calc-table-row">
+                  <span>25-Year Cumulative Savings:</span>
+                  <strong class="highlight-gold" id="calc-res-lifetime-savings">₹14,20,000</strong>
+                </div>
+                <div class="calc-table-row">
+                  <span>CO₂ Offset Equivalent:</span>
+                  <strong id="calc-res-co2">3.8 tons / year (170 Trees)</strong>
+                </div>
+              </div>
+
+              <!-- Animated Grid Independence Quotient Gauge -->
+              <div class="calc-solar-gauge-wrap">
+                <div class="gauge-header">
+                  <span class="gauge-label">
+                    <i data-lucide="zap"></i>
+                    <span>Grid Independence Quotient</span>
+                  </span>
+                  <span class="gauge-percent" id="calc-gauge-percent">92%</span>
+                </div>
+                <div class="gauge-bar-bg">
+                  <div class="gauge-bar-fill" id="calc-gauge-fill" style="width: 92%;">
+                    <span class="gauge-bar-shimmer"></span>
+                  </div>
+                </div>
+                <div class="gauge-footer-note">
+                  <span>Estimated Solar Coverage: <strong id="calc-gauge-offset">~90-95% of facility daytime power</strong></span>
+                </div>
+              </div>
+
+              <button class="btn-primary w-full" id="btn-calc-request-quote">
+                <i data-lucide="file-text"></i>
+                <span>Get Official Solar Proposal for this Capacity</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 9. Clients & Reviews / Testimonials -->
+      <div class="section-block">
+        <div class="section-header-center">
+          <span class="label-tag">CLIENT REVIEWS & TESTIMONIALS</span>
+          <h2 class="section-heading">Trusted by Industry Leaders & Homeowners Alike</h2>
+          <p class="section-subtext">Real feedback from manufacturing heads, business owners, and residential communities who trust N Solutions.</p>
+        </div>
+
+        <div class="testimonials-grid" id="home-testimonials-container">
+          <!-- Populated from solarData.js -->
+        </div>
+      </div>
+
+      <!-- 10. Approved Certifications & Empanelments -->
+      <div class="section-block">
+        <div class="section-header-center">
+          <span class="label-tag">APPROVED CERTIFICATIONS & LICENSES</span>
+          <h2 class="section-heading">Government Empaneled & Internationally Certified</h2>
+          <p class="section-subtext">Operating with full regulatory approvals, state licenses, and strict MNRE compliance.</p>
+        </div>
+
+        <div class="certifications-grid" id="home-certifications-container">
+          <!-- Populated from solarData.js -->
+        </div>
+      </div>
+
+      <!-- 11. Awards & Achievements -->
+      <div class="section-block">
+        <div class="section-header-center">
+          <span class="label-tag">AWARDS & RECOGNITIONS</span>
+          <h2 class="section-heading">Honored for Speed, Safety & Engineering Rigor</h2>
+        </div>
+
+        <div class="awards-grid" id="home-awards-container">
+          <!-- Populated from solarData.js -->
+        </div>
+      </div>
+
+      <!-- 12. Why Choose Us Section -->
+      <div class="section-block">
+        <div class="section-header-center">
+          <span class="label-tag">WHY CHOOSE US</span>
+          <h2 class="section-heading">Why Leading Enterprises & Homeowners Choose N Solutions</h2>
+          <p class="section-subtext">Our distinguishing competitive advantages in India's renewable energy sector.</p>
+        </div>
+
+        <div class="why-choose-grid" id="home-why-choose-container">
+          <!-- Populated from solarData.js -->
+        </div>
+      </div>
+
+      <!-- Final Home CTA Banner -->
+      <div class="final-cta-banner">
+        <div class="cta-banner-content">
+          <h2>Ready to Power Your Facility with High-Efficiency Solar?</h2>
+          <p>Schedule a complimentary rooftop structural and electrical feasibility survey with our senior engineers today.</p>
+          <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <button class="btn-primary" data-view="contact">
+              <span>Book Free Site Survey</span>
+              <i data-lucide="arrow-right"></i>
+            </button>
+            <a href="tel:+919440123456" class="btn-secondary">
+              <i data-lucide="phone"></i>
+              <span>Call +91 94401 23456</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ========================================
+         PAGE 2: ABOUT US PAGE
+         ======================================== -->
+    <section id="view-about" class="view-section">
+      <!-- About Hero -->
+      <div class="page-hero-banner">
+        <span class="page-breadcrumb">HOME / ABOUT US</span>
+        <h1 class="page-title">Powering Sustainable Progress Since 2008</h1>
+        <p class="page-subtitle">Learn about our 16-year engineering journey, board of directors, corporate vision, and approved certifications.</p>
+      </div>
+
+      <!-- 1. Company Overview -->
+      <div class="section-block">
+        <div class="section-two-col">
+          <div class="section-text-col">
+            <span class="label-tag">COMPANY OVERVIEW</span>
+            <h2 class="section-heading">A Legacy of Electrical Contracting & Solar EPC Leadership</h2>
+            <p class="section-desc">
+              Founded in 2008 as an A-Grade licensed electrical contracting firm, N Solutions has evolved into one of South India’s most dependable Solar Engineering, Procurement, and Construction (EPC) organizations.
+            </p>
+            <p class="section-desc">
+              With active project execution teams across 9 states—including Andhra Pradesh, Telangana, Karnataka, Tamil Nadu, and Odisha—we specialize in rooftop PV systems, ground-mounted captive solar farms, and the government’s flagship <strong>PM Surya Ghar: Muft Bijli Yojana</strong>. In Vizianagaram district alone, we achieved the landmark milestone of commissioning 500+ residential solar homes in just 7 months.
+            </p>
+            <div class="stat-highlight-pair">
+              <div>
+                <span class="num">16+</span>
+                <span class="desc">Years of Electrical Contracting Heritage</span>
+              </div>
+              <div>
+                <span class="num">120+</span>
+                <span class="desc">MW Equivalent EPC & BOS Capability</span>
+              </div>
+            </div>
+          </div>
+          <div class="section-media-col">
+            <img src="https://images.unsplash.com/photo-1770936994282-8811fb7129ac?w=900&h=650&fit=crop&auto=format" alt="N Solutions Solar Power Generation Site" class="rounded-img">
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Chairman / Manager Message -->
+      <div class="section-block">
+        <div class="chairman-message-card">
+          <div class="chairman-img-wrap">
+            <div class="chairman-avatar-badge" aria-label="N. Srinivasa Rao">
+              <span class="avatar-initials">NSR</span>
+            </div>
+            <div class="chairman-credentials">
+              <span class="name">N. Srinivasa Rao</span>
+              <span class="title">Chairman & Managing Director</span>
+            </div>
+          </div>
+          <div class="chairman-quote-content">
+            <h3 class="chairman-quote-heading">"Our Commitment to Quality Outlasts Every Warranty"</h3>
+            <p class="chairman-quote-body">
+              "When a homeowner or industrial plant owner chooses N Solutions, they are investing in a 25-year relationship. We believe cutting corners on DC cabling, earthing, or inverter ratings is unacceptable. By enforcing strict A-Grade electrical safety and working only with tier-1 ALMM manufacturers, we ensure every kilowatt installed delivers uninterrupted savings for generations."
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Our People (Board of Directors / Leadership) -->
+      <div class="section-block">
+        <div class="section-header-center">
+          <span class="label-tag">OUR PEOPLE</span>
+          <h2 class="section-heading">Board of Directors & Executive Leadership</h2>
+          <p class="section-subtext">Seasoned power sector veterans driving engineering excellence and nationwide customer satisfaction.</p>
+        </div>
+
+        <div class="leadership-grid" id="about-leadership-container">
+          <!-- Populated from solarData.js -->
+        </div>
+      </div>
+
+      <!-- 4. Vision & Mission -->
+      <div class="section-block">
+        <div class="vision-mission-split">
+          <div class="vision-card">
+            <div class="vm-icon-box"><i data-lucide="eye"></i></div>
+            <h3>Our Vision</h3>
+            <p>To be India's most trusted solar EPC and renewable energy partner, spearheading the transition to zero-carbon energy for 100,000+ homes and 1,000+ industrial enterprises by 2030.</p>
+          </div>
+          <div class="mission-card">
+            <div class="vm-icon-box"><i data-lucide="flag"></i></div>
+            <h3>Our Mission</h3>
+            <p>Deliver uncompromising solar engineering, transparent subsidy facilitation, and reliable long-term operations that maximize energy savings, enhance electrical safety, and accelerate national green growth.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Our Journey (Timeline) -->
+      <div class="section-block">
+        <div class="section-header-center">
+          <span class="label-tag">OUR JOURNEY</span>
+          <h2 class="section-heading">Milestones of Growth (2008 – 2026 Target)</h2>
+          <p class="section-subtext">From licensed electrical contracting to a multi-state solar EPC leader.</p>
+        </div>
+
+        <div class="journey-timeline-wrap" id="about-journey-container">
+          <!-- Populated from solarData.js -->
+        </div>
+      </div>
+
+      <!-- 6. Certifications Details Breakdown -->
+      <div class="section-block">
+        <div class="section-header-center">
+          <span class="label-tag">COMPLIANCE & LICENSES</span>
+          <h2 class="section-heading">Approved Licenses & Certification Details</h2>
+          <p class="section-subtext">Every solar system deployed by N Solutions adheres to the highest national and global electrical safety codes.</p>
+        </div>
+
+        <div class="certifications-detail-table-wrap">
+          <table class="cert-table">
+            <thead>
+              <tr>
+                <th>License / Certification</th>
+                <th>Issuing Authority</th>
+                <th>Scope of Authorization</th>
+                <th>Verification Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>A-Grade Electrical Contractor License</strong></td>
+                <td>A.P. Electrical Licensing Board</td>
+                <td>HT/LT electrical installations, substations up to 33kV, grid sync</td>
+                <td><span class="badge-verified">Active & Valid</span></td>
+              </tr>
+              <tr>
+                <td><strong>PM Surya Ghar National Portal</strong></td>
+                <td>Ministry of New & Renewable Energy (MNRE)</td>
+                <td>Authorized channel partner for residential rooftop solar subsidy</td>
+                <td><span class="badge-verified">Empaneled</span></td>
+              </tr>
+              <tr>
+                <td><strong>NREDCAP Approved Partner</strong></td>
+                <td>State Nodal Agency, Andhra Pradesh</td>
+                <td>Renewable energy projects, solar pumps, commercial installations</td>
+                <td><span class="badge-verified">Empaneled</span></td>
+              </tr>
+              <tr>
+                <td><strong>APEPDCL Empaneled Contractor</strong></td>
+                <td>Eastern Power Distribution Co. of AP</td>
+                <td>Bi-directional net metering execution & DISCOM inspection clearance</td>
+                <td><span class="badge-verified">Authorized</span></td>
+              </tr>
+              <tr>
+                <td><strong>ISO 9001:2015 Quality Management</strong></td>
+                <td>International Certification Services</td>
+                <td>Turnkey Solar EPC design, procurement, erection, and testing</td>
+                <td><span class="badge-verified">Certified</span></td>
+              </tr>
+              <tr>
+                <td><strong>ALMM & BIS Compliance</strong></td>
+                <td>Bureau of Indian Standards / MNRE</td>
+                <td>Deployment of Approved List of Models and Manufacturers modules</td>
+                <td><span class="badge-verified">Compliant</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ========================================
+         PAGE 3: PRODUCTS PAGE
+         ======================================== -->
+    <section id="view-products" class="view-section">
+      <div class="page-hero-banner">
+        <span class="page-breadcrumb">HOME / PRODUCTS</span>
+        <h1 class="page-title">Tier-1 Solar Panels, Inverters & BOS Equipment</h1>
+        <p class="page-subtitle">Genuine, warranty-backed solar components from leading global & Indian manufacturers.</p>
+      </div>
+
+      <!-- Filter Controls & Search -->
+      <div class="products-controls-bar">
+        <div class="product-category-filters" id="product-category-tabs">
+          <button class="filter-pill-btn active" data-cat="all">All Products</button>
+          <button class="filter-pill-btn" data-cat="solar-panels">Solar Panels</button>
+          <button class="filter-pill-btn" data-cat="solar-inverters">Solar Inverters</button>
+          <button class="filter-pill-btn" data-cat="earth-pits">Earth Pits & Arrestors</button>
+          <button class="filter-pill-btn" data-cat="accessories">Accessories</button>
+        </div>
+
+        <div class="product-search-wrap">
+          <i data-lucide="search"></i>
+          <input type="text" id="product-search-input" placeholder="Search panels, inverters, cables, earthing...">
+        </div>
+      </div>
+
+      <!-- Products Grid -->
+      <div class="products-grid" id="products-list-container">
+        <!-- Populated dynamically via JS from solarData.js -->
+      </div>
+    </section>
+
+
+    <!-- ========================================
+         PAGE 4: SERVICES / SOLUTIONS PAGE
+         ======================================== -->
+    <section id="view-services" class="view-section">
+      <div class="page-hero-banner">
+        <span class="page-breadcrumb">HOME / SERVICES & SOLUTIONS</span>
+        <h1 class="page-title">Comprehensive Solar EPC & Clean Energy Solutions</h1>
+        <p class="page-subtitle">End-to-end turnkey solar execution across commercial, residential, industrial, and government sectors.</p>
+      </div>
+
+      <div class="services-full-list" id="services-full-container">
+        <!-- Populated from solarData.js -->
+      </div>
+    </section>
+
+
+    <!-- ========================================
+         PAGE 5: OUR PROJECTS PAGE
+         ======================================== -->
+    <section id="view-projects" class="view-section">
+      <div class="page-hero-banner">
+        <span class="page-breadcrumb">HOME / OUR PROJECTS</span>
+        <h1 class="page-title">Proven Solar Track Record Across India</h1>
+        <p class="page-subtitle">Explore completed and ongoing solar power installations across 9 states.</p>
+      </div>
+
+      <!-- Multi-Filter Bar -->
+      <div class="projects-filter-toolbar">
+        <div class="filter-group">
+          <span class="filter-lbl">Category:</span>
+          <div class="filter-pills-row" id="proj-filter-category">
+            <button class="filter-pill-btn active" data-filter="All">All</button>
+            <button class="filter-pill-btn" data-filter="Commercial">Commercial</button>
+            <button class="filter-pill-btn" data-filter="Industrial">Industrial</button>
+            <button class="filter-pill-btn" data-filter="Residential">Residential</button>
+            <button class="filter-pill-btn" data-filter="Government">Government</button>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <span class="filter-lbl">State:</span>
+          <select class="select-custom" id="proj-filter-state">
+            <option value="All">All States</option>
+            <option value="Andhra Pradesh">Andhra Pradesh</option>
+            <option value="Telangana">Telangana</option>
+            <option value="Karnataka">Karnataka</option>
+            <option value="Tamil Nadu">Tamil Nadu</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <span class="filter-lbl">Status:</span>
+          <select class="select-custom" id="proj-filter-status">
+            <option value="All">All Statuses</option>
+            <option value="Completed">Completed</option>
+            <option value="In Progress">In Progress</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Projects Grid -->
+      <div class="projects-showcase-grid" id="all-projects-container">
+        <!-- Populated from solarData.js -->
+      </div>
+    </section>
+
+
+    <!-- ========================================
+         PAGE 6: MEDIA PAGE
+         ======================================== -->
+    <section id="view-media" class="view-section">
+      <div class="page-hero-banner">
+        <span class="page-breadcrumb">HOME / MEDIA & GALLERY</span>
+        <h1 class="page-title">Media Coverage, Milestones & Gallery</h1>
+        <p class="page-subtitle">Visual highlights, milestone announcements, press releases, and installation photos.</p>
+      </div>
+
+      <!-- Media Category Filter Tabs -->
+      <div class="media-tabs-row" id="media-category-tabs">
+        <button class="filter-pill-btn active" data-media-tab="all">All Media</button>
+        <button class="filter-pill-btn" data-media-tab="Milestones">Project Milestones</button>
+        <button class="filter-pill-btn" data-media-tab="Gallery">Photo Gallery</button>
+        <button class="filter-pill-btn" data-media-tab="videos">Video Showcase</button>
+      </div>
+
+      <!-- Media Content Grid -->
+      <div class="media-content-grid" id="media-items-container">
+        <!-- Populated dynamically via JS -->
+      </div>
+    </section>
+
+
+    <!-- ========================================
+         PAGE 7: CAREERS PAGE
+         ======================================== -->
+    <section id="view-careers" class="view-section">
+      <div class="page-hero-banner">
+        <span class="page-breadcrumb">HOME / CAREERS</span>
+        <h1 class="page-title">Build the Future of Clean Energy With Us</h1>
+        <p class="page-subtitle">Join a high-performance engineering team passionate about decarbonizing India's energy grid.</p>
+      </div>
+
+      <!-- Why Work at N Solutions -->
+      <div class="section-block">
+        <div class="why-careers-grid">
+          <div class="career-benefit-card">
+            <div class="benefit-icon gold"><i data-lucide="leaf"></i></div>
+            <h4>Meaningful Clean Energy Work</h4>
+            <p>Be an active contributor to India’s renewable energy revolution, reducing carbon footprints for thousands of businesses and homes.</p>
+          </div>
+          <div class="career-benefit-card">
+            <div class="benefit-icon cyan"><i data-lucide="cpu"></i></div>
+            <h4>High-Tech Engineering Exposure</h4>
+            <p>Work with advanced PVsyst modeling, drone thermography, smart dual-MPPT inverters, and high-voltage grid substations.</p>
+          </div>
+          <div class="career-benefit-card">
+            <div class="benefit-icon green"><i data-lucide="map-pin"></i></div>
+            <h4>Pan-India Project Experience</h4>
+            <p>Gain practical site execution experience across 9 Indian states with a firm holding 16+ years of licensed contracting credentials.</p>
+          </div>
+          <div class="career-benefit-card">
+            <div class="benefit-icon purple"><i data-lucide="award"></i></div>
+            <h4>Fast-Track Career Progression</h4>
+            <p>Meritocratic culture that rewards execution excellence, rapid problem solving, and leadership initiative.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Job Postings List -->
+      <div class="section-block">
+        <div class="section-header-split">
+          <div>
+            <span class="label-tag">ACTIVE JOB OPENINGS</span>
+            <h2 class="section-heading">Current Positions Open for Application</h2>
+          </div>
+          <span class="openings-counter-badge">5 Positions Open</span>
+        </div>
+
+        <div class="jobs-list" id="careers-jobs-container">
+          <!-- Populated from solarData.js -->
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ========================================
+         PAGE 8: CONTACT US PAGE
+         ======================================== -->
+    <section id="view-contact" class="view-section">
+      <div class="page-hero-banner">
+        <span class="page-breadcrumb">HOME / CONTACT US</span>
+        <h1 class="page-title">Let’s Build Your Solar Solution</h1>
+        <p class="page-subtitle">Reach out to our engineering and subsidy advisory desk. We respond within 24 hours.</p>
+      </div>
+
+      <div class="section-block">
+        <div class="contact-split-layout">
+          <!-- Left: Contact Information & Channels -->
+          <div class="contact-info-panel">
+            <h3 class="contact-panel-title">Head Office & Direct Inquiries</h3>
+            <p class="contact-panel-sub">Visit our offices or connect with our senior technical advisors directly.</p>
+
+            <div class="contact-channel-list">
+              <div class="contact-channel-item">
+                <div class="channel-icon-box"><i data-lucide="phone"></i></div>
+                <div>
+                  <span class="channel-lbl">Phone Numbers</span>
+                  <a href="tel:+919440123456" class="channel-val">+91 94401 23456</a>
+                  <a href="tel:+918912789012" class="channel-val">+91 891 2789012</a>
+                  <span class="channel-note">Mon - Sat: 9:00 AM - 7:30 PM</span>
+                </div>
+              </div>
+
+              <div class="contact-channel-item">
+                <div class="channel-icon-box"><i data-lucide="mail"></i></div>
+                <div>
+                  <span class="channel-lbl">Official Email</span>
+                  <a href="mailto:info@nsolutions.in" class="channel-val">info@nsolutions.in</a>
+                  <a href="mailto:support@nsolutions.in" class="channel-val">support@nsolutions.in</a>
+                  <span class="channel-note">Direct response within 24 hours</span>
+                </div>
+              </div>
+
+              <div class="contact-channel-item">
+                <div class="channel-icon-box"><i data-lucide="map-pin"></i></div>
+                <div>
+                  <span class="channel-lbl">Head Office Address</span>
+                  <p class="channel-val-text">Plot No. 42, Green Tech Enclave, Near IT SEZ, Visakhapatnam, Andhra Pradesh - 530045</p>
+                </div>
+              </div>
+
+              <div class="contact-channel-item">
+                <div class="channel-icon-box"><i data-lucide="building"></i></div>
+                <div>
+                  <span class="channel-lbl">Branch Offices</span>
+                  <p class="channel-val-text">Vizianagaram • Vijayawada • Hyderabad • Bengaluru</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Social Media Handles -->
+            <div class="contact-socials-group">
+              <span class="channel-lbl">Connect on Social Media</span>
+              <div class="social-links-row">
+                <a href="https://linkedin.com" target="_blank" rel="noopener" class="social-circle-btn" title="LinkedIn"><i data-lucide="linkedin"></i></a>
+                <a href="https://twitter.com" target="_blank" rel="noopener" class="social-circle-btn" title="Twitter / X"><i data-lucide="twitter"></i></a>
+                <a href="https://facebook.com" target="_blank" rel="noopener" class="social-circle-btn" title="Facebook"><i data-lucide="facebook"></i></a>
+                <a href="https://instagram.com" target="_blank" rel="noopener" class="social-circle-btn" title="Instagram"><i data-lucide="instagram"></i></a>
+                <a href="https://youtube.com" target="_blank" rel="noopener" class="social-circle-btn" title="YouTube"><i data-lucide="youtube"></i></a>
+                <a href="https://wa.me/919440123456" target="_blank" rel="noopener" class="social-circle-btn whatsapp" title="WhatsApp"><i data-lucide="message-circle"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Interactive Consultation / Lead Form -->
+          <div class="contact-form-panel">
+            <h3 class="contact-panel-title">Request Solar Consultation & Site Survey</h3>
+            <p class="contact-panel-sub">Fill out the form below. Your request will be directly queued into our engineering desk.</p>
+
+            <form id="contact-consult-form" class="consult-form">
+              <div class="form-two-col">
+                <div class="form-group">
+                  <label>Full Name *</label>
+                  <input type="text" id="form-name" required placeholder="e.g. Ramesh Chandra">
+                </div>
+                <div class="form-group">
+                  <label>Phone Number *</label>
+                  <input type="tel" id="form-phone" required placeholder="e.g. +91 98480 12345">
+                </div>
+              </div>
+
+              <div class="form-two-col">
+                <div class="form-group">
+                  <label>Email Address *</label>
+                  <input type="email" id="form-email" required placeholder="e.g. ramesh@company.com">
+                </div>
+                <div class="form-group">
+                  <label>Company / Organization (Optional)</label>
+                  <input type="text" id="form-company" placeholder="e.g. Chandra Industries">
+                </div>
+              </div>
+
+              <div class="form-two-col">
+                <div class="form-group">
+                  <label>Project Location / City *</label>
+                  <input type="text" id="form-location" required placeholder="e.g. Visakhapatnam, AP">
+                </div>
+                <div class="form-group">
+                  <label>Solution / Category *</label>
+                  <select class="select-custom" id="form-project-type">
+                    <option value="Commercial Solar">Commercial Solar Rooftop</option>
+                    <option value="Industrial Solar">Industrial MW Captive Solar</option>
+                    <option value="Residential Rooftop">Residential (PM Surya Ghar)</option>
+                    <option value="Solar Pump">Agricultural Solar Pump</option>
+                    <option value="O&M Services">Operation & Maintenance (O&M)</option>
+                    <option value="Solar Product Supply">Solar Product Supply</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Current Monthly Electricity Bill (Optional)</label>
+                <input type="text" id="form-bill" placeholder="e.g. ₹25,000 / month">
+              </div>
+
+              <div class="form-group">
+                <label>Project Requirements / Message</label>
+                <textarea id="form-message" rows="4" placeholder="Tell us about your rooftop area, current sanctions, or specific requirements..."></textarea>
+              </div>
+
+              <button type="submit" class="btn-primary w-full" id="btn-submit-contact">
+                <i data-lucide="send"></i>
+                <span>Submit Solar Consultation Request</span>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ========================================
+         PAGE 9: ADMIN PORTAL PAGE
+         ======================================== -->
+    <section id="view-admin" class="view-section">
+      <div class="admin-portal-layout">
+        <!-- Admin Left Sidebar -->
+        <aside class="admin-sidebar">
+          <div class="admin-brand-box">
+            <div class="brand-monogram">N</div>
+            <div>
+              <span class="admin-brand-title">Admin Console</span>
+              <span class="admin-brand-sub">N Solutions Solar OS</span>
+            </div>
+          </div>
+
+          <nav class="admin-nav-tabs">
+            <button class="admin-tab-btn active" data-admin-tab="dashboard">
+              <i data-lucide="layout-dashboard"></i>
+              <span>Dashboard</span>
+            </button>
+            <button class="admin-tab-btn" data-admin-tab="leads">
+              <i data-lucide="users"></i>
+              <span>Leads Management</span>
+            </button>
+            <button class="admin-tab-btn" data-admin-tab="projects">
+              <i data-lucide="grid-3x3"></i>
+              <span>Projects Manager</span>
+            </button>
+            <button class="admin-tab-btn" data-admin-tab="products">
+              <i data-lucide="package"></i>
+              <span>Products Manager</span>
+            </button>
+            <button class="admin-tab-btn" data-admin-tab="gallery">
+              <i data-lucide="image"></i>
+              <span>Gallery / Media</span>
+            </button>
+            <button class="admin-tab-btn" data-admin-tab="testimonials">
+              <i data-lucide="message-square"></i>
+              <span>Testimonials</span>
+            </button>
+            <button class="admin-tab-btn" data-admin-tab="enquiries">
+              <i data-lucide="mail"></i>
+              <span>Contact Enquiries</span>
+            </button>
+            <button class="admin-tab-btn" data-admin-tab="profile">
+              <i data-lucide="user-check"></i>
+              <span>Admin Profile</span>
+            </button>
+          </nav>
+
+          <div class="admin-sidebar-footer">
+            <button class="admin-exit-btn" data-view="home">
+              <i data-lucide="log-out"></i>
+              <span>Exit to Website</span>
+            </button>
+          </div>
+        </aside>
+
+        <!-- Admin Main Content Area -->
+        <div class="admin-main-viewport">
+          <!-- Top Bar -->
+          <div class="admin-top-bar">
+            <div class="admin-active-tab-title" id="admin-header-title">
+              Dashboard Overview
+            </div>
+            <div class="admin-top-actions">
+              <span class="admin-user-pill">
+                <span class="status-online-dot"></span>
+                <span>admin@nsolutions.in (SuperAdmin)</span>
+              </span>
+            </div>
+          </div>
+
+          <!-- 1. Admin Tab: Dashboard -->
+          <div class="admin-tab-pane active" id="pane-admin-dashboard">
+            <!-- KPI Counters Row -->
+            <div class="admin-kpi-grid">
+              <div class="admin-kpi-card gold">
+                <div class="kpi-icon-wrap"><i data-lucide="users"></i></div>
+                <div>
+                  <span class="kpi-val" id="admin-stat-leads">0</span>
+                  <span class="kpi-lbl">Total Solar Leads</span>
+                </div>
+              </div>
+              <div class="admin-kpi-card cyan">
+                <div class="kpi-icon-wrap"><i data-lucide="grid-3x3"></i></div>
+                <div>
+                  <span class="kpi-val" id="admin-stat-projects">0</span>
+                  <span class="kpi-lbl">Active Projects</span>
+                </div>
+              </div>
+              <div class="admin-kpi-card green">
+                <div class="kpi-icon-wrap"><i data-lucide="package"></i></div>
+                <div>
+                  <span class="kpi-val" id="admin-stat-products">0</span>
+                  <span class="kpi-lbl">Catalog Products</span>
+                </div>
+              </div>
+              <div class="admin-kpi-card purple">
+                <div class="kpi-icon-wrap"><i data-lucide="mail"></i></div>
+                <div>
+                  <span class="kpi-val" id="admin-stat-enquiries">0</span>
+                  <span class="kpi-lbl">Recent Enquiries</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Split Tables on Dashboard -->
+            <div class="admin-split-tables">
+              <!-- Recent Leads -->
+              <div class="panel-card">
+                <div class="panel-card-header">
+                  <div class="panel-card-title">
+                    <i data-lucide="users" style="color: var(--solar-gold);"></i>
+                    <span>Recent Solar Leads</span>
+                  </div>
+                  <button class="btn-pill" id="btn-jump-leads">View All</button>
+                </div>
+                <div class="table-responsive">
+                  <table class="admin-table">
+                    <thead>
+                      <tr>
+                        <th>Lead Name</th>
+                        <th>Type</th>
+                        <th>Location</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="dashboard-recent-leads">
+                      <!-- Dynamic -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Recent Enquiries -->
+              <div class="panel-card">
+                <div class="panel-card-header">
+                  <div class="panel-card-title">
+                    <i data-lucide="mail" style="color: var(--cyber-cyan);"></i>
+                    <span>Recent Website Enquiries</span>
+                  </div>
+                  <button class="btn-pill" id="btn-jump-enquiries">View All</button>
+                </div>
+                <div class="table-responsive">
+                  <table class="admin-table">
+                    <thead>
+                      <tr>
+                        <th>Customer</th>
+                        <th>Subject</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="dashboard-recent-enquiries">
+                      <!-- Dynamic -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Admin Tab: Leads Management -->
+          <div class="admin-tab-pane" id="pane-admin-leads">
+            <div class="admin-pane-header">
+              <div>
+                <h3>Leads Management</h3>
+                <p>Track, update customer consultation status, and filter leads.</p>
+              </div>
+              <button class="btn-primary" id="btn-open-add-lead">
+                <i data-lucide="user-plus"></i>
+                <span>Add New Lead</span>
+              </button>
+            </div>
+
+            <div class="panel-card">
+              <div class="admin-filter-bar">
+                <input type="text" id="admin-leads-search" placeholder="Search leads by name, company, or location..." class="admin-search-input">
+                <select class="select-custom" id="admin-leads-status-filter" style="max-width: 200px;">
+                  <option value="All">All Statuses</option>
+                  <option value="New">New</option>
+                  <option value="Contacted">Contacted</option>
+                  <option value="Site Survey">Site Survey</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="Qualified">Qualified</option>
+                  <option value="Closed">Closed</option>
+                </select>
+              </div>
+
+              <div class="table-responsive">
+                <table class="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Name & Company</th>
+                      <th>Category</th>
+                      <th>Location</th>
+                      <th>Contact</th>
+                      <th>Status</th>
+                      <th>Date</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="admin-leads-table-body">
+                    <!-- Dynamic -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Admin Tab: Projects Manager -->
+          <div class="admin-tab-pane" id="pane-admin-projects">
+            <div class="admin-pane-header">
+              <div>
+                <h3>Projects Manager</h3>
+                <p>Add, edit, or remove solar installations from the portfolio.</p>
+              </div>
+              <button class="btn-primary" id="btn-open-add-project">
+                <i data-lucide="plus"></i>
+                <span>Add New Project</span>
+              </button>
+            </div>
+
+            <div class="panel-card">
+              <div class="table-responsive">
+                <table class="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Project Title</th>
+                      <th>Category</th>
+                      <th>Capacity</th>
+                      <th>State</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="admin-projects-table-body">
+                    <!-- Dynamic -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. Admin Tab: Products Manager -->
+          <div class="admin-tab-pane" id="pane-admin-products">
+            <div class="admin-pane-header">
+              <div>
+                <h3>Products Manager</h3>
+                <p>Manage solar panels, inverters, and accessories in the catalog.</p>
+              </div>
+              <button class="btn-primary" id="btn-open-add-product">
+                <i data-lucide="plus"></i>
+                <span>Add New Product</span>
+              </button>
+            </div>
+
+            <div class="panel-card">
+              <div class="table-responsive">
+                <table class="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Product Name</th>
+                      <th>Category</th>
+                      <th>Brand</th>
+                      <th>Specifications</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="admin-products-table-body">
+                    <!-- Dynamic -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5. Admin Tab: Gallery / Media -->
+          <div class="admin-tab-pane" id="pane-admin-gallery">
+            <div class="admin-pane-header">
+              <div>
+                <h3>Gallery & Media Manager</h3>
+                <p>Add and manage photos and milestone press updates.</p>
+              </div>
+              <button class="btn-primary" id="btn-open-add-gallery">
+                <i data-lucide="upload"></i>
+                <span>Upload New Image</span>
+              </button>
+            </div>
+
+            <div class="panel-card">
+              <div class="table-responsive">
+                <table class="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Preview</th>
+                      <th>Title</th>
+                      <th>Tag</th>
+                      <th>Category</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="admin-gallery-table-body">
+                    <!-- Dynamic -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- 6. Admin Tab: Testimonials -->
+          <div class="admin-tab-pane" id="pane-admin-testimonials">
+            <div class="admin-pane-header">
+              <div>
+                <h3>Client Testimonials Manager</h3>
+                <p>Add, edit, or delete customer reviews and ratings.</p>
+              </div>
+              <button class="btn-primary" id="btn-open-add-testimonial">
+                <i data-lucide="plus"></i>
+                <span>Add Testimonial</span>
+              </button>
+            </div>
+
+            <div class="panel-card">
+              <div class="table-responsive">
+                <table class="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Client Name</th>
+                      <th>Company / Role</th>
+                      <th>Project</th>
+                      <th>Rating</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="admin-testimonials-table-body">
+                    <!-- Dynamic -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- 7. Admin Tab: Contact Enquiries -->
+          <div class="admin-tab-pane" id="pane-admin-enquiries">
+            <div class="admin-pane-header">
+              <div>
+                <h3>Contact Form Enquiries</h3>
+                <p>Messages received from the website contact and consultation form.</p>
+              </div>
+            </div>
+
+            <div class="panel-card">
+              <div class="table-responsive">
+                <table class="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Sender</th>
+                      <th>Subject & Message</th>
+                      <th>Contact Details</th>
+                      <th>Date</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="admin-enquiries-table-body">
+                    <!-- Dynamic -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- 8. Admin Tab: Admin Profile -->
+          <div class="admin-tab-pane" id="pane-admin-profile">
+            <div class="admin-pane-header">
+              <div>
+                <h3>Admin Security & Profile</h3>
+                <p>Change your administrator password and account settings.</p>
+              </div>
+            </div>
+
+            <div class="panel-card" style="max-width: 600px;">
+              <form id="admin-change-password-form">
+                <div class="form-group">
+                  <label>Administrator Email</label>
+                  <input type="email" value="admin@nsolutions.in" disabled class="input-disabled">
+                </div>
+
+                <div class="form-group">
+                  <label>Current Password *</label>
+                  <input type="password" id="admin-curr-pass" required placeholder="Enter current password">
+                </div>
+
+                <div class="form-group">
+                  <label>New Password *</label>
+                  <input type="password" id="admin-new-pass" required placeholder="Min 6 characters">
+                </div>
+
+                <div class="form-group">
+                  <label>Confirm New Password *</label>
+                  <input type="password" id="admin-confirm-pass" required placeholder="Re-enter new password">
+                </div>
+
+                <button type="submit" class="btn-primary" style="margin-top: 1rem;">
+                  <i data-lucide="lock"></i>
+                  <span>Update Password</span>
+                </button>
+              </form>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==========================================
+       GLOBAL FOOTER
+       ========================================== -->
+  <footer class="app-footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <!-- Col 1: Brand Info -->
+        <div class="footer-brand-col">
+          <div class="brand-wrapper mb-4">
+            <div class="brand-icon-box">
+              <span class="brand-monogram">N</span>
+            </div>
+            <div class="brand-text">
+              <span class="brand-title">N SOLUTIONS</span>
+              <span class="brand-subtitle">SOLAR EPC EXCELLENCE</span>
+            </div>
+          </div>
+          <p class="footer-about-text">
+            N Solutions is an A-Grade licensed electrical contractor & Solar EPC company with 16+ years of engineering experience across 9 states. 500+ PM Surya Ghar residential rooftop installations delivered in Vizianagaram.
+          </p>
+          <div class="footer-license-badges">
+            <span class="badge-tag">A-Grade Licensed</span>
+            <span class="badge-tag">MNRE Empaneled</span>
+            <span class="badge-tag">ISO 9001:2015</span>
+          </div>
+        </div>
+
+        <!-- Col 2: Quick Links -->
+        <div class="footer-col">
+          <h4 class="footer-heading">Navigation</h4>
+          <ul class="footer-links-list">
+            <li><button class="footer-link-btn" data-view="home">Home</button></li>
+            <li><button class="footer-link-btn" data-view="about">About Us</button></li>
+            <li><button class="footer-link-btn" data-view="products">Solar Products</button></li>
+            <li><button class="footer-link-btn" data-view="services">Services & Solutions</button></li>
+            <li><button class="footer-link-btn" data-view="projects">Our Projects</button></li>
+            <li><button class="footer-link-btn" data-view="media">Media & Milestones</button></li>
+            <li><button class="footer-link-btn" data-view="careers">Careers</button></li>
+            <li><button class="footer-link-btn" data-view="contact">Contact Us</button></li>
+          </ul>
+        </div>
+
+        <!-- Col 3: Solutions -->
+        <div class="footer-col">
+          <h4 class="footer-heading">Solutions</h4>
+          <ul class="footer-links-list">
+            <li><button class="footer-link-btn" data-view="services">Commercial Solar Rooftops</button></li>
+            <li><button class="footer-link-btn" data-view="services">Industrial Captive MW Solar</button></li>
+            <li><button class="footer-link-btn" data-view="services">PM Surya Ghar Subsidy Solar</button></li>
+            <li><button class="footer-link-btn" data-view="services">Agricultural Solar Pumps</button></li>
+            <li><button class="footer-link-btn" data-view="services">25-Year Operation & Maintenance</button></li>
+            <li><button class="footer-link-btn" data-view="products">Tier-1 Modules & Inverters</button></li>
+          </ul>
+        </div>
+
+        <!-- Col 4: Contact Details -->
+        <div class="footer-col">
+          <h4 class="footer-heading">Direct Contact</h4>
+          <p class="footer-contact-item"><i data-lucide="phone"></i> <span>+91 94401 23456</span></p>
+          <p class="footer-contact-item"><i data-lucide="mail"></i> <span>info@nsolutions.in</span></p>
+          <p class="footer-contact-item"><i data-lucide="map-pin"></i> <span>Plot 42, Green Tech Enclave, IT SEZ, Visakhapatnam - 530045</span></p>
+          <div class="footer-social-row">
+            <a href="https://linkedin.com" target="_blank" rel="noopener" class="footer-social-btn"><i data-lucide="linkedin"></i></a>
+            <a href="https://twitter.com" target="_blank" rel="noopener" class="footer-social-btn"><i data-lucide="twitter"></i></a>
+            <a href="https://facebook.com" target="_blank" rel="noopener" class="footer-social-btn"><i data-lucide="facebook"></i></a>
+            <a href="https://instagram.com" target="_blank" rel="noopener" class="footer-social-btn"><i data-lucide="instagram"></i></a>
+            <a href="https://wa.me/919440123456" target="_blank" rel="noopener" class="footer-social-btn"><i data-lucide="message-circle"></i></a>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom-bar">
+        <p>© 2025 N Solutions Solar Company. All Rights Reserved. Empaneled under MNRE & PM Surya Ghar.</p>
+        <p class="footer-disclaimer">Designed & engineered for clean, reliable power across India.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==========================================
+       MODALS
+       ========================================== -->
+  <!-- Product Specification / Quote Modal -->
+  <div class="modal-overlay" id="product-modal">
+    <div class="modal-content">
+      <button class="modal-close-btn" id="btn-close-product-modal"><i data-lucide="x"></i></button>
+      <div id="product-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Job Application Modal -->
+  <div class="modal-overlay" id="job-apply-modal">
+    <div class="modal-content">
+      <button class="modal-close-btn" id="btn-close-job-modal"><i data-lucide="x"></i></button>
+      <div id="job-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Admin Add/Edit Modal -->
+  <div class="modal-overlay" id="admin-crud-modal">
+    <div class="modal-content">
+      <button class="modal-close-btn" id="btn-close-crud-modal"><i data-lucide="x"></i></button>
+      <div id="admin-crud-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Image Gallery Lightbox Modal -->
+  <div class="modal-overlay" id="gallery-modal">
+    <div class="modal-content" style="max-width: 900px; padding: 1rem;">
+      <button class="modal-close-btn" id="btn-close-gallery-modal"><i data-lucide="x"></i></button>
+      <div id="gallery-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Floating Action & Back-to-Top Controls Dock -->
+  <div class="floating-controls-dock" id="floating-controls-dock">
+    <button class="floating-btn consult-floating-btn" id="btn-floating-consult" data-view="contact" title="Get Free Instant Solar Consultation">
+      <span class="floating-pulse-ring"></span>
+      <i data-lucide="zap"></i>
+      <span class="floating-badge-text">Free Survey</span>
+    </button>
+    <button class="floating-btn back-to-top-btn" id="btn-back-to-top" title="Scroll back to top">
+      <i data-lucide="chevron-up"></i>
+    </button>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Main Application Script -->
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>
