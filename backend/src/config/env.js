@@ -2,20 +2,30 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+const registrationMode = (process.env.ADMIN_REGISTRATION_MODE || 'key').toLowerCase();
+const supportedModes = new Set(['bootstrap', 'key', 'disabled']);
+
+if (!supportedModes.has(registrationMode)) {
+  throw new Error(`Invalid ADMIN_REGISTRATION_MODE value: ${registrationMode}. Allowed values: bootstrap, key, disabled.`);
+}
+
 const requiredVariables = ['MONGODB_URI', 'JWT_SECRET'];
-const missingVariables = requiredVariables.filter((name) => !process.env[name]);
+if (registrationMode !== 'disabled') {
+  requiredVariables.push('ADMIN_REGISTRATION_KEY');
+}
+
+const missingVariables = requiredVariables.filter((name) => !process.env[name] || process.env[name].trim() === '');
 
 if (missingVariables.length > 0) {
   throw new Error(`Missing required environment variables: ${missingVariables.join(', ')}`);
 }
-
 
 const parseInteger = (value, fallback) => {
   const parsed = Number.parseInt(value, 10);
   return Number.isInteger(parsed) ? parsed : fallback;
 };
 
-const parseCorsOrigins = (value) => { 
+const parseCorsOrigins = (value) => {
   if (!value || value === '*') return '*';
   return value.split(',').map((origin) => origin.trim()).filter(Boolean);
 };
@@ -27,7 +37,7 @@ export const env = Object.freeze({
   jwtSecret: process.env.JWT_SECRET,
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
   corsOrigin: parseCorsOrigins(process.env.CORS_ORIGIN),
-  adminRegistrationMode: process.env.ADMIN_REGISTRATION_MODE || 'bootstrap',
+  adminRegistrationMode: registrationMode,
   adminRegistrationKey: process.env.ADMIN_REGISTRATION_KEY || '',
   cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME || '',
   cloudinaryApiKey: process.env.CLOUDINARY_API_KEY || '',

@@ -124,6 +124,19 @@ Successful response (`200`):
 }
 ```
 
+### `POST /api/auth/logout`
+
+Requires `Authorization: Bearer <token returned by login>`. The API uses stateless JWT authentication, so the client should remove the stored token after receiving the successful response.
+
+Successful response (`200`):
+
+```json
+{
+  "success": true,
+  "message": "Logout successful."
+}
+```
+
 ### Lead routes
 
 All lead routes require `Authorization: Bearer <token returned by login>`.
@@ -187,6 +200,18 @@ CLOUDINARY_API_SECRET=
 ```
 
 The dashboard `activeProjects` value counts projects whose status is `in_progress`.
+
+### Job application routes
+
+`POST /api/job-applications` is public and accepts a resume upload with the applicant details.
+
+`GET /api/job-applications` requires `Authorization: Bearer <token returned by login>` and returns all submitted applications newest first, including applicant details, application status, job title, and the resume URL.
+
+### Testimonial routes
+
+`GET /api/testimonials` is public and returns testimonials newest first.
+
+`GET /api/testimonials/admin` requires `Authorization: Bearer <token returned by login>` and returns testimonials newest first, including `createdAt` and `updatedAt` for admin management.
 
 ### Protected dashboard routes
 

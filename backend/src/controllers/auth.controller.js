@@ -1,5 +1,6 @@
 import { env } from '../config/env.js';
 import { registerAdmin, loginAdmin } from '../services/auth.service.js';
+import { revokeToken } from '../utils/jwt.js';
 import { sendSuccess } from '../utils/response.js';
 import { validateLoginInput, validateRegistrationInput } from '../utils/validation.js';
 
@@ -31,6 +32,14 @@ export const login = async (request, response) => {
 
   const data = await loginAdmin({ email, password });
   return sendSuccess(response, 200, 'Login successful.', data);
+};
+
+export const logout = async (request, response) => {
+  if (request.token) {
+    revokeToken(request.token);
+  }
+
+  return sendSuccess(response, 200, 'Logout successful.');
 };
 
 export const getRegistrationConfig = () => ({ mode: env.adminRegistrationMode });

@@ -17,11 +17,15 @@ export const requireAdmin = (request, response, next) => {
     if (payload.role !== 'admin' || !payload.sub || !payload.email) {
       return response.status(403).json({ success: false, message: 'Admin access is required.' });
     }
+    request.token = token;
     request.admin = { id: payload.sub, email: payload.email, role: payload.role };
     return next();
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) {
       return response.status(401).json({ success: false, message: 'Authentication token has expired.' });
+    }
+    if (error.name === 'TokenRevokedError') {
+      return response.status(401).json({ success: false, message: 'Authentication token has been revoked.' });
     }
     return response.status(401).json({ success: false, message: 'Invalid authentication token.' });
   }

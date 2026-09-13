@@ -36,6 +36,12 @@ export const registerAdmin = async ({ name, email, password, registrationKey }) 
     throw error;
   }
 
+  if (env.adminRegistrationMode === 'bootstrap' && existingAdminCount > 0 && !registrationKey) {
+    const error = new Error('A valid admin registration key is required.');
+    error.statusCode = 403;
+    throw error;
+  }
+
   const existingAdmin = await Admin.findOne({ email: normalizedEmail }).select('_id').lean();
   if (existingAdmin) {
     const error = new Error('An admin with this email already exists.');
