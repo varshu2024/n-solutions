@@ -303,8 +303,6 @@ function RouteShell() {
 }
 
 function App() {
-  const [routeLoading, setRouteLoading] = useState(false)
-  const navigationTimer = useRef(null)
   const [introVisible, setIntroVisible] = useState(() => {
     if (window.location.pathname !== '/') return false
     try {
@@ -313,24 +311,6 @@ function App() {
       return isRefresh || sessionStorage.getItem('nsolutions-intro-seen') !== 'true'
     } catch { return true }
   })
-  useEffect(() => {
-    const handleNavigation = (event) => {
-      const link = event.target.closest('a[href]')
-      if (!link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || link.target || link.hasAttribute('download')) return
-      const destination = new URL(link.href, window.location.href)
-      if (destination.origin !== window.location.origin || destination.pathname === window.location.pathname) return
-      event.preventDefault()
-      if (routeLoading) return
-      setRouteLoading(true)
-      navigationTimer.current = window.setTimeout(() => window.location.assign(destination.href), 700)
-    }
-    document.addEventListener('click', handleNavigation)
-    return () => { document.removeEventListener('click', handleNavigation); window.clearTimeout(navigationTimer.current) }
-  }, [routeLoading])
-  useEffect(() => {
-    document.body.classList.toggle('is-route-loading', routeLoading)
-    return () => document.body.classList.remove('is-route-loading')
-  }, [routeLoading])
   if (window.location.pathname === '/about') return <AboutPage />
   if (window.location.pathname === '/services') return <ServicesPage />
   if (window.location.pathname === '/products') return <ProductsPage />
