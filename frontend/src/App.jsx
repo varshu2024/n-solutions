@@ -56,6 +56,25 @@ function EmptyState({ label, text }) {
   return <div className="empty-state"><span className="empty-icon">+</span><strong>{label}</strong><p>{text}</p></div>
 }
 
+function ServicesShowcase() {
+  return <div className="service-grid service-showcase" aria-label="Solar services">{services.map((service) => <Reveal key={service.number} className="service-card"><div className="service-photo" style={{ backgroundImage: `url(${service.image})` }}><span>{service.number}</span></div><div className="service-body"><h3>{service.title}</h3><p>{service.text}</p><a href="/services" aria-label={`Learn about ${service.title}`}>Explore <Arrow /></a></div></Reveal>)}</div>
+}
+
+function SiteIntro({ onComplete }) {
+  const [leaving, setLeaving] = useState(false)
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const holdDuration = reducedMotion ? 120 : 3000
+    const exitDuration = reducedMotion ? 180 : 520
+    const beginExit = window.setTimeout(() => setLeaving(true), holdDuration)
+    const finish = window.setTimeout(onComplete, holdDuration + exitDuration)
+    return () => { window.clearTimeout(beginExit); window.clearTimeout(finish); document.body.style.overflow = previousOverflow }
+  }, [onComplete])
+  return <div className={`site-intro ${leaving ? 'is-leaving' : ''}`} aria-label="N Solutions"><div className="site-intro-glow" aria-hidden="true" /><div className="site-intro-corners" aria-hidden="true"><i /><i /><i /><i /></div><div className="site-intro-dots" aria-hidden="true"><i /><i /><i /><i /><i /><i /></div><div className="site-intro-identity"><span className="brand-logo">N Solutions</span><span className="site-intro-caption">Engineering a smarter solar future.</span><span className="site-intro-mark" aria-hidden="true" /></div><span className="site-intro-loader" aria-hidden="true"><i /><i /><i /><b /></span></div>
+}
+
 const aboutPrinciples = [
   ['01', 'Clean energy future', 'Accelerate the adoption of solar and renewable energy for a cleaner tomorrow.'],
   ['02', 'Trusted solar partner', 'Build long-term trust through dependable solutions, professional service, and responsible execution.'],
@@ -124,6 +143,23 @@ const adoptionAreas = [
 const adoptionBenefits = ['Better understanding of energy consumption', 'Guidance on applicable solar schemes', 'Support with relevant documentation', 'Financing guidance', 'Net-metering process assistance', 'Better planning of solar investments', 'Support throughout the applicable process']
 const productItems = ['Solar PV panels', 'Solar inverters', 'Earth pits', 'Lightning arrestors', 'Solar accessories']
 
+const productCategories = ['Solar Panels', 'Solar Inverters', 'Earth Pits & Lightning Arrestors', 'Accessories']
+
+const productCategoryImages = {
+  'Solar Panels': 'https://tse2.mm.bing.net/th/id/OIP.Uk-gBBAPNXoTYcLKUea27QHaEo?r=0&rs=1&pid=ImgDetMain&o=7&rm=3',
+  'Solar Inverters': 'https://www.livemint.com/lm-img/img/2023/10/26/1600x900/2-0-753746399-solar-0_1680330329680_1698338750055.jpg',
+  'Earth Pits & Lightning Arrestors': 'https://tse3.mm.bing.net/th/id/OIP.NnEW42ljKQbA0343soSdwgHaEJ?r=0&rs=1&pid=ImgDetMain&o=7&rm=3',
+  'Accessories': 'https://tse1.mm.bing.net/th/id/OIP.MXONou_5bkxe7B-FmrD9AgHaE8?r=0&rs=1&pid=ImgDetMain&o=7&rm=3'
+}
+
+function displayProductCategory(category = '') {
+  const value = category.toLowerCase()
+  if (value.includes('panel')) return 'Solar Panels'
+  if (value.includes('inverter')) return 'Solar Inverters'
+  if (value.includes('earth') || value.includes('arrest')) return 'Earth Pits & Lightning Arrestors'
+  return 'Accessories'
+}
+
 const solutionCatalog = [
   ['01', 'Commercial solar installation', 'Turnkey solar installations for commercial establishments, planned around rooftop or project space, requirement assessment, installation, testing, and commissioning.'],
   ['02', 'Residential solar installation', 'Reliable rooftop solar solutions planned around household electricity requirements, available roof area, and applicable solar program requirements.'],
@@ -186,7 +222,7 @@ function AboutPage() {
     <section className="about-credentials wrap"><Reveal className="section-heading"><div><p className="eyebrow"><span /> 08 — Awards & achievements</p><h2>Recognition, when<br /><em>verified.</em></h2></div><p className="heading-note">A content-ready space for genuine awards and achievements from approved company records.</p></Reveal><div className="credential-grid"><EmptyState label="Awards & achievements" text="Verified award information will appear here when available." /><div><p className="eyebrow"><span /> 09 — Certifications details</p><EmptyState label="Certifications and approvals" text="Verified certification and approval details will appear here when available." /></div></div></section>
 
     <section className="about-cta"><div className="wrap"><p className="eyebrow light"><span /> One partner. Complete solar solutions.</p><h2>From experience<br /><em>to a sustainable future.</em></h2><p>Assess → Design → Supply → Install → Commission → Operate → Maintain</p><a className="button button-accent" href="/#contact">Talk to N Solutions About Your Project <Arrow /></a></div></section>
-  </main><footer className="footer about-footer"><div className="wrap footer-bottom"><span>© 2024 N Solutions. All rights reserved.</span><a href="/">Return to Home</a></div></footer></div>
+  </main><SiteFooter /></div>
 }
 
 function ServicesPage() {
@@ -212,7 +248,54 @@ function ServicesPage() {
     <section className="more-solutions wrap"><Reveal className="section-heading"><div><p className="eyebrow"><span /> Complete services & solutions</p><h2>One capability set.<br /><em>Many applications.</em></h2></div><p className="heading-note">N Solutions brings together the full catalog of solar and renewable-energy capabilities described in the official Services & Solutions content.</p></Reveal><div className="solution-catalog">{solutionCatalog.map(([number, title, text]) => <Reveal className="solution-catalog-item" key={number}><span>{number}</span><div><h3>{title}</h3><p>{text}</p></div><i>↗</i></Reveal>)}</div></section>
 
     <section className="services-cta"><div className="wrap"><p className="eyebrow light"><span /> One partner. Complete solar solutions.</p><h2>Assess. Design.<br /><em>Supply. Install.</em></h2><p>From rooftop solar and EPC projects to renewable power, asset management, O&M, solar products, and energy solutions, N Solutions brings together capabilities across the solar lifecycle.</p><p className="cta-flow">Assess → Design → Supply → Install → Commission → Operate → Maintain</p><a className="button button-accent" href="/#contact">Talk to N Solutions About Your Project <Arrow /></a></div></section>
-  </main><footer className="footer services-footer"><div className="wrap footer-bottom"><span>© 2024 N Solutions. All rights reserved.</span><a href="/">Return to Home</a></div></footer></div>
+  </main><SiteFooter /></div>
+}
+
+function SiteFooter() {
+  return <footer className="footer"><div className="wrap footer-top"><a className="brand" href="/"><span className="brand-logo">N Solutions</span></a><div className="footer-columns"><div><strong>Quick links</strong><a href="/about">About</a><a href="/services">Services</a><a href="/projects">Projects</a><a href="#contact">Contact</a></div><div><strong>Services</strong><span>Solar EPC</span><span>Commercial & industrial</span><span>Residential rooftop</span><span>Government solar</span></div><div><strong>Contact</strong><span>Approved contact details will appear here.</span></div></div></div><div className="wrap footer-bottom"><span>Engineering a smarter solar future.</span></div></footer>
+}
+
+function ProductsPage() {
+  const [products, setProducts] = useState([])
+  const [selectedCategory, setSelectedCategory] = useState(productCategories[0])
+  const [status, setStatus] = useState('loading')
+
+  useEffect(() => {
+    document.title = 'Products | N Solutions'
+    const controller = new AbortController()
+    fetch('/api/public/products', { signal: controller.signal })
+      .then(async (response) => {
+        if (!response.ok) throw new Error('Unable to load products')
+        const payload = await response.json()
+        setProducts(Array.isArray(payload?.data) ? payload.data : [])
+        setStatus('ready')
+      })
+      .catch((error) => {
+        if (error.name !== 'AbortError') setStatus('error')
+      })
+    return () => { controller.abort(); document.title = 'N Solutions | Solar EPC' }
+  }, [])
+
+  const visibleProducts = products.filter((product) => displayProductCategory(product.category) === selectedCategory)
+  const chooseCategory = (category) => {
+    setSelectedCategory(category)
+    document.getElementById('product-catalog')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  return <div className="products-page"><SiteHeader activePath="/products" /><main>
+    <section className="products-hero"><div className="products-hero-image" /><div className="products-hero-shade" /><div className="wrap products-hero-content"><p className="eyebrow light"><span /> Solar product supply</p><h1>Essential components<br /><em>for solar implementation.</em></h1><p>Supply of essential solar products and system components for different installation and project requirements.</p></div></section>
+
+    <nav className="product-categories wrap" aria-label="Product categories">{productCategories.map((category) => <button type="button" key={category} className={selectedCategory === category ? 'active' : ''} onClick={() => chooseCategory(category)} aria-pressed={selectedCategory === category}>{category}</button>)}</nav>
+
+    <section className="product-catalog wrap" id="product-catalog" aria-live="polite"><Reveal className="section-heading"><div><p className="eyebrow"><span /> Product category</p><h2>{selectedCategory}</h2></div><p className="heading-note">The product range supports residential, commercial, industrial, rooftop, and solar project installations.</p></Reveal><Reveal className="product-category-visual" key={selectedCategory}><img src={productCategoryImages[selectedCategory]} alt="" /></Reveal>
+      {status === 'loading' && <div className="product-loading" aria-label="Loading products"><span /><span /><span /></div>}
+      {status === 'error' && <EmptyState label="Products" text="Product information will appear here when it is available." />}
+      {status === 'ready' && visibleProducts.length === 0 && <EmptyState label={selectedCategory} text="Product information will appear here when it is available." />}
+      {status === 'ready' && visibleProducts.length > 0 && <div className="product-grid">{visibleProducts.map((product) => <Reveal className="product-card" key={product.id}><div className="product-card-image">{product.image?.url && <img src={product.image.url} alt={product.name} />}</div><div className="product-card-body"><span className="product-brand">{product.brand}</span><h3>{product.name}</h3><p>{product.description}</p>{product.applications?.length > 0 && <div className="product-applications">{product.applications.map((application) => <span key={application}>{application}</span>)}</div>}</div></Reveal>)}</div>}
+    </section>
+
+    <section className="products-support"><div className="wrap"><Reveal className="products-support-inner"><p className="eyebrow light"><span /> Solar product supply</p><h2>Solar panels, inverters,<br /><em>and essential components.</em></h2><p>Solar panels, inverters, earth pits, lightning arrestors, accessories, and other project-specific system components.</p><a className="button button-accent" href="/#contact">Talk to N Solutions About Your Project <Arrow /></a></Reveal></div></section>
+  </main><SiteFooter /></div>
 }
 
 function RouteShell() {
@@ -220,16 +303,46 @@ function RouteShell() {
 }
 
 function App() {
+  const [routeLoading, setRouteLoading] = useState(false)
+  const navigationTimer = useRef(null)
+  const [introVisible, setIntroVisible] = useState(() => {
+    if (window.location.pathname !== '/') return false
+    try {
+      const navigation = performance.getEntriesByType('navigation')[0]
+      const isRefresh = navigation?.type === 'reload'
+      return isRefresh || sessionStorage.getItem('nsolutions-intro-seen') !== 'true'
+    } catch { return true }
+  })
+  useEffect(() => {
+    const handleNavigation = (event) => {
+      const link = event.target.closest('a[href]')
+      if (!link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || link.target || link.hasAttribute('download')) return
+      const destination = new URL(link.href, window.location.href)
+      if (destination.origin !== window.location.origin || destination.pathname === window.location.pathname) return
+      event.preventDefault()
+      if (routeLoading) return
+      setRouteLoading(true)
+      navigationTimer.current = window.setTimeout(() => window.location.assign(destination.href), 700)
+    }
+    document.addEventListener('click', handleNavigation)
+    return () => { document.removeEventListener('click', handleNavigation); window.clearTimeout(navigationTimer.current) }
+  }, [routeLoading])
+  useEffect(() => {
+    document.body.classList.toggle('is-route-loading', routeLoading)
+    return () => document.body.classList.remove('is-route-loading')
+  }, [routeLoading])
   if (window.location.pathname === '/about') return <AboutPage />
   if (window.location.pathname === '/services') return <ServicesPage />
+  if (window.location.pathname === '/products') return <ProductsPage />
   if (window.location.pathname !== '/') return <RouteShell />
 
-  return <div className="site-shell">
+  return <div className={`site-shell home-page ${introVisible ? 'is-intro-active' : ''}`}>
+    {introVisible && <SiteIntro onComplete={() => { try { sessionStorage.setItem('nsolutions-intro-seen', 'true') } catch {} setIntroVisible(false) }} />}
     <SiteHeader />
 
     <main id="top">
       <section className="hero">
-        <div className="hero-image" /><div className="hero-shade" />
+        <div className="hero-image" /><video className="hero-video" autoPlay muted loop playsInline preload="auto" aria-hidden="true"><source src="/media/hero-solar.mp4" type="video/mp4" /></video><div className="hero-shade" />
         <div className="hero-content wrap"><p className="eyebrow light"><span /> 16+ years of solar experience</p><h1>Built on <em>experience.</em><br />Driven by solar.</h1><p className="hero-copy">N Solutions delivers customized solar solutions through engineering, procurement, installation, commissioning, and ongoing support.</p><div className="hero-actions"><a className="button button-accent" href="#contact">Talk to N Solutions <Arrow /></a><a className="button button-ghost" href="#projects">Explore our projects <Arrow /></a></div></div>
         <div className="hero-note"><span>01</span><div><strong>Solar, engineered.</strong><small>Residential to MW-scale projects</small></div></div><a className="scroll-cue" href="#proof"><span>Scroll to explore</span><i>↓</i></a>
       </section>
@@ -238,7 +351,7 @@ function App() {
 
       <section className="who wrap" id="who-we-are"><Reveal className="who-image"><div className="who-photo" /><span className="image-caption">From MW-scale projects<br />to residential rooftops</span></Reveal><Reveal className="who-copy"><p className="eyebrow"><span /> Who we are</p><h2>Engineering a<br /><em>smarter solar future.</em></h2><p>N Solutions is an EPC Solar Company focused on customized solar solutions for Commercial & Industrial businesses and communities, with an emphasis on efficient engineering, quality execution, and long-term energy savings.</p><p>Our experience extends from MW-scale solar power projects to residential rooftop installations under PM Surya Ghar, including 500+ sites completed in Vizianagaram in the last seven months.</p><p>From engineering and procurement to installation and commissioning, every solution is tailored to the specific energy requirements of the customer.</p><a className="text-link" href="/about">About N Solutions <Arrow /></a></Reveal></section>
 
-      <section className="services wrap" id="services"><Reveal className="section-heading"><div><p className="eyebrow"><span /> What we do</p><h2>Solar solutions<br /><em>built for tomorrow.</em></h2></div><p className="heading-note">One accountable partner for the complete solar journey, from feasibility and design to commissioning and care.</p></Reveal><div className="service-grid">{services.map((service, index) => <Reveal key={service.number} className={`service-card ${index === 0 ? 'service-featured' : ''}`}><div className="service-photo" style={{ backgroundImage: `url(${service.image})` }}><span>{service.number}</span></div><div className="service-body"><h3>{service.title}</h3><p>{service.text}</p><a href="/services" aria-label={`Learn about ${service.title}`}>Explore <Arrow /></a></div></Reveal>)}</div><a className="section-cta text-link" href="/services">Explore our services <Arrow /></a></section>
+      <section className="services wrap" id="services"><Reveal className="section-heading"><div><p className="eyebrow"><span /> What we do</p><h2>Solar solutions<br /><em>built for tomorrow.</em></h2></div><p className="heading-note">One accountable partner for the complete solar journey, from feasibility and design to commissioning and care.</p></Reveal><ServicesShowcase /><a className="section-cta text-link" href="/services">Explore our services <Arrow /></a></section>
 
       <section className="journey" id="how-we-work"><div className="wrap journey-grid"><Reveal><p className="eyebrow light"><span /> How we work</p><h2>From planning<br /><em>to performance.</em></h2><p className="journey-copy">A clear overview of the solar project journey, from understanding requirements to commissioning and ongoing support.</p><p className="journey-flow">Requirement → Design → Execution → Support</p><a className="button button-accent" href="#contact">Start your project <Arrow /></a></Reveal><div className="steps">{process.map(([number, title]) => <Reveal className="step" key={number}><span>{number}</span><strong>{title}</strong></Reveal>)}</div></div></section>
 
@@ -253,7 +366,7 @@ function App() {
       <section className="contact-band" id="contact"><div className="wrap contact-inner"><p className="eyebrow light"><span /> One partner. Complete solar solutions.</p><h2>Assess. Design.<br /><em>Supply. Install.</em></h2><p>Talk to N Solutions about your project, from first requirement through operate and maintain.</p><a className="button button-accent" href="#contact">Talk to N Solutions <Arrow /></a></div></section>
     </main>
 
-    <footer className="footer"><div className="wrap footer-top"><a className="brand" href="/"><span className="brand-logo">N Solutions</span></a><div className="footer-columns"><div><strong>Quick links</strong><a href="/about">About</a><a href="/services">Services</a><a href="/projects">Projects</a><a href="#contact">Contact</a></div><div><strong>Services</strong><span>Solar EPC</span><span>Commercial & industrial</span><span>Residential rooftop</span><span>Government solar</span></div><div><strong>Contact</strong><span>Approved contact details will appear here.</span></div></div></div><div className="wrap footer-bottom"><span>© 2024 N Solutions. All rights reserved.</span><span>Engineering a smarter solar future.</span></div></footer>
+    <SiteFooter />
   </div>
 }
 
