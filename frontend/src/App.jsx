@@ -60,21 +60,6 @@ function ServicesShowcase() {
   return <div className="service-grid service-showcase" aria-label="Solar services">{services.map((service) => <Reveal key={service.number} className="service-card"><div className="service-photo" style={{ backgroundImage: `url(${service.image})` }}><span>{service.number}</span></div><div className="service-body"><h3>{service.title}</h3><p>{service.text}</p><a href="/services" aria-label={`Learn about ${service.title}`}>Explore <Arrow /></a></div></Reveal>)}</div>
 }
 
-function SiteIntro({ onComplete }) {
-  const [leaving, setLeaving] = useState(false)
-  useEffect(() => {
-    const previousOverflow = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const holdDuration = reducedMotion ? 120 : 3000
-    const exitDuration = reducedMotion ? 180 : 520
-    const beginExit = window.setTimeout(() => setLeaving(true), holdDuration)
-    const finish = window.setTimeout(onComplete, holdDuration + exitDuration)
-    return () => { window.clearTimeout(beginExit); window.clearTimeout(finish); document.body.style.overflow = previousOverflow }
-  }, [onComplete])
-  return <div className={`site-intro ${leaving ? 'is-leaving' : ''}`} aria-label="N Solutions"><div className="site-intro-glow" aria-hidden="true" /><div className="site-intro-corners" aria-hidden="true"><i /><i /><i /><i /></div><div className="site-intro-dots" aria-hidden="true"><i /><i /><i /><i /><i /><i /></div><div className="site-intro-identity"><span className="brand-logo">N Solutions</span><span className="site-intro-caption">Engineering a smarter solar future.</span><span className="site-intro-mark" aria-hidden="true" /></div><span className="site-intro-loader" aria-hidden="true"><i /><i /><i /><b /></span></div>
-}
-
 const aboutPrinciples = [
   ['01', 'Clean energy future', 'Accelerate the adoption of solar and renewable energy for a cleaner tomorrow.'],
   ['02', 'Trusted solar partner', 'Build long-term trust through dependable solutions, professional service, and responsible execution.'],
@@ -205,7 +190,89 @@ function AboutPage() {
   return <div className="about-page"><SiteHeader activePath="/about" /><main>
     <section className="about-hero"><div className="about-hero-image" /><div className="about-hero-shade" /><div className="wrap about-hero-content"><p className="eyebrow light"><span /> N Solutions Solar EPC</p><h1>Engineering solar solutions.<br /><em>Powering a sustainable future.</em></h1><p>Complete solar energy solutions shaped by experience, technical understanding, and practical project execution.</p></div></section>
 
-    <section className="about-overview wrap"><Reveal className="about-overview-copy"><p className="eyebrow"><span /> 01 — Company overview</p><h2>Complete solar solutions,<br /><em>built around your needs.</em></h2><p>N Solutions is a solar Engineering, Procurement and Construction company focused on delivering complete solar energy solutions for diverse project requirements.</p><p>With 16+ years of experience and operations across 9 states in India, we combine technical understanding with practical project execution across Commercial & Industrial Solar, Residential Rooftop Solar, Government Solar Projects, PM Surya Ghar implementation, Solar Power Plants, Solar Products, Solar Pumps, O&M, and Energy Efficiency Solutions.</p></Reveal><Reveal className="about-overview-card"><span className="about-stat">16<span>+</span></span><strong>Years of experience</strong><small>9 states · End-to-end solar EPC</small><div className="about-cycle"><span>Understand</span><i>→</i><span>Engineer</span><i>→</i><span>Procure</span><i>→</i><span>Execute</span><i>→</i><span>Support</span></div></Reveal></section>
+    <section className="about-overview" aria-labelledby="company-overview-title">
+      <div className="wrap">
+        {/* Chapter Header */}
+        <Reveal className="about-overview-chapter">
+          <p><b>01</b><span>—</span> Company overview</p>
+          <i aria-hidden="true" />
+          <span className="about-overview-chapter-meta">Solar EPC · Engineering & Infrastructure</span>
+        </Reveal>
+
+        {/* Main Two-Column Editorial Story */}
+        <div className="about-overview-main">
+          {/* Left Column: Heading + Copy + Timeline */}
+          <div className="about-overview-left">
+            <Reveal className="about-overview-heading">
+              <h2 id="company-overview-title">
+                Engineering<br />
+                a Better<br />
+                <em>Energy Future</em>
+              </h2>
+            </Reveal>
+
+            <Reveal className="about-overview-copy">
+              <p className="about-lead">
+                N Solutions is a solar Engineering, Procurement and Construction company focused on delivering complete solar energy solutions for diverse project requirements.
+              </p>
+              <p>
+                With 16+ years of experience and operations across 9 states in India, we combine technical understanding with practical project execution across residential, commercial, industrial, and government solar projects.
+              </p>
+            </Reveal>
+
+            <Reveal className="about-overview-timeline">
+              <div className="timeline-strip" aria-label="N Solutions journey: Beginning, Experience, Growth, Today">
+                <span className="timeline-step">Beginning</span>
+                <span className="timeline-arrow">→</span>
+                <span className="timeline-step">Experience</span>
+                <span className="timeline-arrow">→</span>
+                <span className="timeline-step">Growth</span>
+                <span className="timeline-arrow">→</span>
+                <span className="timeline-step is-current">Today</span>
+              </div>
+            </Reveal>
+          </div>
+
+          {/* Right Column: Visual Storytelling Element */}
+          <div className="about-overview-right">
+            <Reveal className="about-overview-visual">
+              <img
+                src="https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=1200&q=85"
+                alt="N Solutions solar energy infrastructure"
+                className="about-overview-image"
+                loading="eager"
+              />
+              <div className="about-overview-image-badge">
+                <span className="badge-tag">NS / 01</span>
+                <div className="badge-info">
+                  <strong>Nationwide Solar EPC</strong>
+                  <small>Engineering · Procurement · Construction</small>
+                </div>
+              </div>
+            </Reveal>
+          </div>
+        </div>
+
+        {/* Full-Width Editorial Statistics Strip */}
+        <Reveal className="about-overview-statistics" aria-label="N Solutions company statistics">
+          <div className="stat-block stat-exp">
+            <AnimatedMetric value={16} suffix="+" label="Years of experience" />
+          </div>
+          <div className="stat-block stat-states">
+            <AnimatedMetric value={9} suffix="+" label="States across India" />
+          </div>
+          <div className="stat-block stat-sectors">
+            <span className="sectors-heading">Project Verticals</span>
+            <div className="sectors-grid">
+              <span>Residential</span>
+              <span>Commercial</span>
+              <span>Industrial</span>
+              <span>Government</span>
+            </div>
+          </div>
+        </Reveal>
+      </div>
+    </section>
 
     <section className="about-message"><div className="wrap message-grid"><Reveal className="message-copy"><p className="eyebrow light"><span /> 02 — Chairman's message</p><h2>Shaping the future<br /><em>through solar energy.</em></h2><blockquote>“Our journey is driven by a simple belief — solar energy can create a cleaner, smarter, and more sustainable future.”</blockquote><p>At N Solutions, we are committed to delivering reliable solar solutions through experience, engineering, and responsible execution. Our focus is to understand every customer's energy needs and create solutions that deliver meaningful value.</p><p>With 16+ years of experience, we continue to grow with a clear purpose: to power businesses, industries, homes, and communities through dependable solar energy.</p><div className="signature"><strong>Ch. C.S.V. Raju</strong><small>Managing Partner, N Solutions</small></div></Reveal><Reveal className="message-placeholder"><span>NS</span><small>Official leadership portrait<br />can be placed here</small></Reveal></div></section>
 
@@ -298,26 +365,109 @@ function ProductsPage() {
   </main><SiteFooter /></div>
 }
 
+const projectCategories = ['ALL', 'COMMERCIAL', 'INDUSTRIAL', 'RESIDENTIAL', 'GOVERNMENT']
+
+const staticProjects = [
+  { id: 'static-sri-industries', category: 'industrial', year: '2024', status: 'Completed', capacity: '250 kWp', title: 'Sri Industries 250 kWp Industrial Rooftop', location: 'Auto Nagar, Visakhapatnam, Andhra Pradesh', description: 'Grid-connected captive solar power plant on a metal shed roof. Generates over 375,000 kWh annually, saving ₹28 Lakhs/yr.', services: ['Turnkey EPC: Structural load analysis, custom elevated purlins, 250kW string inverters, and DISCOM net-metering synchronization.'] },
+  { id: 'static-pm-surya-ghar', category: 'residential', year: '2024', status: 'Completed', capacity: '1.8 MWp Cumulative', title: 'PM Surya Ghar 500+ Residential Cluster', location: 'Vizianagaram District, Andhra Pradesh', description: 'Executed 500+ rooftop solar installations across residential households within 7 months of national portal empanelment.', services: ['Site surveys, DCR TOPCon modules, subsidy application processing, DISCOM inspection, and net-meter provisioning.'] },
+  { id: 'static-lakshmi-textiles', category: 'industrial', year: '2023', status: 'Completed', capacity: '1.2 MWp', title: 'Lakshmi Textiles 1.2 MWp Ground-Mount Solar', location: 'Guntur / Hyderabad Corridor, Telangana', description: 'MW-scale captive ground-mounted solar farm with centralized telemetry and 11kV evacuation for a large textile manufacturing mill.', services: ['Civil foundation, piling, HT switchyard, 33kV transmission line, and annual performance ratio SLA maintenance.'] },
+  { id: 'static-medical-college', category: 'government', year: '2023', status: 'Completed', capacity: '450 kWp', title: 'Government Medical College Solar Rooftop', location: 'Bengaluru Suburbs, Karnataka', description: 'NREDCAP/KREDL approved government institutional project powering ICU, laboratory, and hospital administrative blocks.', services: ['Complete engineering, supply of tier-1 ALMM panels, safety walkways, and 24/7 remote monitoring setup.'] },
+  { id: 'static-green-valley', category: 'residential', year: '2024', status: 'Completed', capacity: '240 kWp', title: 'Green Valley Housing Society (80 Villas)', location: 'Madhurawada, Visakhapatnam, Andhra Pradesh', description: 'Rooftop solar network across 80 luxury villas plus club house common areas with individual net metering.', services: ['Custom aesthetic aluminum railings, dual string inverters per villa, and central society energy dashboard.'] },
+  { id: 'static-grand-horizon', category: 'commercial', year: '2024', status: 'Completed', capacity: '350 kWp', title: 'Grand Horizon Commercial Complex', location: 'Chennai IT Highway, Tamil Nadu', description: 'High-density commercial rooftop system offsetting 70% of day-time air conditioning and lighting loads.', services: ['Design, Supply, Installation, and commissioning with DG synchronization controller.'] },
+  { id: 'static-pm-kusum', category: 'government', year: '2024', status: 'Completed', capacity: '75 Solar Pumps (5HP & 7.5HP)', title: 'PM-KUSUM Agri Solar Pumping Grid', location: 'Anakapalli & Vizianagaram, Andhra Pradesh' },
+  { id: 'static-mega-food-park', category: 'industrial', year: '2025', status: 'In Progress', capacity: '500 kWp', title: 'Mega Food Park 500 kWp Captive Plant', location: 'Coastal Corridor, Andhra Pradesh' },
+]
+
+function projectCategoryLabel(category = '') {
+  return String(category).toUpperCase()
+}
+
+function ProjectImage({ project, className = '' }) {
+  if (!project.image?.url) return <div className={`project-image-placeholder ${className}`} aria-label="Project image unavailable" role="img" />
+  return <img className={className} src={project.image.url} alt={project.title || 'N Solutions project'} loading="lazy" />
+}
+
+function ProjectsPage() {
+  const [projects, setProjects] = useState([])
+  const [selectedCategory, setSelectedCategory] = useState('ALL')
+  const [status, setStatus] = useState('loading')
+
+  useEffect(() => {
+    document.title = 'Projects | N Solutions'
+    const controller = new AbortController()
+    fetch('/api/public/projects', { signal: controller.signal })
+      .then(async (response) => {
+        if (!response.ok) throw new Error('Unable to load projects')
+        const payload = await response.json()
+        setProjects(Array.isArray(payload?.data) ? payload.data : [])
+        setStatus('ready')
+      })
+      .catch((error) => { if (error.name !== 'AbortError') setStatus('error') })
+    return () => { controller.abort(); document.title = 'N Solutions | Solar EPC' }
+  }, [])
+
+  const allProjects = [...staticProjects, ...projects]
+  const featuredProject = projects.find((project) => project.image?.url)
+  const visibleProjects = selectedCategory === 'ALL'
+    ? allProjects
+    : allProjects.filter((project) => projectCategoryLabel(project.category) === selectedCategory)
+
+  return <div className="projects-page"><SiteHeader activePath="/projects" /><main>
+    <section className="projects-hero">
+      <div className="projects-hero-visual" aria-hidden="true">{featuredProject?.image?.url && <img src={featuredProject.image.url} alt="" />}</div>
+      <div className="projects-hero-shade" />
+      <div className="wrap projects-hero-content"><p className="eyebrow light"><span /> Our projects</p><h1>Our <em>projects.</em></h1><p>N Solutions has experience across different solar project requirements and scales.</p></div>
+    </section>
+
+    <nav className="project-categories wrap" aria-label="Project categories">
+      {projectCategories.map((category) => <button type="button" key={category} className={selectedCategory === category ? 'active' : ''} onClick={() => setSelectedCategory(category)} aria-pressed={selectedCategory === category}>{category}</button>)}
+    </nav>
+
+    <section className="project-stories wrap" aria-live="polite">
+      {status === 'loading' && <div className="project-skeletons" aria-label="Loading projects"><i /><i /><i /></div>}
+      {status === 'error' && <EmptyState label="Projects" text="Project entries will appear here when they are available." />}
+      {status === 'ready' && visibleProjects.length === 0 && <EmptyState label={selectedCategory === 'ALL' ? 'Projects' : selectedCategory} text="No project entries are currently available in this category." />}
+      {status === 'ready' && visibleProjects.length > 0 && <div className="project-story-list" key={selectedCategory}>
+        {visibleProjects.map((project, index) => <Reveal className={`project-story project-story-${index % 3}`} key={project.id}>
+          <div className="project-story-image"><ProjectImage project={project} /></div>
+          <div className="project-story-copy"><div className="project-story-meta"><p className="eyebrow"><span /> {projectCategoryLabel(project.category)}</p>{project.year && <span>{project.year}</span>}{project.status && <span className={`project-status ${project.status.toLowerCase().replace(/\s+/g, '-')}`}>{project.status}</span>}</div><h2>{project.title}</h2>{project.capacity && <p className="project-capacity">{project.capacity}</p>}{project.location && <p className="project-location">{project.location}</p>}{project.description && <p className="project-description">{project.description}</p>}{Array.isArray(project.services) && project.services.length > 0 && <div className="project-services">{project.services.map((service) => <span key={service}>{service}</span>)}</div>}</div>
+        </Reveal>)}
+      </div>}
+    </section>
+
+    <section className="projects-cta"><div className="wrap"><Reveal><p className="eyebrow light"><span /> N Solutions</p><h2>Talk to N Solutions<br /><em>About Your Project</em></h2><a className="button button-accent" href="/#contact">Talk to N Solutions About Your Project <Arrow /></a></Reveal></div></section>
+  </main><SiteFooter /></div>
+}
+
 function RouteShell() {
   return <div className="route-shell"><SiteHeader activePath={window.location.pathname} /><main><p className="eyebrow"><span /> N Solutions Solar EPC</p><h1>This page is being prepared.</h1><p>Return to the Home page while the next section is connected.</p><a className="button button-accent" href="/">Back to Home <Arrow /></a></main></div>
 }
 
 function App() {
-  const [introVisible, setIntroVisible] = useState(() => {
-    if (window.location.pathname !== '/') return false
-    try {
-      const navigation = performance.getEntriesByType('navigation')[0]
-      const isRefresh = navigation?.type === 'reload'
-      return isRefresh || sessionStorage.getItem('nsolutions-intro-seen') !== 'true'
-    } catch { return true }
-  })
+  useEffect(() => {
+    let resetTimer
+    const showRouteGesture = (target) => {
+      const link = target.closest?.('a[href]')
+      if (!link || link.target || link.hasAttribute('download')) return
+      const destination = new URL(link.href, window.location.href)
+      if (destination.origin !== window.location.origin || destination.pathname === window.location.pathname) return
+      document.body.classList.add('is-route-gesturing')
+      window.clearTimeout(resetTimer)
+      resetTimer = window.setTimeout(() => document.body.classList.remove('is-route-gesturing'), 1400)
+    }
+    const onPointerDown = (event) => { if (event.button === 0) showRouteGesture(event.target) }
+    const onKeyDown = (event) => { if (event.key === 'Enter') showRouteGesture(event.target) }
+    document.addEventListener('pointerdown', onPointerDown, true)
+    document.addEventListener('keydown', onKeyDown, true)
+    return () => { document.removeEventListener('pointerdown', onPointerDown, true); document.removeEventListener('keydown', onKeyDown, true); window.clearTimeout(resetTimer); document.body.classList.remove('is-route-gesturing') }
+  }, [])
   if (window.location.pathname === '/about') return <AboutPage />
   if (window.location.pathname === '/services') return <ServicesPage />
+  if (window.location.pathname === '/projects') return <ProjectsPage />
   if (window.location.pathname === '/products') return <ProductsPage />
   if (window.location.pathname !== '/') return <RouteShell />
 
-  return <div className={`site-shell home-page ${introVisible ? 'is-intro-active' : ''}`}>
-    {introVisible && <SiteIntro onComplete={() => { try { sessionStorage.setItem('nsolutions-intro-seen', 'true') } catch {} setIntroVisible(false) }} />}
+  return <div className="site-shell home-page">
     <SiteHeader />
 
     <main id="top">
