@@ -298,8 +298,52 @@ function ServicesPage() {
     return () => { document.title = 'N Solutions | Solar EPC' }
   }, [])
   return <div className="services-page"><SiteHeader activePath="/services" /><main>
-    <section className="services-hero"><div className="services-hero-image" /><div className="services-hero-shade" /><div className="wrap services-hero-content"><p className="eyebrow light"><span /> Services & solutions</p><h1>Complete solar solutions.<br /><em>From planning to performance.</em></h1><p>N Solutions provides a comprehensive range of solar and renewable-energy solutions for residential, commercial, industrial, and eligible institutional requirements.</p><a className="button button-accent" href="/#contact">Talk to N Solutions About Your Project <Arrow /></a></div><div className="services-hero-marker"><span>NS / 04</span><small>Solar lifecycle<br />engineering</small></div></section>
+    <section className="services-hero">
 
+      <video
+        className="services-hero-video"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
+        aria-hidden="true"
+      >
+        <source src="/public/media/products.mp4" type="video/mp4" />
+      </video>
+
+      <div className="services-hero-shade" />
+
+      <div className="wrap services-hero-content">
+        <p className="eyebrow light">
+          <span /> Services & solutions
+        </p>
+
+        <h1>
+          Complete solar solutions.<br />
+          <em>From planning to performance.</em>
+        </h1>
+
+        <p>
+          N Solutions provides a comprehensive range of solar and renewable-energy
+          solutions for residential, commercial, industrial, and eligible
+          institutional requirements.
+        </p>
+
+        <a className="button button-accent" href="/#contact">
+          Talk to N Solutions About Your Project <Arrow />
+        </a>
+      </div>
+
+      <div className="services-hero-marker">
+        <span>NS / 04</span>
+        <small>
+          Solar lifecycle<br />
+          engineering
+        </small>
+      </div>
+
+    </section>
     <nav className="service-categories wrap" aria-label="Service categories"><a href="#installation" className="active">Installation</a><a href="#om">Operation & Maintenance</a><a href="#adoption">Subsidies & Financing</a><a href="#products">Solar Product Supply</a></nav>
 
     <section className="installation wrap" id="installation"><Reveal className="section-heading"><div><p className="eyebrow"><span /> 01 — Installation</p><h2>Solar installation<br /><em>for every scale.</em></h2></div><p className="heading-note">Professional installation solutions planned around the requirements of commercial, residential, and industrial projects.</p></Reveal><div className="installation-list">{installationServices.map((service, index) => <Reveal className={`installation-item ${index % 2 ? 'reverse' : ''}`} key={service.number}><div className="installation-image" style={{ backgroundImage: `url(${service.image})` }}><span>{service.number}</span></div><div className="installation-copy"><p className="eyebrow"><span /> {service.title}</p><h3>{service.title}</h3><p>{service.text}</p><p>{service.detail}</p><div className="benefit-columns"><div><strong>Key benefits</strong><ul>{service.benefits.map((benefit) => <li key={benefit}>{benefit}</li>)}</ul></div><div><strong>Applications</strong><p>{service.applications}</p></div></div></div></Reveal>)}</div></section>
@@ -350,7 +394,17 @@ function ProductsPage() {
   }
 
   return <div className="products-page"><SiteHeader activePath="/products" /><main>
-    <section className="products-hero"><div className="products-hero-image" /><div className="products-hero-shade" /><div className="wrap products-hero-content"><p className="eyebrow light"><span /> Solar product supply</p><h1>Essential components<br /><em>for solar implementation.</em></h1><p>Supply of essential solar products and system components for different installation and project requirements.</p></div></section>
+    <section className="products-hero"><video
+  className="products-hero-video"
+  autoPlay
+  muted
+  loop
+  playsInline
+  preload="auto"
+  aria-hidden="true"
+>
+  <source src="/public/media/services.mp4" type="video/mp4" />
+</video><div className="products-hero-shade" /><div className="wrap products-hero-content"><p className="eyebrow light"><span /> Solar product supply</p><h1>Essential components<br /><em>for solar implementation.</em></h1><p>Supply of essential solar products and system components for different installation and project requirements.</p></div></section>
 
     <nav className="product-categories wrap" aria-label="Product categories">{productCategories.map((category) => <button type="button" key={category} className={selectedCategory === category ? 'active' : ''} onClick={() => chooseCategory(category)} aria-pressed={selectedCategory === category}>{category}</button>)}</nav>
 
