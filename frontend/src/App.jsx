@@ -300,17 +300,7 @@ function ServicesPage() {
   return <div className="services-page"><SiteHeader activePath="/services" /><main>
     <section className="services-hero">
 
-      <video
-        className="services-hero-video"
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
-        aria-hidden="true"
-      >
-        <source src="/public/media/products.mp4" type="video/mp4" />
-      </video>
+      <video className="hero-video" autoPlay muted loop playsInline preload="auto" aria-hidden="true"><source src="/media/products.mp4" type="video/mp4" /></video>
 
       <div className="services-hero-shade" />
 
@@ -394,17 +384,8 @@ function ProductsPage() {
   }
 
   return <div className="products-page"><SiteHeader activePath="/products" /><main>
-    <section className="products-hero"><video
-  className="products-hero-video"
-  autoPlay
-  muted
-  loop
-  playsInline
-  preload="auto"
-  aria-hidden="true"
->
-  <source src="/public/media/services.mp4" type="video/mp4" />
-</video><div className="products-hero-shade" /><div className="wrap products-hero-content"><p className="eyebrow light"><span /> Solar product supply</p><h1>Essential components<br /><em>for solar implementation.</em></h1><p>Supply of essential solar products and system components for different installation and project requirements.</p></div></section>
+    <section className="products-hero"><video className="hero-video" autoPlay muted loop playsInline preload="auto" aria-hidden="true"><source src="/media/hero-solar.mp4" type="video/mp4" /></video>
+    <div className="products-hero-shade" /><div className="wrap products-hero-content"><p className="eyebrow light"><span /> Solar product supply</p><h1>Essential components<br /><em>for solar implementation.</em></h1><p>Supply of essential solar products and system components for different installation and project requirements.</p></div></section>
 
     <nav className="product-categories wrap" aria-label="Product categories">{productCategories.map((category) => <button type="button" key={category} className={selectedCategory === category ? 'active' : ''} onClick={() => chooseCategory(category)} aria-pressed={selectedCategory === category}>{category}</button>)}</nav>
 
