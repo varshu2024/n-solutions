@@ -1,4 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
+import ProjectsPage from './pages/ProjectsPage'
+import ProductsPage from './pages/ProductsPage'
+import MediaPage from './pages/MediaPage'
+import CareersPage from './pages/CareersPage'
+import ContactPage from './pages/ContactPage'
+import { navigate, SiteFooter } from './components/Shared'
 
 const services = [
   { number: '01', title: 'Solar EPC', text: 'Complete engineering, procurement, installation, and commissioning for solar projects. We manage every stage with a focus on quality and efficient execution.', image: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=900&q=85' },
@@ -145,6 +151,7 @@ function displayProductCategory(category = '') {
   return 'Accessories'
 }
 
+
 const solutionCatalog = [
   ['01', 'Commercial solar installation', 'Turnkey solar installations for commercial establishments, planned around rooftop or project space, requirement assessment, installation, testing, and commissioning.'],
   ['02', 'Residential solar installation', 'Reliable rooftop solar solutions planned around household electricity requirements, available roof area, and applicable solar program requirements.'],
@@ -175,16 +182,26 @@ function SiteHeader({ activePath = '' }) {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
   const closeMenu = () => setMenuOpen(false)
+  const handleNav = (e, path) => {
+    e.preventDefault()
+    closeMenu()
+    navigate(path)
+  }
   const items = ['Home', 'About', 'Services', 'Projects', 'Products', 'Media', 'Careers', 'Contact']
   return <header className={`site-header ${scrolled ? 'is-scrolled' : ''} ${activePath ? 'site-header-page' : ''}`}>
-    <a className="brand" href="/" onClick={closeMenu} aria-label="N Solutions home"><span className="brand-logo">N Solutions</span></a>
+    <a className="brand" href="/" onClick={(e) => handleNav(e, '/')} aria-label="N Solutions home"><span className="brand-logo">N Solutions</span></a>
     <button className="menu-toggle" aria-label="Toggle navigation" aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}><span /><span /></button>
     <nav className={menuOpen ? 'nav-links is-open' : 'nav-links'}>
-      {items.map((item) => { const path = item === 'Home' ? '/' : `/${item.toLowerCase()}`; return <a className={activePath === path ? 'active' : ''} key={item} href={path} onClick={closeMenu}>{item}</a> })}
-      <a className="nav-cta" href="/#contact" onClick={closeMenu}>Get a quote <Arrow /></a>
+      {items.map((item) => { 
+        const path = item === 'Home' ? '/' : `/${item.toLowerCase()}`
+        const isCurrent = activePath === path || (path === '/' && activePath === '')
+        return <a className={isCurrent ? 'active' : ''} key={item} href={path} onClick={(e) => handleNav(e, path)}>{item}</a> 
+      })}
+      <a className="nav-cta" href="/contact" onClick={(e) => handleNav(e, '/contact')}>Get a quote <Arrow /></a>
     </nav>
   </header>
 }
+
 
 function AboutPage() {
   return <div className="about-page"><SiteHeader activePath="/about" /><main>
@@ -352,155 +369,56 @@ function ServicesPage() {
   </main><SiteFooter /></div>
 }
 
-function SiteFooter() {
-  return <footer className="footer"><div className="wrap footer-top"><a className="brand" href="/"><span className="brand-logo">N Solutions</span></a><div className="footer-columns"><div><strong>Quick links</strong><a href="/about">About</a><a href="/services">Services</a><a href="/projects">Projects</a><a href="#contact">Contact</a></div><div><strong>Services</strong><span>Solar EPC</span><span>Commercial & industrial</span><span>Residential rooftop</span><span>Government solar</span></div><div><strong>Contact</strong><span>Approved contact details will appear here.</span></div></div></div><div className="wrap footer-bottom"><span>Engineering a smarter solar future.</span></div></footer>
-}
-
-function ProductsPage() {
-  const [products, setProducts] = useState([])
-  const [selectedCategory, setSelectedCategory] = useState(productCategories[0])
-  const [status, setStatus] = useState('loading')
-
-  useEffect(() => {
-    document.title = 'Products | N Solutions'
-    const controller = new AbortController()
-    fetch('/api/public/products', { signal: controller.signal })
-      .then(async (response) => {
-        if (!response.ok) throw new Error('Unable to load products')
-        const payload = await response.json()
-        setProducts(Array.isArray(payload?.data) ? payload.data : [])
-        setStatus('ready')
-      })
-      .catch((error) => {
-        if (error.name !== 'AbortError') setStatus('error')
-      })
-    return () => { controller.abort(); document.title = 'N Solutions | Solar EPC' }
-  }, [])
-
-  const visibleProducts = products.filter((product) => displayProductCategory(product.category) === selectedCategory)
-  const chooseCategory = (category) => {
-    setSelectedCategory(category)
-    document.getElementById('product-catalog')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }
-
-  return <div className="products-page"><SiteHeader activePath="/products" /><main>
-    <section className="products-hero"><video className="hero-video" autoPlay muted loop playsInline preload="auto" aria-hidden="true"><source src="/media/products.mp4" type="video/mp4" /></video>
-    <div className="products-hero-shade" /><div className="wrap products-hero-content"><p className="eyebrow light"><span /> Solar product supply</p><h1>Essential components<br /><em>for solar implementation.</em></h1><p>Supply of essential solar products and system components for different installation and project requirements.</p></div></section>
-
-    <nav className="product-categories wrap" aria-label="Product categories">{productCategories.map((category) => <button type="button" key={category} className={selectedCategory === category ? 'active' : ''} onClick={() => chooseCategory(category)} aria-pressed={selectedCategory === category}>{category}</button>)}</nav>
-
-    <section className="product-catalog wrap" id="product-catalog" aria-live="polite"><Reveal className="section-heading"><div><p className="eyebrow"><span /> Product category</p><h2>{selectedCategory}</h2></div><p className="heading-note">The product range supports residential, commercial, industrial, rooftop, and solar project installations.</p></Reveal><Reveal className="product-category-visual" key={selectedCategory}><img src={productCategoryImages[selectedCategory]} alt="" /></Reveal>
-      {status === 'loading' && <div className="product-loading" aria-label="Loading products"><span /><span /><span /></div>}
-      {status === 'error' && <EmptyState label="Products" text="Product information will appear here when it is available." />}
-      {status === 'ready' && visibleProducts.length === 0 && <EmptyState label={selectedCategory} text="Product information will appear here when it is available." />}
-      {status === 'ready' && visibleProducts.length > 0 && <div className="product-grid">{visibleProducts.map((product) => <Reveal className="product-card" key={product.id}><div className="product-card-image">{product.image?.url && <img src={product.image.url} alt={product.name} />}</div><div className="product-card-body"><span className="product-brand">{product.brand}</span><h3>{product.name}</h3><p>{product.description}</p>{product.applications?.length > 0 && <div className="product-applications">{product.applications.map((application) => <span key={application}>{application}</span>)}</div>}</div></Reveal>)}</div>}
-    </section>
-
-    <section className="products-support"><div className="wrap"><Reveal className="products-support-inner"><p className="eyebrow light"><span /> Solar product supply</p><h2>Solar panels, inverters,<br /><em>and essential components.</em></h2><p>Solar panels, inverters, earth pits, lightning arrestors, accessories, and other project-specific system components.</p><a className="button button-accent" href="/#contact">Talk to N Solutions About Your Project <Arrow /></a></Reveal></div></section>
-  </main><SiteFooter /></div>
-}
-
-const projectCategories = ['ALL', 'COMMERCIAL', 'INDUSTRIAL', 'RESIDENTIAL', 'GOVERNMENT']
-
-const staticProjects = [
-  { id: 'static-sri-industries', category: 'industrial', year: '2024', status: 'Completed', capacity: '250 kWp', title: 'Sri Industries 250 kWp Industrial Rooftop', location: 'Auto Nagar, Visakhapatnam, Andhra Pradesh', description: 'Grid-connected captive solar power plant on a metal shed roof. Generates over 375,000 kWh annually, saving ₹28 Lakhs/yr.', services: ['Turnkey EPC: Structural load analysis, custom elevated purlins, 250kW string inverters, and DISCOM net-metering synchronization.'] },
-  { id: 'static-pm-surya-ghar', category: 'residential', year: '2024', status: 'Completed', capacity: '1.8 MWp Cumulative', title: 'PM Surya Ghar 500+ Residential Cluster', location: 'Vizianagaram District, Andhra Pradesh', description: 'Executed 500+ rooftop solar installations across residential households within 7 months of national portal empanelment.', services: ['Site surveys, DCR TOPCon modules, subsidy application processing, DISCOM inspection, and net-meter provisioning.'] },
-  { id: 'static-lakshmi-textiles', category: 'industrial', year: '2023', status: 'Completed', capacity: '1.2 MWp', title: 'Lakshmi Textiles 1.2 MWp Ground-Mount Solar', location: 'Guntur / Hyderabad Corridor, Telangana', description: 'MW-scale captive ground-mounted solar farm with centralized telemetry and 11kV evacuation for a large textile manufacturing mill.', services: ['Civil foundation, piling, HT switchyard, 33kV transmission line, and annual performance ratio SLA maintenance.'] },
-  { id: 'static-medical-college', category: 'government', year: '2023', status: 'Completed', capacity: '450 kWp', title: 'Government Medical College Solar Rooftop', location: 'Bengaluru Suburbs, Karnataka', description: 'NREDCAP/KREDL approved government institutional project powering ICU, laboratory, and hospital administrative blocks.', services: ['Complete engineering, supply of tier-1 ALMM panels, safety walkways, and 24/7 remote monitoring setup.'] },
-  { id: 'static-green-valley', category: 'residential', year: '2024', status: 'Completed', capacity: '240 kWp', title: 'Green Valley Housing Society (80 Villas)', location: 'Madhurawada, Visakhapatnam, Andhra Pradesh', description: 'Rooftop solar network across 80 luxury villas plus club house common areas with individual net metering.', services: ['Custom aesthetic aluminum railings, dual string inverters per villa, and central society energy dashboard.'] },
-  { id: 'static-grand-horizon', category: 'commercial', year: '2024', status: 'Completed', capacity: '350 kWp', title: 'Grand Horizon Commercial Complex', location: 'Chennai IT Highway, Tamil Nadu', description: 'High-density commercial rooftop system offsetting 70% of day-time air conditioning and lighting loads.', services: ['Design, Supply, Installation, and commissioning with DG synchronization controller.'] },
-  { id: 'static-pm-kusum', category: 'government', year: '2024', status: 'Completed', capacity: '75 Solar Pumps (5HP & 7.5HP)', title: 'PM-KUSUM Agri Solar Pumping Grid', location: 'Anakapalli & Vizianagaram, Andhra Pradesh' },
-  { id: 'static-mega-food-park', category: 'industrial', year: '2025', status: 'In Progress', capacity: '500 kWp', title: 'Mega Food Park 500 kWp Captive Plant', location: 'Coastal Corridor, Andhra Pradesh' },
-]
-
-function projectCategoryLabel(category = '') {
-  return String(category).toUpperCase()
-}
-
-function ProjectImage({ project, className = '' }) {
-  if (!project.image?.url) return <div className={`project-image-placeholder ${className}`} aria-label="Project image unavailable" role="img" />
-  return <img className={className} src={project.image.url} alt={project.title || 'N Solutions project'} loading="lazy" />
-}
-
-function ProjectsPage() {
-  const [projects, setProjects] = useState([])
-  const [selectedCategory, setSelectedCategory] = useState('ALL')
-  const [status, setStatus] = useState('loading')
-
-  useEffect(() => {
-    document.title = 'Projects | N Solutions'
-    const controller = new AbortController()
-    fetch('/api/public/projects', { signal: controller.signal })
-      .then(async (response) => {
-        if (!response.ok) throw new Error('Unable to load projects')
-        const payload = await response.json()
-        setProjects(Array.isArray(payload?.data) ? payload.data : [])
-        setStatus('ready')
-      })
-      .catch((error) => { if (error.name !== 'AbortError') setStatus('error') })
-    return () => { controller.abort(); document.title = 'N Solutions | Solar EPC' }
-  }, [])
-
-  const allProjects = [...staticProjects, ...projects]
-  const featuredProject = projects.find((project) => project.image?.url)
-  const visibleProjects = selectedCategory === 'ALL'
-    ? allProjects
-    : allProjects.filter((project) => projectCategoryLabel(project.category) === selectedCategory)
-
-  return <div className="projects-page"><SiteHeader activePath="/projects" /><main>
-    <section className="projects-hero">
-      <div className="projects-hero-visual" aria-hidden="true">{featuredProject?.image?.url && <img src={featuredProject.image.url} alt="" />}</div>
-      <div className="projects-hero-shade" />
-      <div className="wrap projects-hero-content"><p className="eyebrow light"><span /> Our projects</p><h1>Our <em>projects.</em></h1><p>N Solutions has experience across different solar project requirements and scales.</p></div>
-    </section>
-
-    <nav className="project-categories wrap" aria-label="Project categories">
-      {projectCategories.map((category) => <button type="button" key={category} className={selectedCategory === category ? 'active' : ''} onClick={() => setSelectedCategory(category)} aria-pressed={selectedCategory === category}>{category}</button>)}
-    </nav>
-
-    <section className="project-stories wrap" aria-live="polite">
-      {status === 'loading' && <div className="project-skeletons" aria-label="Loading projects"><i /><i /><i /></div>}
-      {status === 'error' && <EmptyState label="Projects" text="Project entries will appear here when they are available." />}
-      {status === 'ready' && visibleProjects.length === 0 && <EmptyState label={selectedCategory === 'ALL' ? 'Projects' : selectedCategory} text="No project entries are currently available in this category." />}
-      {status === 'ready' && visibleProjects.length > 0 && <div className="project-story-list" key={selectedCategory}>
-        {visibleProjects.map((project, index) => <Reveal className={`project-story project-story-${index % 3}`} key={project.id}>
-          <div className="project-story-image"><ProjectImage project={project} /></div>
-          <div className="project-story-copy"><div className="project-story-meta"><p className="eyebrow"><span /> {projectCategoryLabel(project.category)}</p>{project.year && <span>{project.year}</span>}{project.status && <span className={`project-status ${project.status.toLowerCase().replace(/\s+/g, '-')}`}>{project.status}</span>}</div><h2>{project.title}</h2>{project.capacity && <p className="project-capacity">{project.capacity}</p>}{project.location && <p className="project-location">{project.location}</p>}{project.description && <p className="project-description">{project.description}</p>}{Array.isArray(project.services) && project.services.length > 0 && <div className="project-services">{project.services.map((service) => <span key={service}>{service}</span>)}</div>}</div>
-        </Reveal>)}
-      </div>}
-    </section>
-
-    <section className="projects-cta"><div className="wrap"><Reveal><p className="eyebrow light"><span /> N Solutions</p><h2>Talk to N Solutions<br /><em>About Your Project</em></h2><a className="button button-accent" href="/#contact">Talk to N Solutions About Your Project <Arrow /></a></Reveal></div></section>
-  </main><SiteFooter /></div>
-}
 
 function RouteShell() {
-  return <div className="route-shell"><SiteHeader activePath={window.location.pathname} /><main><p className="eyebrow"><span /> N Solutions Solar EPC</p><h1>This page is being prepared.</h1><p>Return to the Home page while the next section is connected.</p><a className="button button-accent" href="/">Back to Home <Arrow /></a></main></div>
+  return <div className="route-shell"><SiteHeader activePath={window.location.pathname} /><main><p className="eyebrow"><span /> N Solutions Solar EPC</p><h1>This page is being prepared.</h1><p>Return to the Home page while the next section is connected.</p><a className="button button-accent" href="/" onClick={(e) => { e.preventDefault(); navigate('/') }}>Back to Home <Arrow /></a></main></div>
 }
 
 function App() {
+  const [currentPath, setCurrentPath] = useState(window.location.pathname)
+
   useEffect(() => {
+    const onPopState = () => setCurrentPath(window.location.pathname)
+    const onCustomRoute = () => setCurrentPath(window.location.pathname)
+    window.addEventListener('popstate', onPopState)
+    window.addEventListener('nsolutions-route-change', onCustomRoute)
+
     let resetTimer
     const showRouteGesture = (target) => {
       const link = target.closest?.('a[href]')
       if (!link || link.target || link.hasAttribute('download')) return
       const destination = new URL(link.href, window.location.href)
-      if (destination.origin !== window.location.origin || destination.pathname === window.location.pathname) return
-      document.body.classList.add('is-route-gesturing')
-      window.clearTimeout(resetTimer)
-      resetTimer = window.setTimeout(() => document.body.classList.remove('is-route-gesturing'), 1400)
+      if (destination.origin !== window.location.origin) return
+      if (destination.pathname !== window.location.pathname) {
+        document.body.classList.add('is-route-gesturing')
+        window.clearTimeout(resetTimer)
+        resetTimer = window.setTimeout(() => document.body.classList.remove('is-route-gesturing'), 1400)
+      }
     }
     const onPointerDown = (event) => { if (event.button === 0) showRouteGesture(event.target) }
     const onKeyDown = (event) => { if (event.key === 'Enter') showRouteGesture(event.target) }
     document.addEventListener('pointerdown', onPointerDown, true)
     document.addEventListener('keydown', onKeyDown, true)
-    return () => { document.removeEventListener('pointerdown', onPointerDown, true); document.removeEventListener('keydown', onKeyDown, true); window.clearTimeout(resetTimer); document.body.classList.remove('is-route-gesturing') }
+
+    return () => {
+      window.removeEventListener('popstate', onPopState)
+      window.removeEventListener('nsolutions-route-change', onCustomRoute)
+      document.removeEventListener('pointerdown', onPointerDown, true)
+      document.removeEventListener('keydown', onKeyDown, true)
+      window.clearTimeout(resetTimer)
+      document.body.classList.remove('is-route-gesturing')
+    }
   }, [])
-  if (window.location.pathname === '/about') return <AboutPage />
-  if (window.location.pathname === '/services') return <ServicesPage />
-  if (window.location.pathname === '/projects') return <ProjectsPage />
-  if (window.location.pathname === '/products') return <ProductsPage />
-  if (window.location.pathname !== '/') return <RouteShell />
+
+  if (currentPath === '/about') return <AboutPage />
+  if (currentPath === '/services') return <ServicesPage />
+  if (currentPath === '/projects') return <ProjectsPage />
+  if (currentPath === '/products') return <ProductsPage />
+  if (currentPath === '/media') return <MediaPage />
+  if (currentPath === '/careers') return <CareersPage />
+  if (currentPath === '/contact') return <ContactPage />
+  if (currentPath !== '/') return <RouteShell />
+
 
   return <div className="site-shell home-page">
     <SiteHeader />
@@ -508,27 +426,28 @@ function App() {
     <main id="top">
       <section className="hero">
         <div className="hero-image" /><video className="hero-video" autoPlay muted loop playsInline preload="auto" aria-hidden="true"><source src="/media/hero-solar.mp4" type="video/mp4" /></video><div className="hero-shade" />
-        <div className="hero-content wrap"><p className="eyebrow light"><span /> 16+ years of solar experience</p><h1>Built on <em>experience.</em><br />Driven by solar.</h1><p className="hero-copy">N Solutions delivers customized solar solutions through engineering, procurement, installation, commissioning, and ongoing support.</p><div className="hero-actions"><a className="button button-accent" href="#contact">Talk to N Solutions <Arrow /></a><a className="button button-ghost" href="#projects">Explore our projects <Arrow /></a></div></div>
+        <div className="hero-content wrap"><p className="eyebrow light"><span /> 16+ years of solar experience</p><h1>Built on <em>experience.</em><br />Driven by solar.</h1><p className="hero-copy">N Solutions delivers customized solar solutions through engineering, procurement, installation, commissioning, and ongoing support.</p><div className="hero-actions"><a className="button button-accent" href="/contact" onClick={(e) => { e.preventDefault(); navigate('/contact') }}>Talk to N Solutions <Arrow /></a><a className="button button-ghost" href="/projects" onClick={(e) => { e.preventDefault(); navigate('/projects') }}>Explore our projects <Arrow /></a></div></div>
         <div className="hero-note"><span>01</span><div><strong>Solar, engineered.</strong><small>Residential to MW-scale projects</small></div></div><a className="scroll-cue" href="#proof"><span>Scroll to explore</span><i>↓</i></a>
       </section>
 
       <section className="proof" id="proof"><div className="wrap proof-grid"><p className="eyebrow"><span /> Experience that speaks for itself</p><div className="proof-intro"><h2>Built on experience.<br /><em>Driven by solar.</em></h2><p>N Solutions is an Engineering, Procurement and Construction solar company with 16+ years of experience across 9 states in India.</p><p>We combine engineering expertise, reliable solar technology, and professional project execution to help customers move towards cleaner energy, improved efficiency, and sustainable growth.</p></div><div className="proof-aside"><span className="proof-aside-mark">16+</span><div><strong>Years of solar operations</strong><p>From MW-scale solar power projects to residential rooftop installations under PM Surya Ghar.</p></div><span className="proof-aside-line" /></div><div className="stats"><AnimatedMetric value={16} suffix="+" label="Years of experience" /><AnimatedMetric value={9} label="States across India" /><AnimatedMetric value={360} suffix="°" label="End-to-end solar EPC" /><AnimatedMetric value={500} suffix="+" label="PM Surya Ghar sites" /></div></div></section>
 
-      <section className="who wrap" id="who-we-are"><Reveal className="who-image"><div className="who-photo" /><span className="image-caption">From MW-scale projects<br />to residential rooftops</span></Reveal><Reveal className="who-copy"><p className="eyebrow"><span /> Who we are</p><h2>Engineering a<br /><em>smarter solar future.</em></h2><p>N Solutions is an EPC Solar Company focused on customized solar solutions for Commercial & Industrial businesses and communities, with an emphasis on efficient engineering, quality execution, and long-term energy savings.</p><p>Our experience extends from MW-scale solar power projects to residential rooftop installations under PM Surya Ghar, including 500+ sites completed in Vizianagaram in the last seven months.</p><p>From engineering and procurement to installation and commissioning, every solution is tailored to the specific energy requirements of the customer.</p><a className="text-link" href="/about">About N Solutions <Arrow /></a></Reveal></section>
+      <section className="who wrap" id="who-we-are"><Reveal className="who-image"><div className="who-photo" /><span className="image-caption">From MW-scale projects<br />to residential rooftops</span></Reveal><Reveal className="who-copy"><p className="eyebrow"><span /> Who we are</p><h2>Engineering a<br /><em>smarter solar future.</em></h2><p>N Solutions is an EPC Solar Company focused on customized solar solutions for Commercial & Industrial businesses and communities, with an emphasis on efficient engineering, quality execution, and long-term energy savings.</p><p>Our experience extends from MW-scale solar power projects to residential rooftop installations under PM Surya Ghar, including 500+ sites completed in Vizianagaram in the last seven months.</p><p>From engineering and procurement to installation and commissioning, every solution is tailored to the specific energy requirements of the customer.</p><a className="text-link" href="/about" onClick={(e) => { e.preventDefault(); navigate('/about') }}>About N Solutions <Arrow /></a></Reveal></section>
 
-      <section className="services wrap" id="services"><Reveal className="section-heading"><div><p className="eyebrow"><span /> What we do</p><h2>Solar solutions<br /><em>built for tomorrow.</em></h2></div><p className="heading-note">One accountable partner for the complete solar journey, from feasibility and design to commissioning and care.</p></Reveal><ServicesShowcase /><a className="section-cta text-link" href="/services">Explore our services <Arrow /></a></section>
+      <section className="services wrap" id="services"><Reveal className="section-heading"><div><p className="eyebrow"><span /> What we do</p><h2>Solar solutions<br /><em>built for tomorrow.</em></h2></div><p className="heading-note">One accountable partner for the complete solar journey, from feasibility and design to commissioning and care.</p></Reveal><ServicesShowcase /><a className="section-cta text-link" href="/services" onClick={(e) => { e.preventDefault(); navigate('/services') }}>Explore our services <Arrow /></a></section>
 
-      <section className="journey" id="how-we-work"><div className="wrap journey-grid"><Reveal><p className="eyebrow light"><span /> How we work</p><h2>From planning<br /><em>to performance.</em></h2><p className="journey-copy">A clear overview of the solar project journey, from understanding requirements to commissioning and ongoing support.</p><p className="journey-flow">Requirement → Design → Execution → Support</p><a className="button button-accent" href="#contact">Start your project <Arrow /></a></Reveal><div className="steps">{process.map(([number, title]) => <Reveal className="step" key={number}><span>{number}</span><strong>{title}</strong></Reveal>)}</div></div></section>
+      <section className="journey" id="how-we-work"><div className="wrap journey-grid"><Reveal><p className="eyebrow light"><span /> How we work</p><h2>From planning<br /><em>to performance.</em></h2><p className="journey-copy">A clear overview of the solar project journey, from understanding requirements to commissioning and ongoing support.</p><p className="journey-flow">Requirement → Design → Execution → Support</p><a className="button button-accent" href="/contact" onClick={(e) => { e.preventDefault(); navigate('/contact') }}>Start your project <Arrow /></a></Reveal><div className="steps">{process.map(([number, title]) => <Reveal className="step" key={number}><span>{number}</span><strong>{title}</strong></Reveal>)}</div></div></section>
 
       <section className="chairman wrap"><Reveal className="chairman-copy"><p className="eyebrow"><span /> Chairman's message</p><h2>Shaping the future<br /><em>through solar energy.</em></h2><blockquote>“Our journey is driven by a simple belief — solar energy can create a cleaner, smarter, and more sustainable future.”</blockquote><p className="message-ready">At N Solutions, we are committed to delivering reliable solar solutions through experience, engineering, and responsible execution. With 16+ years of experience, we continue to grow with a clear purpose: to power businesses, industries, homes, and communities through dependable solar energy.</p><div className="signature"><strong>Ch. C.S.V. Raju</strong><small>Managing Partner · N Solutions</small></div></Reveal><Reveal className="chairman-art"><span>NS</span><small>Leadership<br />in solar EPC</small></Reveal></section>
 
       <section className="why"><div className="wrap"><Reveal className="section-heading"><div><p className="eyebrow light"><span /> Why N Solutions</p><h2>Built on experience.<br /><em>Driven by results.</em></h2></div><p className="heading-note">The capabilities and commitment behind every N Solutions project.</p></Reveal><div className="strength-grid">{strengths.map(([number, title, description]) => <Reveal className="strength" key={number}><span>{number}</span><div><strong>{title}</strong><small>{description}</small></div><i>↗</i></Reveal>)}</div></div></section>
 
-      <section className="projects wrap" id="projects"><Reveal className="section-heading"><div><p className="eyebrow"><span /> Our work</p><h2>Powering progress<br /><em>across India.</em></h2></div><a className="text-link" href="/projects">View all projects <Arrow /></a></Reveal><div className="project-ready"><div><span className="project-ready-number">500+</span><strong>PM Surya Ghar sites completed in Vizianagaram</strong><p>The project showcase is ready for verified project records and images when the public project data is connected.</p></div><a className="button button-accent" href="/projects">View all projects <Arrow /></a></div></section>
+      <section className="projects wrap" id="projects"><Reveal className="section-heading"><div><p className="eyebrow"><span /> Our work</p><h2>Powering progress<br /><em>across India.</em></h2></div><a className="text-link" href="/projects" onClick={(e) => { e.preventDefault(); navigate('/projects') }}>View all projects <Arrow /></a></Reveal><div className="project-ready"><div><span className="project-ready-number">500+</span><strong>PM Surya Ghar sites completed in Vizianagaram</strong><p>The project showcase is ready for verified project records and images when the public project data is connected.</p></div><a className="button button-accent" href="/projects" onClick={(e) => { e.preventDefault(); navigate('/projects') }}>View all projects <Arrow /></a></div></section>
 
       <section className="trust wrap"><Reveal className="section-heading"><div><p className="eyebrow"><span /> Proof of trust</p><h2>Trusted by<br /><em>our clients.</em></h2></div><p className="heading-note">A space ready for verified client stories as they become available.</p></Reveal><div className="trust-grid"><EmptyState label="Testimonials" text="Verified client testimonials will appear here." /><EmptyState label="Approved credentials" text="Official certifications and registrations will appear here." /><EmptyState label="Awards & achievements" text="Verified awards and achievements will appear here." /></div></section>
 
-      <section className="contact-band" id="contact"><div className="wrap contact-inner"><p className="eyebrow light"><span /> One partner. Complete solar solutions.</p><h2>Assess. Design.<br /><em>Supply. Install.</em></h2><p>Talk to N Solutions about your project, from first requirement through operate and maintain.</p><a className="button button-accent" href="#contact">Talk to N Solutions <Arrow /></a></div></section>
+      <section className="contact-band" id="contact"><div className="wrap contact-inner"><p className="eyebrow light"><span /> One partner. Complete solar solutions.</p><h2>Assess. Design.<br /><em>Supply. Install.</em></h2><p>Talk to N Solutions about your project, from first requirement through operate and maintain.</p><a className="button button-accent" href="/contact" onClick={(e) => { e.preventDefault(); navigate('/contact') }}>Talk to N Solutions <Arrow /></a></div></section>
+
     </main>
 
     <SiteFooter />
