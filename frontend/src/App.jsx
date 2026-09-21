@@ -4,6 +4,7 @@ import ProductsPage from './pages/ProductsPage'
 import MediaPage from './pages/MediaPage'
 import CareersPage from './pages/CareersPage'
 import ContactPage from './pages/ContactPage'
+import AdminPortal from './admin/AdminPortal'
 import { navigate, SiteFooter } from './components/Shared'
 
 const services = [
@@ -417,6 +418,7 @@ function App() {
   if (currentPath === '/media') return <MediaPage />
   if (currentPath === '/careers') return <CareersPage />
   if (currentPath === '/contact') return <ContactPage />
+  if (currentPath === '/admin' || currentPath.startsWith('/admin/')) return <AdminPortal />
   if (currentPath !== '/') return <RouteShell />
 
 
