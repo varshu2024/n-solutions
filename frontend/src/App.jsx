@@ -6,25 +6,11 @@ import CareersPage from './pages/CareersPage'
 import ContactPage from './pages/ContactPage'
 import AdminPortal from './admin/AdminPortal'
 import { navigate, SiteFooter } from './components/Shared'
+import { homeContent, aboutContent, servicesAndSolutionsContent } from './content/siteContent'
 
-const services = [
-  { number: '01', title: 'Solar EPC', text: 'Complete engineering, procurement, installation, and commissioning for solar projects. We manage every stage with a focus on quality and efficient execution.', image: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=900&q=85' },
-  { number: '02', title: 'Commercial & industrial solar', text: 'Customized solar systems designed around business and industrial energy requirements, with practical, project-focused solutions.', image: 'https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?auto=format&fit=crop&w=900&q=85' },
-  { number: '03', title: 'Residential rooftop solar', text: 'Reliable rooftop solar solutions for homes and communities, from system planning through installation and commissioning.', image: 'https://images.unsplash.com/photo-1559302504-64aae6ca6b6d?auto=format&fit=crop&w=900&q=85' },
-  { number: '04', title: 'Government solar projects', text: 'Solar solutions supporting government projects and initiatives, with professional engineering and implementation based on requirements.', image: 'https://images.unsplash.com/photo-1545208942-e1c9e3b7a4b5?auto=format&fit=crop&w=900&q=85' },
-  { number: '05', title: 'O&M services', text: 'Ongoing operation and maintenance support that helps solar installations maintain dependable operation and long-term performance.', image: 'https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&w=900&q=85' },
-  { number: '06', title: 'Solar products & pumps', text: 'Solar panels, inverters, essential components, and solar pumping solutions to support different implementation requirements.', image: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=900&q=85' },
-]
-
-const process = [
-  ['01', 'Consultation & requirement assessment'], ['02', 'Site assessment'], ['03', 'System design & proposal'],
-  ['04', 'Engineering & procurement'], ['05', 'Installation & commissioning'], ['06', 'Support & performance'],
-]
-
-const strengths = [
-  ['01', '16+ years of experience', 'Proven experience in solar operations and project execution.'], ['02', 'Presence across 9 states', 'Project experience extending across multiple states in India.'], ['03', 'End-to-end EPC expertise', 'From engineering and procurement to installation and commissioning.'], ['04', 'Commercial & industrial focus', 'Customized solar solutions for C&I energy requirements.'],
-  ['05', 'Customized solar solutions', 'Every project is planned around its site, energy needs, and objectives.'], ['06', 'Government empanelments', 'Relevant government registrations and empanelments for solar and electrical projects.'], ['07', 'Quality & safety first', 'Professional execution with attention to quality, safety, and project requirements.'], ['08', 'Complete solar support', 'Consultation, installation, commissioning, O&M, and support beyond installation.'],
-]
+const services = homeContent.whatWeDo.services
+const process = homeContent.howWeWork.steps
+const strengths = homeContent.whyChooseUs.strengths
 
 function Arrow() { return <span aria-hidden="true">↗</span> }
 
@@ -205,37 +191,41 @@ function SiteHeader({ activePath = '' }) {
 
 
 function AboutPage() {
+  const { companyOverview, chairmanMessage, visionAndMission, journey, whatWeDo, howWeWork } = aboutContent
+
   return <div className="about-page"><SiteHeader activePath="/about" /><main>
-    <section className="about-hero"><div className="about-hero-image" /><div className="about-hero-shade" /><div className="wrap about-hero-content"><p className="eyebrow light"><span /> N Solutions Solar EPC</p><h1>Engineering solar solutions.<br /><em>Powering a sustainable future.</em></h1><p>Complete solar energy solutions shaped by experience, technical understanding, and practical project execution.</p></div></section>
+    <section className="about-hero">
+      <div className="about-hero-image" />
+      <div className="about-hero-shade" />
+      <div className="wrap about-hero-content">
+        <p className="eyebrow light"><span /> {companyOverview.eyebrow}</p>
+        <h1>{companyOverview.title}<br /><em>{companyOverview.subtitle}</em></h1>
+        <p>{companyOverview.lead}</p>
+      </div>
+    </section>
 
     <section className="about-overview" aria-labelledby="company-overview-title">
       <div className="wrap">
-        {/* Chapter Header */}
         <Reveal className="about-overview-chapter">
           <p><b>01</b><span>—</span> Company overview</p>
           <i aria-hidden="true" />
           <span className="about-overview-chapter-meta">Solar EPC · Engineering & Infrastructure</span>
         </Reveal>
 
-        {/* Main Two-Column Editorial Story */}
         <div className="about-overview-main">
-          {/* Left Column: Heading + Copy + Timeline */}
           <div className="about-overview-left">
             <Reveal className="about-overview-heading">
               <h2 id="company-overview-title">
-                Engineering<br />
-                a Better<br />
-                <em>Energy Future</em>
+                Engineering Solar Solutions.<br />
+                <em>Powering a Sustainable Future.</em>
               </h2>
             </Reveal>
 
             <Reveal className="about-overview-copy">
-              <p className="about-lead">
-                N Solutions is a solar Engineering, Procurement and Construction company focused on delivering complete solar energy solutions for diverse project requirements.
-              </p>
-              <p>
-                With 16+ years of experience and operations across 9 states in India, we combine technical understanding with practical project execution across residential, commercial, industrial, and government solar projects.
-              </p>
+              <p className="about-lead">{companyOverview.lead}</p>
+              {companyOverview.paragraphs.map((p, idx) => (
+                <p key={idx}>{p}</p>
+              ))}
             </Reveal>
 
             <Reveal className="about-overview-timeline">
@@ -251,7 +241,6 @@ function AboutPage() {
             </Reveal>
           </div>
 
-          {/* Right Column: Visual Storytelling Element */}
           <div className="about-overview-right">
             <Reveal className="about-overview-visual">
               <img
@@ -271,7 +260,22 @@ function AboutPage() {
           </div>
         </div>
 
-        {/* Full-Width Editorial Statistics Strip */}
+        {/* 3 Core Pillars: Our Approach, Our Experience, Our Commitment */}
+        <Reveal className="about-pillars-grid">
+          {companyOverview.pillars.map((pillar) => (
+            <div className="about-pillar-card" key={pillar.title}>
+              <span className="about-pillar-number">{pillar.number}</span>
+              <h3>{pillar.title}</h3>
+              <p>{pillar.text}</p>
+            </div>
+          ))}
+        </Reveal>
+
+        <div className="about-tagline-band">
+          {companyOverview.tagline}
+        </div>
+
+        {/* Statistics Strip */}
         <Reveal className="about-overview-statistics" aria-label="N Solutions company statistics">
           <div className="stat-block stat-exp">
             <AnimatedMetric value={16} suffix="+" label="Years of experience" />
@@ -292,82 +296,316 @@ function AboutPage() {
       </div>
     </section>
 
-    <section className="about-message"><div className="wrap message-grid"><Reveal className="message-copy"><p className="eyebrow light"><span /> 02 — Chairman's message</p><h2>Shaping the future<br /><em>through solar energy.</em></h2><blockquote>“Our journey is driven by a simple belief — solar energy can create a cleaner, smarter, and more sustainable future.”</blockquote><p>At N Solutions, we are committed to delivering reliable solar solutions through experience, engineering, and responsible execution. Our focus is to understand every customer's energy needs and create solutions that deliver meaningful value.</p><p>With 16+ years of experience, we continue to grow with a clear purpose: to power businesses, industries, homes, and communities through dependable solar energy.</p><div className="signature"><strong>Ch. C.S.V. Raju</strong><small>Managing Partner, N Solutions</small></div></Reveal><Reveal className="message-placeholder"><span>NS</span><small>Official leadership portrait<br />can be placed here</small></Reveal></div></section>
+    {/* Extended Chairman's Message */}
+    <section className="about-message">
+      <div className="wrap message-grid">
+        <Reveal className="message-copy">
+          <p className="eyebrow light"><span /> {chairmanMessage.eyebrow}</p>
+          <h2>{chairmanMessage.title}<br /><em>{chairmanMessage.subtitle}</em></h2>
+          <p className="about-lead">{chairmanMessage.lead}</p>
+          {chairmanMessage.paragraphs.map((para, idx) => (
+            <p key={idx}>{para}</p>
+          ))}
+          <blockquote>{chairmanMessage.quote}</blockquote>
+          <div className="signature">
+            <strong>{chairmanMessage.author}</strong>
+            <small>{chairmanMessage.role}</small>
+          </div>
+        </Reveal>
+        <Reveal className="message-placeholder">
+          <span>NS</span>
+          <small>Leadership in Solar EPC<br />Managing Partner</small>
+        </Reveal>
+      </div>
+    </section>
 
-    <section className="about-people wrap"><Reveal className="section-heading"><div><p className="eyebrow"><span /> 03 — Our people</p><h2>People behind<br /><em>the execution.</em></h2></div><p className="heading-note">A dedicated space for verified Board of Directors and Partners information.</p></Reveal><EmptyState label="Board of Directors / Partners" text="Authentic people information will appear here when it is provided in the approved company content." /></section>
+    {/* Vision & Mission */}
+    <section className="about-vision">
+      <div className="wrap">
+        <Reveal className="section-heading">
+          <div>
+            <p className="eyebrow light"><span /> {visionAndMission.eyebrow}</p>
+            <h2>{visionAndMission.title}<br /><em>{visionAndMission.subtitle}</em></h2>
+          </div>
+          <p className="heading-note">{visionAndMission.intro}</p>
+        </Reveal>
 
-    <section className="about-vision"><div className="wrap"><Reveal className="section-heading"><div><p className="eyebrow light"><span /> 04 — Our vision & mission</p><h2>A clearer energy future,<br /><em>engineered responsibly.</em></h2></div><p className="heading-note">Our vision defines where we want to go. Our mission guides how we create value through solar energy, engineering, and responsible project execution.</p></Reveal><div className="vision-mission"><div className="vision-block"><p className="eyebrow light">Our vision</p><h3>Shaping a Cleaner, Smarter & More Sustainable Energy Future</h3><p>Our vision is to become a trusted and leading renewable energy solutions provider in India, enabling businesses, industries, homes, and communities to adopt reliable and sustainable solar energy.</p><div className="principle-grid">{aboutPrinciples.map(([number, title, text]) => <Reveal className="principle" key={number}><span>{number}</span><strong>{title}</strong><small>{text}</small></Reveal>)}</div></div><div className="mission-block"><p className="eyebrow">Our mission</p><h3>Engineering Reliable Solar Solutions That Create Real Value</h3><p>Deliver reliable, efficient, and cost-effective solar energy solutions through professional engineering, quality technology, responsible execution, and continued customer support.</p><div className="mission-list">{missionPrinciples.map(([number, title]) => <div key={number}><span>{number}</span><strong>{title}</strong></div>)}</div><blockquote>“Engineer with purpose. Execute with responsibility. Power a better tomorrow.”</blockquote></div></div></div></section>
+        <div className="vision-mission">
+          <div className="vision-block">
+            <p className="eyebrow light">{visionAndMission.vision.tag}</p>
+            <h3>{visionAndMission.vision.title}</h3>
+            <p>{visionAndMission.vision.text}</p>
+            <div className="principle-grid">
+              {visionAndMission.vision.principles.map(([num, t, d]) => (
+                <Reveal className="principle" key={num}>
+                  <span>{num}</span>
+                  <strong>{t}</strong>
+                  <small>{d}</small>
+                </Reveal>
+              ))}
+            </div>
+          </div>
 
-    <section className="about-journey wrap"><Reveal className="section-heading"><div><p className="eyebrow"><span /> 05 — Our journey</p><h2>16+ years of experience.<br /><em>One growing solar journey.</em></h2></div><p className="heading-note">From experience to expertise to a sustainable future.</p></Reveal><div className="journey-timeline">{journeyStages.map(([number, title, text]) => <Reveal className="journey-stage" key={number}><span>{number}</span><div><h3>{title}</h3><p>{text}</p></div></Reveal>)}</div><div className="today-beyond"><strong>Today & beyond</strong><p>With 16+ years of experience, N Solutions continues to deliver end-to-end solar solutions while building stronger capabilities for the future, from smaller requirements to large-scale solar projects.</p></div></section>
+          <div className="mission-block">
+            <p className="eyebrow">{visionAndMission.mission.tag}</p>
+            <h3>{visionAndMission.mission.title}</h3>
+            <p>{visionAndMission.mission.text}</p>
+            <div className="principle-grid">
+              {visionAndMission.mission.principles.map(([num, t, d]) => (
+                <Reveal className="principle" key={num}>
+                  <span>{num}</span>
+                  <strong>{t}</strong>
+                  <small>{d}</small>
+                </Reveal>
+              ))}
+            </div>
+            <blockquote>{visionAndMission.guidingPrinciple}</blockquote>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    <section className="about-capabilities"><div className="wrap"><Reveal className="section-heading"><div><p className="eyebrow light"><span /> 06 — What we do</p><h2>Complete solar solutions,<br /><em>built around your needs.</em></h2></div><p className="heading-note">Our capabilities bring solar technology, engineering expertise, and project execution together across different scales and applications.</p></Reveal><div className="capability-grid">{aboutCapabilities.map(([number, title, text]) => <Reveal className="capability" key={number}><span>{number}</span><h3>{title}</h3><p>{text}</p></Reveal>)}</div><p className="capability-flow">Plan <i>→</i> Engineer <i>→</i> Procure <i>→</i> Install <i>→</i> Commission <i>→</i> Support</p></div></section>
+    {/* Our Journey */}
+    <section className="about-journey wrap">
+      <Reveal className="section-heading">
+        <div>
+          <p className="eyebrow"><span /> {journey.eyebrow}</p>
+          <h2>{journey.title}<br /><em>{journey.subtitle}</em></h2>
+        </div>
+        <p className="heading-note">{journey.intro}</p>
+      </Reveal>
+      <div className="journey-timeline">
+        {journey.stages.map(([number, title, text]) => (
+          <Reveal className="journey-stage" key={number}>
+            <span>{number}</span>
+            <div>
+              <h3>{title}</h3>
+              <p>{text}</p>
+            </div>
+          </Reveal>
+        ))}
+      </div>
+      <div className="today-beyond">
+        <strong>Today & beyond</strong>
+        <p>{journey.todayAndBeyond}</p>
+      </div>
+      <p className="process-flow" style={{ marginTop: '28px' }}>{journey.flow}</p>
+    </section>
 
-    <section className="about-process wrap"><Reveal className="section-heading"><div><p className="eyebrow"><span /> 07 — How we work</p><h2>A structured approach<br /><em>to every solar project.</em></h2></div><p className="heading-note">From the initial discussion to commissioning and support, every stage is planned with attention to project requirements.</p></Reveal><div className="about-process-list">{aboutProcess.map(([number, title, text]) => <Reveal className="about-process-row" key={number}><span>{number}</span><h3>{title}</h3><p>{text}</p></Reveal>)}</div><p className="process-flow">Understand <i>→</i> Assess <i>→</i> Design <i>→</i> Procure <i>→</i> Execute <i>→</i> Support</p></section>
+    {/* What We Do */}
+    <section className="about-capabilities">
+      <div className="wrap">
+        <Reveal className="section-heading">
+          <div>
+            <p className="eyebrow light"><span /> {whatWeDo.eyebrow}</p>
+            <h2>{whatWeDo.title}<br /><em>{whatWeDo.subtitle}</em></h2>
+          </div>
+          <p className="heading-note">{whatWeDo.intro}</p>
+        </Reveal>
+        <div className="capability-grid">
+          {whatWeDo.capabilities.map(([number, title, text]) => (
+            <Reveal className="capability" key={number}>
+              <span>{number}</span>
+              <h3>{title}</h3>
+              <p>{text}</p>
+            </Reveal>
+          ))}
+        </div>
+        <p className="capability-flow">{whatWeDo.flow}</p>
+      </div>
+    </section>
 
-    <section className="about-credentials wrap"><Reveal className="section-heading"><div><p className="eyebrow"><span /> 08 — Awards & achievements</p><h2>Recognition, when<br /><em>verified.</em></h2></div><p className="heading-note">A content-ready space for genuine awards and achievements from approved company records.</p></Reveal><div className="credential-grid"><EmptyState label="Awards & achievements" text="Verified award information will appear here when available." /><div><p className="eyebrow"><span /> 09 — Certifications details</p><EmptyState label="Certifications and approvals" text="Verified certification and approval details will appear here when available." /></div></div></section>
+    {/* How We Work */}
+    <section className="about-process wrap">
+      <Reveal className="section-heading">
+        <div>
+          <p className="eyebrow"><span /> {howWeWork.eyebrow}</p>
+          <h2>{howWeWork.title}<br /><em>{howWeWork.subtitle}</em></h2>
+        </div>
+        <p className="heading-note">{howWeWork.intro}</p>
+      </Reveal>
+      <div className="about-process-list">
+        {howWeWork.steps.map(([number, title, text]) => (
+          <Reveal className="about-process-row" key={number}>
+            <span>{number}</span>
+            <h3>{title}</h3>
+            <p>{text}</p>
+          </Reveal>
+        ))}
+      </div>
+      <p className="process-flow">{howWeWork.flow}</p>
+    </section>
 
-    <section className="about-cta"><div className="wrap"><p className="eyebrow light"><span /> One partner. Complete solar solutions.</p><h2>From experience<br /><em>to a sustainable future.</em></h2><p>Assess → Design → Supply → Install → Commission → Operate → Maintain</p><a className="button button-accent" href="/#contact">Talk to N Solutions About Your Project <Arrow /></a></div></section>
+    {/* Credentials / Trust */}
+    <section className="about-credentials wrap">
+      <Reveal className="section-heading">
+        <div>
+          <p className="eyebrow"><span /> 07 — Credentials & recognitions</p>
+          <h2>Recognition, when<br /><em>verified.</em></h2>
+        </div>
+        <p className="heading-note">Relevant government registrations and empanelments for solar and electrical projects.</p>
+      </Reveal>
+      <div className="credential-grid">
+        <EmptyState label="Government Empanelments" text="Empanelled across solar programs and state initiatives." />
+        <EmptyState label="Certifications and approvals" text="Verified ISO, MNRE, and technical certifications." />
+      </div>
+    </section>
+
+    {/* CTA */}
+    <section className="about-cta">
+      <div className="wrap">
+        <p className="eyebrow light"><span /> One partner. Complete solar solutions.</p>
+        <h2>From experience<br /><em>to a sustainable future.</em></h2>
+        <p>Assess → Design → Supply → Install → Commission → Operate → Maintain</p>
+        <a className="button button-accent" href="/contact" onClick={(e) => { e.preventDefault(); navigate('/contact') }}>
+          Talk to N Solutions About Your Project <Arrow />
+        </a>
+      </div>
+    </section>
   </main><SiteFooter /></div>
 }
 
 function ServicesPage() {
+  const { header, services, cta } = servicesAndSolutionsContent
+
   useEffect(() => {
     document.title = 'Services & Solutions | N Solutions'
     return () => { document.title = 'N Solutions | Solar EPC' }
   }, [])
-  return <div className="services-page"><SiteHeader activePath="/services" /><main>
-    <section className="services-hero">
 
-      <video className="hero-video" autoPlay muted loop playsInline preload="auto" aria-hidden="true"><source src="/media/products.mp4" type="video/mp4" /></video>
+  return (
+    <div className="services-page">
+      <SiteHeader activePath="/services" />
+      <main>
+        <section className="services-hero">
+          <video className="hero-video" autoPlay muted loop playsInline preload="auto" aria-hidden="true">
+            <source src="/media/products.mp4" type="video/mp4" />
+          </video>
+          <div className="services-hero-shade" />
 
-      <div className="services-hero-shade" />
+          <div className="wrap services-hero-content">
+            <p className="eyebrow light">
+              <span /> {header.eyebrow}
+            </p>
 
-      <div className="wrap services-hero-content">
-        <p className="eyebrow light">
-          <span /> Services & solutions
-        </p>
+            <h1>
+              {header.title}<br />
+              <em>{header.subtitle}</em>
+            </h1>
 
-        <h1>
-          Complete solar solutions.<br />
-          <em>From planning to performance.</em>
-        </h1>
+            <p>{header.intro}</p>
 
-        <p>
-          N Solutions provides a comprehensive range of solar and renewable-energy
-          solutions for residential, commercial, industrial, and eligible
-          institutional requirements.
-        </p>
+            <a className="button button-accent" href="/contact" onClick={(e) => { e.preventDefault(); navigate('/contact') }}>
+              Talk to N Solutions About Your Project <Arrow />
+            </a>
+          </div>
 
-        <a className="button button-accent" href="/#contact">
-          Talk to N Solutions About Your Project <Arrow />
-        </a>
-      </div>
+          <div className="services-hero-marker">
+            <span>NS / 04</span>
+            <small>
+              Solar lifecycle<br />
+              engineering
+            </small>
+          </div>
+        </section>
 
-      <div className="services-hero-marker">
-        <span>NS / 04</span>
-        <small>
-          Solar lifecycle<br />
-          engineering
-        </small>
-      </div>
+        {/* 18 Comprehensive Services & Solutions Catalog */}
+        <section className="wrap" style={{ padding: '80px 0 60px' }}>
+          <Reveal className="section-heading">
+            <div>
+              <p className="eyebrow"><span /> Complete Portfolio</p>
+              <h2>Comprehensive Solar Services<br /><em>& Solutions (01 – 18)</em></h2>
+            </div>
+            <p className="heading-note">
+              From turnkey EPC and utility-scale installations to rooftop PM Surya Ghar, O&M, and energy advisory, explore our 18 end-to-end solar solutions.
+            </p>
+          </Reveal>
 
-    </section>
-    <nav className="service-categories wrap" aria-label="Service categories"><a href="#installation" className="active">Installation</a><a href="#om">Operation & Maintenance</a><a href="#adoption">Subsidies & Financing</a><a href="#products">Solar Product Supply</a></nav>
+          <div className="services-catalog-grid">
+            {services.map((service) => (
+              <Reveal className="service-catalog-card" key={service.number}>
+                <div className="service-catalog-header">
+                  <span className="service-catalog-num">{service.number}</span>
+                  <div>
+                    {service.subtitle && <span className="service-catalog-badge">{service.subtitle}</span>}
+                    <h3 className="service-catalog-title">{service.title}</h3>
+                  </div>
+                </div>
 
-    <section className="installation wrap" id="installation"><Reveal className="section-heading"><div><p className="eyebrow"><span /> 01 — Installation</p><h2>Solar installation<br /><em>for every scale.</em></h2></div><p className="heading-note">Professional installation solutions planned around the requirements of commercial, residential, and industrial projects.</p></Reveal><div className="installation-list">{installationServices.map((service, index) => <Reveal className={`installation-item ${index % 2 ? 'reverse' : ''}`} key={service.number}><div className="installation-image" style={{ backgroundImage: `url(${service.image})` }}><span>{service.number}</span></div><div className="installation-copy"><p className="eyebrow"><span /> {service.title}</p><h3>{service.title}</h3><p>{service.text}</p><p>{service.detail}</p><div className="benefit-columns"><div><strong>Key benefits</strong><ul>{service.benefits.map((benefit) => <li key={benefit}>{benefit}</li>)}</ul></div><div><strong>Applications</strong><p>{service.applications}</p></div></div></div></Reveal>)}</div></section>
+                <p className="service-catalog-text">{service.text}</p>
+                {service.detail && <p className="service-catalog-detail">{service.detail}</p>}
 
-    <section className="services-process"><div className="wrap"><Reveal className="section-heading"><div><p className="eyebrow light"><span /> 02 — Installation process</p><h2>From requirement<br /><em>to support.</em></h2></div><p className="heading-note">A structured project journey. Hover or focus a stage to reveal the role it plays.</p></Reveal><div className="services-process-line">{servicesProcess.map(([number, title, text]) => <Reveal className="services-process-step" key={number} tabIndex="0"><span>{number}</span><strong>{title}</strong><small>{text}</small></Reveal>)}</div><p className="process-flow light-flow">Requirement <i>→</i> Design <i>→</i> Execution <i>→</i> Support</p></div></section>
+                {service.subAreas && service.subAreas.length > 0 && (
+                  <div className="service-subareas-list">
+                    {service.subAreas.map((sub) => (
+                      <div className="service-subarea-box" key={sub.title}>
+                        <strong>{sub.title}</strong>
+                        <p>{sub.text}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
 
-    <section className="om-section wrap" id="om"><Reveal className="om-image"><div className="om-image-photo" /><span>MONITOR / INSPECT / MAINTAIN / SUPPORT</span></Reveal><Reveal className="om-copy"><p className="eyebrow"><span /> 03 — Operation & maintenance</p><h2>Reliable performance<br /><em>after commissioning.</em></h2><p>Professional O&M services to support the reliable operation of solar systems after commissioning.</p><p>Maintenance activities can be planned around the system's requirements, helping identify operational issues and maintain the installation in proper working condition.</p><div className="benefits-list"><strong>Key benefits</strong>{omBenefits.map((benefit) => <span key={benefit}>{benefit}</span>)}</div><p className="applications-line"><strong>Applications</strong> Residential · Commercial · Industrial · Rooftop · Larger solar installations</p></Reveal></section>
+                {service.benefits && service.benefits.length > 0 && (
+                  <div className="service-benefits-wrap">
+                    <strong>Key Benefits</strong>
+                    <ul className="service-benefits-list">
+                      {service.benefits.map((b) => (
+                        <li key={b}>{b}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
-    <section className="adoption-section" id="adoption"><div className="wrap"><Reveal className="section-heading"><div><p className="eyebrow light"><span /> 04 — Smarter solar adoption</p><h2>Energy efficiency, subsidies,<br /><em>financing & net metering.</em></h2></div><p className="heading-note">Customers often need support with energy efficiency, applicable subsidies, financing options, and net-metering requirements.</p></Reveal><div className="adoption-grid">{adoptionAreas.map(([title, text], index) => <Reveal className="adoption-item" key={title}><span>0{index + 1}</span><h3>{title}</h3><p>{text}</p></Reveal>)}</div><div className="adoption-benefits"><strong>Supporting smarter solar adoption</strong><div>{adoptionBenefits.map((benefit) => <span key={benefit}>{benefit}</span>)}</div></div></div></section>
+                {service.applications && (
+                  <div className="service-apps-row">
+                    <strong>Applications:</strong> {service.applications}
+                  </div>
+                )}
+              </Reveal>
+            ))}
+          </div>
+        </section>
 
-    <section className="products-section wrap" id="products"><Reveal className="products-image"><div className="products-photo" /><span>PRODUCT SUPPLY / SYSTEM SUPPORT</span></Reveal><Reveal className="products-copy"><p className="eyebrow"><span /> 05 — Solar product supply</p><h2>Essential components<br /><em>for solar implementation.</em></h2><p>Supply of essential solar products and system components for different installation and project requirements.</p><p>The product range supports residential, commercial, industrial, rooftop, and solar project installations.</p><div className="product-list">{productItems.map((item, index) => <div key={item}><span>0{index + 1}</span><strong>{item}</strong><i>↗</i></div>)}</div></Reveal></section>
+        {/* Structured Process Flow */}
+        <section className="services-process">
+          <div className="wrap">
+            <Reveal className="section-heading">
+              <div>
+                <p className="eyebrow light"><span /> Project execution process</p>
+                <h2>From requirement<br /><em>to support.</em></h2>
+              </div>
+              <p className="heading-note">A structured project journey carefully planned and executed across every milestone.</p>
+            </Reveal>
+            <div className="services-process-line">
+              {servicesProcess.map(([number, title, text]) => (
+                <Reveal className="services-process-step" key={number} tabIndex="0">
+                  <span>{number}</span>
+                  <strong>{title}</strong>
+                  <small>{text}</small>
+                </Reveal>
+              ))}
+            </div>
+            <p className="process-flow light-flow">Requirement <i>→</i> Design <i>→</i> Execution <i>→</i> Support</p>
+          </div>
+        </section>
 
-    <section className="more-solutions wrap"><Reveal className="section-heading"><div><p className="eyebrow"><span /> Complete services & solutions</p><h2>One capability set.<br /><em>Many applications.</em></h2></div><p className="heading-note">N Solutions brings together the full catalog of solar and renewable-energy capabilities described in the official Services & Solutions content.</p></Reveal><div className="solution-catalog">{solutionCatalog.map(([number, title, text]) => <Reveal className="solution-catalog-item" key={number}><span>{number}</span><div><h3>{title}</h3><p>{text}</p></div><i>↗</i></Reveal>)}</div></section>
-
-    <section className="services-cta"><div className="wrap"><p className="eyebrow light"><span /> One partner. Complete solar solutions.</p><h2>Assess. Design.<br /><em>Supply. Install.</em></h2><p>From rooftop solar and EPC projects to renewable power, asset management, O&M, solar products, and energy solutions, N Solutions brings together capabilities across the solar lifecycle.</p><p className="cta-flow">Assess → Design → Supply → Install → Commission → Operate → Maintain</p><a className="button button-accent" href="/#contact">Talk to N Solutions About Your Project <Arrow /></a></div></section>
-  </main><SiteFooter /></div>
+        {/* CTA section */}
+        <section className="services-cta">
+          <div className="wrap">
+            <p className="eyebrow light"><span /> {cta.eyebrow}</p>
+            <h2>{cta.title}<br /><em>{cta.subtitle}</em></h2>
+            <p>{cta.text}</p>
+            <p className="cta-flow">{cta.flow}</p>
+            <a className="button button-accent" href="/contact" onClick={(e) => { e.preventDefault(); navigate('/contact') }}>
+              {cta.buttonText} <Arrow />
+            </a>
+          </div>
+        </section>
+      </main>
+      <SiteFooter />
+    </div>
+  )
 }
 
 
@@ -434,15 +672,104 @@ function App() {
 
       <section className="proof" id="proof"><div className="wrap proof-grid"><p className="eyebrow"><span /> Experience that speaks for itself</p><div className="proof-intro"><h2>Built on experience.<br /><em>Driven by solar.</em></h2><p>N Solutions is an Engineering, Procurement and Construction solar company with 16+ years of experience across 9 states in India.</p><p>We combine engineering expertise, reliable solar technology, and professional project execution to help customers move towards cleaner energy, improved efficiency, and sustainable growth.</p></div><div className="proof-aside"><span className="proof-aside-mark">16+</span><div><strong>Years of solar operations</strong><p>From MW-scale solar power projects to residential rooftop installations under PM Surya Ghar.</p></div><span className="proof-aside-line" /></div><div className="stats"><AnimatedMetric value={16} suffix="+" label="Years of experience" /><AnimatedMetric value={9} label="States across India" /><AnimatedMetric value={360} suffix="°" label="End-to-end solar EPC" /><AnimatedMetric value={500} suffix="+" label="PM Surya Ghar sites" /></div></div></section>
 
-      <section className="who wrap" id="who-we-are"><Reveal className="who-image"><div className="who-photo" /><span className="image-caption">From MW-scale projects<br />to residential rooftops</span></Reveal><Reveal className="who-copy"><p className="eyebrow"><span /> Who we are</p><h2>Engineering a<br /><em>smarter solar future.</em></h2><p>N Solutions is an EPC Solar Company focused on customized solar solutions for Commercial & Industrial businesses and communities, with an emphasis on efficient engineering, quality execution, and long-term energy savings.</p><p>Our experience extends from MW-scale solar power projects to residential rooftop installations under PM Surya Ghar, including 500+ sites completed in Vizianagaram in the last seven months.</p><p>From engineering and procurement to installation and commissioning, every solution is tailored to the specific energy requirements of the customer.</p><a className="text-link" href="/about" onClick={(e) => { e.preventDefault(); navigate('/about') }}>About N Solutions <Arrow /></a></Reveal></section>
+      <section className="who wrap" id="who-we-are">
+        <Reveal className="who-image">
+          <div className="who-photo" />
+          <span className="image-caption">From MW-scale projects<br />to residential rooftops</span>
+        </Reveal>
+        <Reveal className="who-copy">
+          <p className="eyebrow"><span /> {homeContent.whoWeAre.eyebrow}</p>
+          <h2>{homeContent.whoWeAre.title}<br /><em>{homeContent.whoWeAre.subtitle}</em></h2>
+          <p><strong>{homeContent.whoWeAre.lead}</strong></p>
+          <p>{homeContent.whoWeAre.description}</p>
+          <p>{homeContent.whoWeAre.highlight}</p>
+          <div className="about-tagline-badge" style={{ display: 'inline-block', margin: '14px 0 18px', padding: '8px 16px', background: 'rgba(118,186,217,0.12)', border: '1px solid rgba(118,186,217,0.3)', borderRadius: '6px', fontWeight: '700', fontSize: '13px', color: 'var(--brand-primary-dark)' }}>
+            {homeContent.whoWeAre.tagline}
+          </div>
+          <p>{homeContent.whoWeAre.conclusion}</p>
+          <a className="text-link" href="/about" onClick={(e) => { e.preventDefault(); navigate('/about') }}>About N Solutions <Arrow /></a>
+        </Reveal>
+      </section>
 
-      <section className="services wrap" id="services"><Reveal className="section-heading"><div><p className="eyebrow"><span /> What we do</p><h2>Solar solutions<br /><em>built for tomorrow.</em></h2></div><p className="heading-note">One accountable partner for the complete solar journey, from feasibility and design to commissioning and care.</p></Reveal><ServicesShowcase /><a className="section-cta text-link" href="/services" onClick={(e) => { e.preventDefault(); navigate('/services') }}>Explore our services <Arrow /></a></section>
+      <section className="services wrap" id="services">
+        <Reveal className="section-heading">
+          <div>
+            <p className="eyebrow"><span /> {homeContent.whatWeDo.eyebrow}</p>
+            <h2>{homeContent.whatWeDo.title}<br /><em>{homeContent.whatWeDo.subtitle}</em></h2>
+          </div>
+          <p className="heading-note">{homeContent.whatWeDo.description}</p>
+        </Reveal>
+        <ServicesShowcase />
+        <a className="section-cta text-link" href="/services" onClick={(e) => { e.preventDefault(); navigate('/services') }}>Explore Our Services <Arrow /></a>
+      </section>
 
-      <section className="journey" id="how-we-work"><div className="wrap journey-grid"><Reveal><p className="eyebrow light"><span /> How we work</p><h2>From planning<br /><em>to performance.</em></h2><p className="journey-copy">A clear overview of the solar project journey, from understanding requirements to commissioning and ongoing support.</p><p className="journey-flow">Requirement → Design → Execution → Support</p><a className="button button-accent" href="/contact" onClick={(e) => { e.preventDefault(); navigate('/contact') }}>Start your project <Arrow /></a></Reveal><div className="steps">{process.map(([number, title]) => <Reveal className="step" key={number}><span>{number}</span><strong>{title}</strong></Reveal>)}</div></div></section>
+      <section className="journey" id="how-we-work">
+        <div className="wrap journey-grid">
+          <Reveal>
+            <p className="eyebrow light"><span /> {homeContent.howWeWork.eyebrow}</p>
+            <h2>{homeContent.howWeWork.title}<br /><em>{homeContent.howWeWork.subtitle}</em></h2>
+            <p className="journey-copy">{homeContent.howWeWork.description}</p>
+            <p className="journey-flow">{homeContent.howWeWork.flow}</p>
+            <a className="button button-accent" href="/contact" onClick={(e) => { e.preventDefault(); navigate('/contact') }}>Start your project <Arrow /></a>
+          </Reveal>
+          <div className="steps">
+            {process.map((step) => (
+              <Reveal className="step" key={step.number}>
+                <span>{step.number}</span>
+                <div>
+                  <strong>{step.title}</strong>
+                  <p style={{ margin: '6px 0 0', fontSize: '13px', color: 'rgba(255,255,255,0.7)', lineHeight: '1.5' }}>{step.text}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
 
-      <section className="chairman wrap"><Reveal className="chairman-copy"><p className="eyebrow"><span /> Chairman's message</p><h2>Shaping the future<br /><em>through solar energy.</em></h2><blockquote>“Our journey is driven by a simple belief — solar energy can create a cleaner, smarter, and more sustainable future.”</blockquote><p className="message-ready">At N Solutions, we are committed to delivering reliable solar solutions through experience, engineering, and responsible execution. With 16+ years of experience, we continue to grow with a clear purpose: to power businesses, industries, homes, and communities through dependable solar energy.</p><div className="signature"><strong>Ch. C.S.V. Raju</strong><small>Managing Partner · N Solutions</small></div></Reveal><Reveal className="chairman-art"><span>NS</span><small>Leadership<br />in solar EPC</small></Reveal></section>
+      <section className="chairman wrap">
+        <Reveal className="chairman-copy">
+          <p className="eyebrow"><span /> {homeContent.chairmanMessage.eyebrow}</p>
+          <h2>{homeContent.chairmanMessage.title}<br /><em>{homeContent.chairmanMessage.subtitle}</em></h2>
+          <blockquote>“{homeContent.chairmanMessage.quote}”</blockquote>
+          <div className="message-ready">
+            {homeContent.chairmanMessage.paragraphs.map((para, i) => (
+              <p key={i}>{para}</p>
+            ))}
+          </div>
+          <div className="signature">
+            <strong>{homeContent.chairmanMessage.author}</strong>
+            <small>{homeContent.chairmanMessage.role}</small>
+          </div>
+        </Reveal>
+        <Reveal className="chairman-art">
+          <span>NS</span>
+          <small>Leadership<br />in solar EPC</small>
+        </Reveal>
+      </section>
 
-      <section className="why"><div className="wrap"><Reveal className="section-heading"><div><p className="eyebrow light"><span /> Why N Solutions</p><h2>Built on experience.<br /><em>Driven by results.</em></h2></div><p className="heading-note">The capabilities and commitment behind every N Solutions project.</p></Reveal><div className="strength-grid">{strengths.map(([number, title, description]) => <Reveal className="strength" key={number}><span>{number}</span><div><strong>{title}</strong><small>{description}</small></div><i>↗</i></Reveal>)}</div></div></section>
+      <section className="why">
+        <div className="wrap">
+          <Reveal className="section-heading">
+            <div>
+              <p className="eyebrow light"><span /> {homeContent.whyChooseUs.eyebrow}</p>
+              <h2>{homeContent.whyChooseUs.title}<br /><em>{homeContent.whyChooseUs.subtitle}</em></h2>
+            </div>
+            <p className="heading-note">{homeContent.whyChooseUs.note}</p>
+          </Reveal>
+          <div className="strength-grid">
+            {strengths.map(([number, title, description]) => (
+              <Reveal className="strength" key={number}>
+                <span>{number}</span>
+                <div>
+                  <strong>{title}</strong>
+                  <small>{description}</small>
+                </div>
+                <i>↗</i>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
 
       <section className="projects wrap" id="projects"><Reveal className="section-heading"><div><p className="eyebrow"><span /> Our work</p><h2>Powering progress<br /><em>across India.</em></h2></div><a className="text-link" href="/projects" onClick={(e) => { e.preventDefault(); navigate('/projects') }}>View all projects <Arrow /></a></Reveal><div className="project-ready"><div><span className="project-ready-number">500+</span><strong>PM Surya Ghar sites completed in Vizianagaram</strong><p>The project showcase is ready for verified project records and images when the public project data is connected.</p></div><a className="button button-accent" href="/projects" onClick={(e) => { e.preventDefault(); navigate('/projects') }}>View all projects <Arrow /></a></div></section>
 
