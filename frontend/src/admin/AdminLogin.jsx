@@ -43,12 +43,15 @@ export default function AdminLogin({ onLoginSuccess }) {
     <div className="adm-login-wrapper">
       <div className="adm-login-card">
         <div className="adm-brand-header">
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '14px' }}>
+            <span className="brand-logo" style={{ font: "400 24px/1 Georgia,'Times New Roman',serif", minWidth: '155px', minHeight: '36px', padding: '3px 12px 5px' }}>N Solutions</span>
+          </div>
           <div className="adm-logo-badge">
             <span className="dot" />
-            <span>Enterprise Portal</span>
+            <span>Admin Control Panel</span>
           </div>
-          <h1>N Solutions Solar</h1>
-          <p>Sign in to access the administrator control panel</p>
+          <h1>Admin Portal</h1>
+          <p>Sign in to access project records and business operations</p>
         </div>
 
         {error && (

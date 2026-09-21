@@ -232,10 +232,10 @@ export default function AdminPanel({ adminUser, onLogout }) {
       {/* Sidebar */}
       <aside className="adm-sidebar">
         <div className="adm-sidebar-brand">
-          <div className="adm-brand-text">
-            <span className="adm-brand-name">N Solutions</span>
-            <span className="adm-brand-sub">Admin Portal</span>
+          <div className="brand" style={{ gap: '10px' }}>
+            <span className="brand-logo" style={{ font: "400 20px/1 Georgia,'Times New Roman',serif", minWidth: '130px', minHeight: '32px', padding: '2px 10px 4px' }}>N Solutions</span>
           </div>
+          <span className="adm-brand-badge">Admin</span>
         </div>
 
         <nav className="adm-sidebar-nav">
@@ -354,7 +354,7 @@ export default function AdminPanel({ adminUser, onLogout }) {
                 <div className="adm-stat-card">
                   <div className="adm-stat-header">
                     <span className="adm-stat-label">Total Leads</span>
-                    <div className="adm-stat-icon" style={{ background: 'rgba(245, 158, 11, 0.15)', color: '#f59e0b' }}>
+                    <div className="adm-stat-icon" style={{ background: 'rgba(8, 117, 182, 0.1)', color: '#0875b6' }}>
                       👥
                     </div>
                   </div>
@@ -367,7 +367,7 @@ export default function AdminPanel({ adminUser, onLogout }) {
                 <div className="adm-stat-card">
                   <div className="adm-stat-header">
                     <span className="adm-stat-label">Active Projects</span>
-                    <div className="adm-stat-icon" style={{ background: 'rgba(2, 132, 199, 0.15)', color: '#38bdf8' }}>
+                    <div className="adm-stat-icon" style={{ background: 'rgba(2, 132, 199, 0.1)', color: '#0284c7' }}>
                       ⚡
                     </div>
                   </div>
@@ -382,7 +382,7 @@ export default function AdminPanel({ adminUser, onLogout }) {
                 <div className="adm-stat-card">
                   <div className="adm-stat-header">
                     <span className="adm-stat-label">Installed Capacity</span>
-                    <div className="adm-stat-icon" style={{ background: 'rgba(16, 185, 129, 0.15)', color: '#10b981' }}>
+                    <div className="adm-stat-icon" style={{ background: 'rgba(5, 150, 105, 0.1)', color: '#059669' }}>
                       ☀️
                     </div>
                   </div>
@@ -395,7 +395,7 @@ export default function AdminPanel({ adminUser, onLogout }) {
                 <div className="adm-stat-card">
                   <div className="adm-stat-header">
                     <span className="adm-stat-label">Catalog Products</span>
-                    <div className="adm-stat-icon" style={{ background: 'rgba(168, 85, 247, 0.15)', color: '#c084fc' }}>
+                    <div className="adm-stat-icon" style={{ background: 'rgba(124, 58, 237, 0.1)', color: '#7c3aed' }}>
                       📦
                     </div>
                   </div>
