@@ -109,6 +109,10 @@ export const homeContent = {
     title: 'Shaping the future',
     subtitle: 'through solar energy.',
     quote: '“Our journey is driven by a simple belief — solar energy can create a cleaner, smarter, and more sustainable future.”',
+    paragraphs: [
+      'At N Solutions, we are committed to delivering reliable solar solutions through experience, engineering, and responsible execution. Our focus is to understand every customer’s energy needs and create solutions that deliver meaningful value.',
+      'With 16+ years of experience, we continue to grow with a clear purpose: to power businesses, industries, homes, and communities through dependable solar energy.'
+    ],
     body: [
       'At N Solutions, we are committed to delivering reliable solar solutions through experience, engineering, and responsible execution. Our focus is to understand every customer’s energy needs and create solutions that deliver meaningful value.',
       'With 16+ years of experience, we continue to grow with a clear purpose: to power businesses, industries, homes, and communities through dependable solar energy.'

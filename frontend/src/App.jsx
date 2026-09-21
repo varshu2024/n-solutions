@@ -732,7 +732,7 @@ function App() {
           <h2>{homeContent.chairmanMessage.title}<br /><em>{homeContent.chairmanMessage.subtitle}</em></h2>
           <blockquote>“{homeContent.chairmanMessage.quote}”</blockquote>
           <div className="message-ready">
-            {homeContent.chairmanMessage.paragraphs.map((para, i) => (
+            {(homeContent.chairmanMessage.paragraphs || homeContent.chairmanMessage.body || []).map((para, i) => (
               <p key={i}>{para}</p>
             ))}
           </div>
