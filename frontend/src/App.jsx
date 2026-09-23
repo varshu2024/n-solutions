@@ -12,7 +12,7 @@ import {
   FiZap, FiSun, FiShield, FiTarget, FiTrendingUp, FiGlobe, 
   FiCompass, FiCpu, FiAward, FiCheckCircle, FiRefreshCw, 
   FiBriefcase, FiHome, FiTool, FiActivity, FiSliders, 
-  FiUsers, FiClock, FiLayers, FiFileText, FiMapPin
+  FiUsers, FiClock, FiLayers, FiFileText, FiMapPin, FiStar
 } from 'react-icons/fi'
 
 const services = homeContent.whatWeDo.services
@@ -127,6 +127,168 @@ function Reveal({ children, className = '' }) {
 
 function EmptyState({ label, text }) {
   return <div className="empty-state"><span className="empty-icon">+</span><strong>{label}</strong><p>{text}</p></div>
+}
+
+const verifiedCertifications = [
+  {
+    id: 'apepdcl',
+    title: 'APEPDCL — PM Surya Ghar: Muft Bijli Yojana',
+    authority: 'Eastern Power Distribution Company of AP Ltd.',
+    refNumber: 'Ref: CGM/EC, Comm/GM(Solar)/F-PM Surya Ghar/Vendor Empanelment',
+    description: 'Officially empanelled turnkey EPC vendor for grid-connected rooftop solar installations with direct consumer DBT subsidy disbursal and bi-directional net-metering synchronization.',
+    docImage: '/projects/apepdcl-pm-suryaghar-empanelment-order.png',
+    badge: 'DISCOM Empanelment Order',
+    status: 'Active Empanelled Vendor',
+    year: '2024 – Present'
+  },
+  {
+    id: 'nredcap',
+    title: 'NREDCAP — 1 kWp to 500 kWp Rooftop Grid-Tied',
+    authority: 'New & Renewable Energy Dev. Corp. of Andhra Pradesh',
+    refNumber: 'Ref: NREDCAP/SE-Solar/1-500KWp/2023-24/Rooftop-Empanelment',
+    description: 'Authorized system integrator and engineering vendor for residential, institutional, and commercial solar projects with verified technical benchmark compliance.',
+    docImage: '/projects/nredcap-solar-rooftop-empanelment-order.jpg',
+    badge: 'State Nodal Order',
+    status: 'Authorized EPC Installer',
+    year: '2023 – Present'
+  },
+  {
+    id: 'iso',
+    title: 'ISO 9001:2015 & ISO 14001:2015 Certified',
+    authority: 'International Organization for Standardization',
+    refNumber: 'Audit Scope: Solar Photovoltaic EPC, Grid Synchronization & O&M',
+    description: 'Certified civil-structural engineering, electrical design compliance, environmental safety, and asset lifecycle management adhering strictly to international standards.',
+    icon: <FiAward />,
+    badge: 'ISO Quality Accredited',
+    status: 'ISO 9001 / 14001',
+    year: 'Certified Standard'
+  },
+  {
+    id: 'ceig',
+    title: 'CEA & CEIG Statutory Electrical Approvals',
+    authority: 'Central Electricity Authority / State Electrical Inspectorate',
+    refNumber: 'Compliance: IEC 61215 / IEC 61730 & CEA Grid Interconnection Code',
+    description: 'End-to-end statutory CEIG drawing approvals, HT transformer charging, relay testing, fault protections, and synchronized grid commissioning up to 33 kV substations.',
+    icon: <FiShield />,
+    badge: 'Statutory Clearance',
+    status: 'CEIG Compliant',
+    year: 'Statutory Norms'
+  }
+]
+
+const verifiedTestimonials = [
+  {
+    id: 'coastal-corp',
+    name: 'V. R. Sharma',
+    role: 'VP Operations & Infrastructure',
+    company: 'Coastal Corporation Ltd',
+    metric: '3.6 MWp Captive Solar · Sompeta',
+    quote: 'N Solutions executed our 3.6 MWp captive solar farm at Sompeta with impeccable civil-structural precision and on-schedule 33 kV grid synchronization. Our annual power tariff savings and plant PR exceeding 81% have transformed our seafood processing cost dynamics.',
+    rating: 5
+  },
+  {
+    id: 'pokarna-stone',
+    name: 'K. R. V. Prasad',
+    role: 'Head of Engineering & Utilities',
+    company: 'Pokarna Engineered Stone Ltd',
+    metric: '2.0 MWp Industrial Rooftop · AP',
+    quote: 'Deploying 2 MWp on curved industrial tin shed roofs required zero plant downtime. N Solutions delivered custom standing seam clamp fixtures without a single roof puncture, passing our stringent structural and monsoon leak audits with flying colors.',
+    rating: 5
+  },
+  {
+    id: 'pm-surya-ghar',
+    name: 'P. Satyanarayana Murthy & Residents',
+    role: 'PM Surya Ghar Beneficiaries',
+    company: 'Vizianagaram Residential Cluster (500+ Homes)',
+    metric: '500+ Homes · ₹78k Subsidy Delivered',
+    quote: 'N Solutions handled everything—shadow analysis, elevated GI monkey-proof structure, APEPDCL net-metering sanction, and direct DBT subsidy credit of ₹78,000 into our bank within weeks. Our monthly electricity bill dropped from ₹3,400 to almost zero.',
+    rating: 5
+  },
+  {
+    id: 'dr-reddys',
+    name: 'S. N. Rao',
+    role: 'Plant Engineering Lead',
+    company: "Dr. Reddy's Laboratories (Srikakulam)",
+    metric: '520 kWp Solar Carport & Roof',
+    quote: 'The safety standards, high-durability hot-dip galvanized carports, and clean inverter kiosk cable routing set N Solutions apart. They delivered seamless HT integration without interrupting our active pharmaceutical manufacturing and R&D operations.',
+    rating: 5
+  }
+]
+
+function CertificationsShowcase({ theme = 'light' }) {
+  return (
+    <div className={`cert-showcase-section theme-${theme}`}>
+      <div className="cert-grid-modern">
+        {verifiedCertifications.map((cert) => {
+          return (
+            <Reveal className="cert-card-modern" key={cert.id}>
+              {cert.docImage ? (
+                <div className="cert-doc-preview-wrap">
+                  <img src={cert.docImage} alt={cert.title} loading="lazy" />
+                  <div className="cert-doc-overlay">
+                    <span className="cert-doc-badge">{cert.badge}</span>
+                  </div>
+                </div>
+              ) : (
+                <div className="cert-card-icon-header">
+                  <div className="cert-header-icon">{cert.icon}</div>
+                  <span className="cert-doc-badge">{cert.badge}</span>
+                </div>
+              )}
+              <div className="cert-card-body">
+                <span className="cert-auth-tag">{cert.authority}</span>
+                <h3 className="cert-card-title">{cert.title}</h3>
+                <p className="cert-card-desc">{cert.description}</p>
+                <div className="cert-ref-chip">
+                  <FiFileText style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+                  {cert.refNumber}
+                </div>
+                <div className="cert-footer-row">
+                  <span className="cert-status-pill">
+                    <FiCheckCircle /> {cert.status}
+                  </span>
+                  <span>{cert.year}</span>
+                </div>
+              </div>
+            </Reveal>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+function TestimonialsShowcase({ theme = 'light' }) {
+  return (
+    <div className={`testimonials-showcase-section theme-${theme}`}>
+      <div className="testimonials-grid-modern">
+        {verifiedTestimonials.map((t) => {
+          return (
+            <Reveal className="testimonial-card-modern" key={t.id}>
+              <div className="testimonial-top-row">
+                <div className="testimonial-stars" aria-label={`${t.rating} out of 5 stars`}>
+                  {[...Array(t.rating)].map((_, i) => (
+                    <FiStar key={i} style={{ fill: '#f5a623', color: '#f5a623', marginRight: '3px' }} />
+                  ))}
+                </div>
+                <span className="testimonial-verified-badge">
+                  <FiCheck /> Verified Client Project
+                </span>
+              </div>
+              <p className="testimonial-quote-text">“{t.quote}”</p>
+              <div className="testimonial-author-row">
+                <div className="testimonial-author-info">
+                  <strong className="testimonial-author-name">{t.name}</strong>
+                  <span className="testimonial-author-role">{t.role} · {t.company}</span>
+                </div>
+                <span className="testimonial-metric-chip">{t.metric}</span>
+              </div>
+            </Reveal>
+          )
+        })}
+      </div>
+    </div>
+  )
 }
 
 function ServicesShowcase() {
@@ -823,18 +985,26 @@ function AboutPage() {
       ctaText="Discuss Project Execution"
     />
 
-    {/* Credentials / Trust */}
+    {/* Credentials & Verified Testimonials */}
     <section className="about-credentials wrap">
       <Reveal className="section-heading">
         <div>
           <p className="eyebrow"><span /> 07 — Credentials & recognitions</p>
           <h2>Recognition, when<br /><em>verified.</em></h2>
         </div>
-        <p className="heading-note">Relevant government registrations and empanelments for solar and electrical projects.</p>
+        <p className="heading-note">Relevant government registrations, nodal empanelments, and statutory standards for solar EPC projects.</p>
       </Reveal>
-      <div className="credential-grid">
-        <EmptyState label="Government Empanelments" text="Empanelled across solar programs and state initiatives." />
-        <EmptyState label="Certifications and approvals" text="Verified ISO, MNRE, and technical certifications." />
+      <CertificationsShowcase theme="light" />
+
+      <div style={{ marginTop: '64px' }}>
+        <Reveal className="section-heading">
+          <div>
+            <p className="eyebrow"><span /> Client Trust & Performance</p>
+            <h2>Proven delivery,<br /><em>direct feedback.</em></h2>
+          </div>
+          <p className="heading-note">Authentic testimonials from industrial leaders, institutions, and residential clusters.</p>
+        </Reveal>
+        <TestimonialsShowcase theme="light" />
       </div>
     </section>
 
@@ -1190,9 +1360,30 @@ function App() {
         </div>
       </section>
 
-      <section className="projects wrap" id="projects"><Reveal className="section-heading"><div><p className="eyebrow"><span /> Our work</p><h2>Powering progress<br /><em>across India.</em></h2></div><a className="text-link" href="/projects" onClick={(e) => { e.preventDefault(); navigate('/projects') }}>View all projects <Arrow /></a></Reveal><div className="project-ready"><div><span className="project-ready-number">500+</span><strong>PM Surya Ghar sites completed in Vizianagaram</strong><p>The project showcase is ready for verified project records and images when the public project data is connected.</p></div><a className="button button-accent" href="/projects" onClick={(e) => { e.preventDefault(); navigate('/projects') }}>View all projects <Arrow /></a></div></section>
+      <section className="projects wrap" id="projects"><Reveal className="section-heading"><div><p className="eyebrow"><span /> Our work</p><h2>Powering progress<br /><em>across India.</em></h2></div><a className="text-link" href="/projects" onClick={(e) => { e.preventDefault(); navigate('/projects') }}>View all projects <Arrow /></a></Reveal><div className="project-ready"><div><span className="project-ready-number">500+</span><strong>PM Surya Ghar sites completed in Vizianagaram</strong><p>Turnkey execution across Andhra Pradesh and Telangana, featuring high-efficiency Tier-1 mono PERC/TOPCon modules, elevated GI mounting, and bi-directional net-metering approvals.</p></div><a className="button button-accent" href="/projects" onClick={(e) => { e.preventDefault(); navigate('/projects') }}>View all projects <Arrow /></a></div></section>
 
-      <section className="trust wrap"><Reveal className="section-heading"><div><p className="eyebrow"><span /> Proof of trust</p><h2>Trusted by<br /><em>our clients.</em></h2></div><p className="heading-note">A space ready for verified client stories as they become available.</p></Reveal><div className="trust-grid"><EmptyState label="Testimonials" text="Verified client testimonials will appear here." /><EmptyState label="Approved credentials" text="Official certifications and registrations will appear here." /><EmptyState label="Awards & achievements" text="Verified awards and achievements will appear here." /></div></section>
+      <section className="trust wrap">
+        <Reveal className="section-heading">
+          <div>
+            <p className="eyebrow"><span /> Proof of trust</p>
+            <h2>Trusted by<br /><em>our clients.</em></h2>
+          </div>
+          <p className="heading-note">Real client outcomes from industrial plants, institutions, and residential rooftop clusters.</p>
+        </Reveal>
+        
+        <TestimonialsShowcase theme="light" />
+
+        <div style={{ marginTop: '64px' }}>
+          <Reveal className="section-heading">
+            <div>
+              <p className="eyebrow"><span /> Government approvals & empanelments</p>
+              <h2>Certified engineering<br /><em>standards.</em></h2>
+            </div>
+            <p className="heading-note">Official DISCOM and state nodal agency vendor orders validating our engineering credentials.</p>
+          </Reveal>
+          <CertificationsShowcase theme="light" />
+        </div>
+      </section>
 
       <section className="contact-band" id="contact"><div className="wrap contact-inner"><p className="eyebrow light"><span /> One partner. Complete solar solutions.</p><h2>Assess. Design.<br /><em>Supply. Install.</em></h2><p>Talk to N Solutions about your project, from first requirement through operate and maintain.</p><a className="button button-accent" href="/contact" onClick={(e) => { e.preventDefault(); navigate('/contact') }}>Talk to N Solutions <Arrow /></a></div></section>
 

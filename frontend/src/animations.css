@@ -2260,3 +2260,336 @@ h2 em {
     font-size: 12px;
   }
 }
+
+/* ==========================================================================
+   VERIFIED CERTIFICATIONS & CLIENT TESTIMONIALS (BESPOKE TRUST SUITE)
+   ========================================================================== */
+.cert-showcase-section,
+.testimonials-showcase-section {
+  position: relative;
+  width: 100%;
+}
+
+.cert-showcase-section.theme-light,
+.testimonials-showcase-section.theme-light {
+  color: #072742;
+}
+
+.cert-showcase-section.theme-dark,
+.testimonials-showcase-section.theme-dark {
+  color: #ffffff;
+}
+
+/* Certifications Grid */
+.cert-grid-modern {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 28px;
+  margin-top: 36px;
+}
+
+.cert-card-modern {
+  background: #ffffff;
+  border: 1px solid rgba(8, 117, 182, 0.16);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 12px 36px rgba(7, 39, 66, 0.05);
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+.theme-dark .cert-card-modern {
+  background: linear-gradient(135deg, rgba(8, 30, 52, 0.85) 0%, rgba(5, 20, 36, 0.95) 100%);
+  border-color: rgba(118, 186, 217, 0.22);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+}
+
+.cert-card-modern:hover {
+  transform: translateY(-4px);
+  border-color: #0875b6;
+  box-shadow: 0 20px 48px rgba(8, 117, 182, 0.14);
+}
+.theme-dark .cert-card-modern:hover {
+  border-color: #00d2ff;
+  box-shadow: 0 20px 48px rgba(0, 210, 255, 0.2);
+}
+
+.cert-doc-preview-wrap {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+  background: #072742;
+}
+
+.cert-doc-preview-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  transition: transform 0.4s ease;
+}
+
+.cert-card-modern:hover .cert-doc-preview-wrap img {
+  transform: scale(1.04);
+}
+
+.cert-doc-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(7, 39, 66, 0.2) 0%, rgba(7, 39, 66, 0.8) 100%);
+  display: flex;
+  align-items: flex-end;
+  padding: 16px 20px;
+}
+
+.cert-doc-badge {
+  background: rgba(0, 210, 255, 0.2);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(0, 210, 255, 0.45);
+  color: #00d2ff;
+  font: 700 11px 'Manrope', sans-serif;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: 6px;
+}
+
+.cert-card-body {
+  padding: 26px 28px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.cert-auth-tag {
+  font: 700 11px 'Manrope', sans-serif;
+  color: #0875b6;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
+}
+.theme-dark .cert-auth-tag {
+  color: #76bad9;
+}
+
+.cert-card-title {
+  font: 800 20px/1.3 'Manrope', sans-serif;
+  color: #072742;
+  margin: 0 0 10px 0;
+}
+.theme-dark .cert-card-title {
+  color: #ffffff;
+}
+
+.cert-card-desc {
+  font-size: 14px;
+  line-height: 1.65;
+  color: #4a6375;
+  margin: 0 0 16px 0;
+}
+.theme-dark .cert-card-desc {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.cert-ref-chip {
+  background: rgba(8, 117, 182, 0.06);
+  border: 1px dashed rgba(8, 117, 182, 0.25);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font: 600 11.5px/1.4 'JetBrains Mono', Consolas, monospace;
+  color: #0875b6;
+  word-break: break-all;
+  margin-bottom: 18px;
+}
+.theme-dark .cert-ref-chip {
+  background: rgba(118, 186, 217, 0.08);
+  border-color: rgba(118, 186, 217, 0.25);
+  color: #76bad9;
+}
+
+.cert-footer-row {
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid rgba(8, 117, 182, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #647b8c;
+}
+.theme-dark .cert-footer-row {
+  border-top-color: rgba(118, 186, 217, 0.12);
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.cert-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #27ae60;
+  font-weight: 700;
+}
+.theme-dark .cert-status-pill {
+  color: #2ecc71;
+}
+
+/* Icon-only Cert Card (ISO / CEIG) */
+.cert-card-icon-header {
+  padding: 24px 28px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cert-header-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(8, 117, 182, 0.1);
+  border: 1px solid rgba(8, 117, 182, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  color: #0875b6;
+}
+.theme-dark .cert-header-icon {
+  background: rgba(0, 210, 255, 0.12);
+  border-color: rgba(0, 210, 255, 0.35);
+  color: #00d2ff;
+}
+
+/* Testimonials Grid */
+.testimonials-grid-modern {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 26px;
+  margin-top: 36px;
+}
+
+.testimonial-card-modern {
+  background: #ffffff;
+  border: 1px solid rgba(8, 117, 182, 0.14);
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(7, 39, 66, 0.04);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+  position: relative;
+}
+.theme-dark .testimonial-card-modern {
+  background: linear-gradient(135deg, rgba(8, 30, 52, 0.8) 0%, rgba(5, 20, 36, 0.9) 100%);
+  border-color: rgba(118, 186, 217, 0.2);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
+}
+
+.testimonial-card-modern:hover {
+  transform: translateY(-4px);
+  border-color: #0875b6;
+  box-shadow: 0 16px 44px rgba(8, 117, 182, 0.12);
+}
+.theme-dark .testimonial-card-modern:hover {
+  border-color: #00d2ff;
+  box-shadow: 0 16px 44px rgba(0, 210, 255, 0.18);
+}
+
+.testimonial-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.testimonial-stars {
+  color: #f5a623;
+  letter-spacing: 2px;
+  font-size: 15px;
+}
+
+.testimonial-verified-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(39, 174, 96, 0.1);
+  border: 1px solid rgba(39, 174, 96, 0.25);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font: 700 10.5px 'Manrope', sans-serif;
+  color: #27ae60;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.theme-dark .testimonial-verified-badge {
+  background: rgba(46, 204, 113, 0.12);
+  border-color: rgba(46, 204, 113, 0.35);
+  color: #2ecc71;
+}
+
+.testimonial-quote-text {
+  font: italic 500 15px/1.7 'Manrope', sans-serif;
+  color: #17354f;
+  margin: 0 0 22px 0;
+  flex-grow: 1;
+}
+.theme-dark .testimonial-quote-text {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.testimonial-author-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 18px;
+  border-top: 1px solid rgba(8, 117, 182, 0.1);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.theme-dark .testimonial-author-row {
+  border-top-color: rgba(118, 186, 217, 0.14);
+}
+
+.testimonial-author-info {
+  display: flex;
+  flex-direction: column;
+}
+.testimonial-author-name {
+  font: 800 15px 'Manrope', sans-serif;
+  color: #072742;
+}
+.theme-dark .testimonial-author-name {
+  color: #ffffff;
+}
+
+.testimonial-author-role {
+  font-size: 12.5px;
+  color: #647b8c;
+}
+.theme-dark .testimonial-author-role {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.testimonial-metric-chip {
+  background: rgba(8, 117, 182, 0.08);
+  border: 1px solid rgba(8, 117, 182, 0.2);
+  color: #0875b6;
+  font: 700 11px 'Manrope', sans-serif;
+  padding: 5px 11px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+.theme-dark .testimonial-metric-chip {
+  background: rgba(0, 210, 255, 0.12);
+  border-color: rgba(0, 210, 255, 0.3);
+  color: #00d2ff;
+}
+
+@media (max-width: 900px) {
+  .cert-grid-modern,
+  .testimonials-grid-modern {
+    grid-template-columns: 1fr;
+  }
+}
