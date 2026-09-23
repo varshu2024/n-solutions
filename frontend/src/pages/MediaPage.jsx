@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { SiteHeader, SiteFooter, Arrow, Reveal, navigate } from '../components/Shared'
+import { FiPlay, FiMapPin, FiArrowDown, FiArrowUpRight, FiX } from 'react-icons/fi'
 
 export const pressArticles = [
   {
@@ -297,7 +298,7 @@ export default function MediaPage() {
                   className={`playlist-item ${activeVideo === '/media/products.mp4' ? 'is-playing' : ''}`}
                   onClick={() => setActiveVideo('/media/products.mp4')}
                 >
-                  <span className="playlist-icon">▶</span>
+                  <span className="playlist-icon"><FiPlay size={14} /></span>
                   <div>
                     <strong>Solar Products & System Equipment</strong>
                     <small>Tier-1 PV modules, smart string inverters & protection gear</small>
@@ -370,7 +371,7 @@ export default function MediaPage() {
                   <div className="gallery-card-overlay">
                     <span className="gallery-category">{photo.category}</span>
                     <h4>{photo.title}</h4>
-                    <small>📍 {photo.location}</small>
+                    <small><FiMapPin size={12} style={{ verticalAlign: 'middle', marginRight: 2 }} />{photo.location}</small>
                   </div>
                 </Reveal>
               ))}
@@ -405,7 +406,7 @@ export default function MediaPage() {
                     alert('Brand asset pack: Vector SVG & high-resolution PNG logos are packaged in the project repository.')
                   }}
                 >
-                  Download Logo Assets (ZIP) ↓
+                  Download Logo Assets (ZIP) <FiArrowDown style={{ verticalAlign: 'middle' }} />
                 </a>
               </div>
 
@@ -421,7 +422,7 @@ export default function MediaPage() {
                     navigate('/contact')
                   }}
                 >
-                  Request Corporate Deck (PDF) →
+                  Request Corporate Deck (PDF) <FiArrowUpRight style={{ verticalAlign: 'middle' }} />
                 </a>
               </div>
 
@@ -434,7 +435,7 @@ export default function MediaPage() {
                   className="kit-download-btn"
                   onClick={() => setActiveArticle(pressArticles[3])}
                 >
-                  View Executive Profile →
+                  View Executive Profile <FiArrowUpRight style={{ verticalAlign: 'middle' }} />
                 </button>
               </div>
             </div>
@@ -473,7 +474,7 @@ export default function MediaPage() {
                 onClick={() => setActiveArticle(null)}
                 aria-label="Close article"
               >
-                ✕
+                <FiX size={20} />
               </button>
 
               <div className="article-modal-header">
@@ -529,13 +530,13 @@ export default function MediaPage() {
                 className="modal-close-btn"
                 onClick={() => setActivePhoto(null)}
               >
-                ✕
+                <FiX size={20} />
               </button>
               <img src={activePhoto.src} alt={activePhoto.title} />
               <div className="photo-lightbox-caption">
                 <span className="badge-tag">{activePhoto.category}</span>
                 <h3>{activePhoto.title}</h3>
-                <p>📍 {activePhoto.location}</p>
+                <p><FiMapPin size={14} style={{ verticalAlign: 'middle', marginRight: 3 }} />{activePhoto.location}</p>
               </div>
             </div>
           </div>

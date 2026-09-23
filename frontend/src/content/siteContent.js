@@ -57,8 +57,8 @@ export const homeContent = {
       },
       {
         number: '06',
-        title: 'Solar Products & Pumps',
-        text: 'Solar panels, inverters, essential system components, and solar pumping solutions. We support projects with the products and systems required for solar implementation.',
+        title: 'Solar Products & Systems',
+        text: 'Solar panels, inverters, essential system components, structures, and accessories. We support projects with the Tier-1 equipment required for robust solar implementation.',
         image: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=900&q=85'
       }
     ]
@@ -127,14 +127,14 @@ export const homeContent = {
     subtitle: 'Driven by results.',
     note: 'The capabilities and commitment behind every N Solutions project.',
     strengths: [
-      ['01', '16+ Years of Experience', 'Proven experience in solar operations and project execution.'],
-      ['02', 'Presence Across 9 States', 'Our project experience extends across multiple states in India.'],
-      ['03', 'End-to-End EPC Expertise', 'From engineering and procurement to installation and commissioning, we manage the complete solar project lifecycle.'],
-      ['04', 'Commercial & Industrial Focus', 'Strong focus on customized solar solutions for C&I energy requirements.'],
-      ['05', 'Customized Solar Solutions', 'Every project is planned around its specific site, energy needs, and objectives.'],
-      ['06', 'Government Empanelments', 'Recognized through relevant government registrations and empanelments for solar and electrical projects.'],
-      ['07', 'Quality & Safety First', 'Professional execution with strong attention to quality, safety, and project requirements.'],
-      ['08', 'Complete Solar Support', 'From initial consultation to installation, commissioning, O&M, and ongoing support, we stay with the project beyond installation.']
+      { number: '01', title: '16+ Years of Experience', description: 'Proven experience in solar operations and multi-megawatt project execution.', stat: '16+ Yrs' },
+      { number: '02', title: 'Presence Across 9 States', description: 'Our project footprint extends across 9 states with multi-region field logistics.', stat: '9 States' },
+      { number: '03', title: 'End-to-End EPC Expertise', description: 'From system engineering and procurement to installation and commissioning, we manage the complete lifecycle.', stat: '360° EPC' },
+      { number: '04', title: 'Commercial & Industrial Focus', description: 'Customized high-efficiency solar solutions engineered for commercial & industrial power savings.', stat: 'C&I Power' },
+      { number: '05', title: 'Customized Solar Solutions', description: 'Every project is engineered around specific site conditions, energy loads, and net-metering objectives.', stat: 'Custom' },
+      { number: '06', title: 'Government Empanelments', description: 'Recognized with relevant government registrations, NREDCAP, and PM Surya Ghar empanelments.', stat: 'Empanelled' },
+      { number: '07', title: 'Quality & Safety First', description: 'Zero-compromise engineering, Tier-1 components, and rigorous safety protocols across every site.', stat: 'Safety 1st' },
+      { number: '08', title: 'Complete Solar Support', description: 'Comprehensive warranty, preventive maintenance, and responsive technical assistance for decades.', stat: 'Full O&M' }
     ]
   }
 }
@@ -147,7 +147,7 @@ export const aboutContent = {
     lead: 'N Solutions is a solar Engineering, Procurement and Construction (EPC) company focused on delivering complete solar energy solutions for diverse project requirements.',
     paragraphs: [
       'With 16+ years of experience and operations across 9 states in India, we combine technical understanding with practical project execution.',
-      'Our expertise covers Commercial & Industrial Solar, Residential Rooftop Solar, Solar EPC, Government Solar Projects, PM Surya Ghar implementation, Solar Power Plants, Solar Products, Solar Pumps, O&M, and Energy Efficiency Solutions.',
+      'Our expertise covers Commercial & Industrial Solar, Residential Rooftop Solar, Solar EPC, Government Solar Projects, PM Surya Ghar implementation, Solar Power Plants, Solar Products, and Lifecycle Operation & Maintenance (O&M).',
       'We take a complete project approach—starting with understanding energy requirements and site conditions, followed by engineering and system design, procurement of suitable components, professional installation, testing, commissioning, and ongoing support.'
     ],
     pillars: [
@@ -243,14 +243,13 @@ export const aboutContent = {
     subtitle: 'Built Around Your Needs.',
     intro: 'N Solutions delivers a range of solar products and services for residential, commercial, industrial, and government requirements. Our approach covers the complete project journey—from planning and engineering to installation, commissioning, and ongoing support.',
     capabilities: [
-      ['01', 'Solar EPC', 'Complete Engineering, Procurement and Construction solutions for solar projects, covering design, procurement, installation, and commissioning.'],
-      ['02', 'Commercial & Industrial Solar', 'Customized solar solutions for commercial and industrial requirements, designed around project needs and energy usage.'],
-      ['03', 'Residential Rooftop Solar', 'Rooftop solar solutions for homes, with support for installation and applicable solar scheme requirements.'],
-      ['04', 'Government Solar Projects', 'Solar solutions and project implementation for government requirements and initiatives.'],
-      ['05', 'Installation & Commissioning', 'Professional installation, testing, commissioning, and system handover for solar projects.'],
-      ['06', 'Operation & Maintenance', 'Ongoing operation and maintenance support to help solar systems operate reliably.'],
-      ['07', 'Solar Products & Systems', 'Solar panels, inverters, earth pits, lightning arrestors, accessories, and other required solar system components.'],
-      ['08', 'Solar Pumps & Energy Solutions', 'Solar pumping solutions and energy-efficiency solutions for suitable applications.']
+      { number: '01', title: 'Solar EPC', text: 'Complete Engineering, Procurement and Construction solutions for solar projects, covering design, procurement, installation, and commissioning.', image: '/projects/coastal-corp-3-6mwp-sompeta-aerial.jpg', tag: 'Turnkey EPC' },
+      { number: '02', title: 'Commercial & Industrial Solar', text: 'Customized solar solutions for commercial and industrial requirements, designed around project needs and energy usage.', image: 'https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?auto=format&fit=crop&w=1000&q=85', tag: 'C&I Power' },
+      { number: '03', title: 'Residential Rooftop Solar', text: 'Rooftop solar solutions for homes, with support for installation and applicable solar scheme requirements.', image: 'https://images.unsplash.com/photo-1559302504-64aae6ca6b6d?auto=format&fit=crop&w=1000&q=85', tag: 'Residential' },
+      { number: '04', title: 'Government Solar Projects', text: 'Solar solutions and project implementation for government requirements and public sector initiatives.', image: '/projects/jharkhand-high-court-carport-aerial.jpg', tag: 'Public Sector' },
+      { number: '05', title: 'Installation & Commissioning', text: 'Professional installation, testing, commissioning, and system handover for solar projects.', image: '/projects/dr-reddys-520kwp-transformer-station.jpg', tag: 'Commissioning' },
+      { number: '06', title: 'Operation & Maintenance', text: 'Ongoing operation and maintenance support to help solar systems operate reliably and maximize energy yield.', image: 'https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&w=1000&q=85', tag: 'Lifecycle O&M' },
+      { number: '07', title: 'Solar Products & Systems', text: 'Solar panels, inverters, earth pits, lightning arrestors, accessories, and other required solar system components.', image: '/projects/pokarna-stone-2mwp-solis-inverters.jpg', tag: 'Components' }
     ],
     conclusion: 'Our capabilities bring solar technology, engineering expertise, and project execution together to provide practical solutions across different scales and applications.',
     flow: 'Plan → Engineer → Procure → Install → Commission → Support'
@@ -285,6 +284,8 @@ export const servicesAndSolutionsContent = {
     {
       number: '01',
       title: 'Commercial Solar Installation',
+      tag: 'Commercial Rooftop & Carports',
+      image: 'https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?auto=format&fit=crop&w=1200&q=85',
       text: 'Turnkey solar installations for commercial establishments, designed to make effective use of available rooftop or project space and support the transition to clean energy.',
       detail: 'Our team supports the project through requirement assessment, site evaluation, system planning, installation, testing, and commissioning.',
       benefits: [
@@ -301,6 +302,8 @@ export const servicesAndSolutionsContent = {
     {
       number: '02',
       title: 'Residential Solar Installation',
+      tag: 'Home Solar & Apartments',
+      image: 'https://images.unsplash.com/photo-1559302504-64aae6ca6b6d?auto=format&fit=crop&w=1200&q=85',
       text: 'Reliable rooftop solar solutions for homes, planned according to household electricity requirements, available roof area, and applicable solar program requirements.',
       detail: 'We support customers from initial consultation and site assessment through system installation and commissioning.',
       benefits: [
@@ -317,6 +320,8 @@ export const servicesAndSolutionsContent = {
     {
       number: '03',
       title: 'Industrial Solar Installation',
+      tag: 'Factories & Industrial Parks',
+      image: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=1200&q=85',
       text: 'Solar solutions designed for industrial facilities with larger energy requirements and more complex site and electrical conditions.',
       detail: 'Our approach considers the facility, energy requirement, available installation area, electrical infrastructure, and project scope before implementation.',
       benefits: [
@@ -333,6 +338,8 @@ export const servicesAndSolutionsContent = {
     {
       number: '04',
       title: 'Solar EPC Solutions',
+      tag: 'Turnkey Engineering & Execution',
+      image: '/projects/coastal-corp-3-6mwp-sompeta-aerial.jpg',
       text: 'End-to-end Engineering, Procurement and Construction services covering the complete solar project lifecycle.',
       detail: 'We coordinate the major stages of a project—from engineering and system design to procurement, installation, testing, commissioning, and handover.',
       benefits: [
@@ -349,6 +356,8 @@ export const servicesAndSolutionsContent = {
     {
       number: '05',
       title: 'Government Solar Projects',
+      tag: 'Public Infrastructure & Institutions',
+      image: '/projects/jharkhand-high-court-carport-aerial.jpg',
       text: 'Solar solutions supporting government requirements and applicable renewable-energy initiatives.',
       detail: 'We approach each project according to its technical requirements, site conditions, scope, documentation, implementation process, and applicable guidelines.',
       benefits: [
@@ -365,6 +374,8 @@ export const servicesAndSolutionsContent = {
     {
       number: '06',
       title: 'PM Surya Ghar',
+      tag: 'Central Rooftop Solar Scheme',
+      image: '/projects/pm-surya-ghar-vizianagaram-elevated-gi.jpg',
       text: 'Residential rooftop solar implementation support under the PM Surya Ghar scheme for eligible customers.',
       detail: 'N Solutions can support the applicable process from understanding the requirement and system planning to installation and commissioning, subject to scheme guidelines and customer eligibility.',
       benefits: [
@@ -380,6 +391,8 @@ export const servicesAndSolutionsContent = {
     {
       number: '07',
       title: 'Open Access Solar Power',
+      tag: 'Utility Scale & Off-Site Power',
+      image: '/projects/coastal-corp-overview.jpg',
       text: 'Renewable power solutions for eligible commercial and industrial consumers looking to source solar electricity through applicable open-access arrangements.',
       detail: 'We help customers understand the project structure, renewable-energy requirement, applicable framework, and implementation considerations.',
       benefits: [
@@ -395,6 +408,8 @@ export const servicesAndSolutionsContent = {
     {
       number: '08',
       title: 'On-Site Power Solutions',
+      tag: 'Dedicated Facility Power',
+      image: '/projects/saint-gobain-1-5mwp-vizag-roof1.jpg',
       text: "Renewable-energy solutions designed to generate power at or near the customer's facility, based on the site's energy requirements and available resources.",
       detail: 'The solution can be planned around energy demand, available space, electrical infrastructure, and operational requirements.',
       benefits: [
@@ -410,6 +425,8 @@ export const servicesAndSolutionsContent = {
     {
       number: '09',
       title: 'Off-Site Renewable Power',
+      tag: 'Remote Solar Parks',
+      image: '/projects/sikidiri-dam-canal-solar-array1.jpg',
       text: 'Renewable-energy solutions for customers looking to source clean electricity from renewable generation facilities located away from their own premises.',
       detail: 'This approach can be considered where on-site space is limited or larger-scale renewable generation is more suitable.',
       benefits: [
@@ -425,6 +442,8 @@ export const servicesAndSolutionsContent = {
     {
       number: '10',
       title: 'Asset Management',
+      tag: 'Plant Health & Yield Optimization',
+      image: 'https://images.unsplash.com/photo-1466611653911-95081537e5b7?auto=format&fit=crop&w=1200&q=85',
       text: 'Solar asset management focuses on maintaining visibility and control over the operational condition, performance, maintenance requirements, and overall management of renewable-energy assets.',
       detail: 'Our approach can include operational coordination, performance review, maintenance planning, issue tracking, and reporting.',
       benefits: [
@@ -441,6 +460,8 @@ export const servicesAndSolutionsContent = {
     {
       number: '11',
       title: 'Infrastructure Management',
+      tag: 'Substations, Transformers & Lines',
+      image: '/projects/dr-reddys-520kwp-substation-yard.jpg',
       text: 'Solar projects depend on a range of electrical and supporting infrastructure. Our infrastructure management approach focuses on maintaining the operational condition and reliability of relevant project infrastructure.',
       detail: 'This can cover inspection, maintenance coordination, issue identification, and operational support.',
       benefits: [
@@ -457,6 +478,8 @@ export const servicesAndSolutionsContent = {
     {
       number: '12',
       title: 'Operation & Maintenance',
+      tag: 'Preventive & Corrective O&M',
+      image: 'https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&w=1200&q=85',
       text: 'Professional O&M services to support the reliable operation of solar systems after commissioning.',
       detail: "Maintenance activities can be planned around the system's requirements, helping identify operational issues and maintain the installation in proper working condition.",
       benefits: [
@@ -473,6 +496,8 @@ export const servicesAndSolutionsContent = {
     {
       number: '13',
       title: 'Solar Product Supply',
+      tag: 'Panels, Inverters & Arrestors',
+      image: '/projects/pokarna-stone-2mwp-solis-inverters.jpg',
       text: 'Supply of essential solar products and system components for different installation and project requirements.',
       detail: 'The N Solutions resource specifically identifies solar panels, solar inverters, earth pits, lightning arrestors, and accessories as product categories.',
       benefits: [
@@ -489,6 +514,8 @@ export const servicesAndSolutionsContent = {
     {
       number: '14',
       title: 'Solar Lighting Solutions',
+      tag: 'Streetlights & Outdoor Illumination',
+      image: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=1200&q=85',
       text: 'Solar lighting solutions use solar energy to provide lighting for suitable outdoor and infrastructure applications.',
       detail: 'Systems can be planned according to the location, lighting requirement, operating conditions, available solar resource, and application.',
       benefits: [
@@ -505,6 +532,8 @@ export const servicesAndSolutionsContent = {
     {
       number: '15',
       title: 'Solar Battery Solutions',
+      tag: 'Energy Storage Systems (BESS)',
+      image: 'https://images.unsplash.com/photo-1620714223084-8fcacc6dfd8d?auto=format&fit=crop&w=1200&q=85',
       text: 'Battery-based solar solutions provide energy storage for applications where stored solar energy, backup, or greater flexibility in energy usage is required.',
       detail: 'The appropriate system depends on energy demand, backup requirements, solar generation, storage capacity, and operating conditions.',
       benefits: [
@@ -517,71 +546,6 @@ export const servicesAndSolutionsContent = {
         'Suitable for different application requirements'
       ],
       applications: 'Homes, offices, commercial facilities, industrial sites, and suitable solar-plus-storage systems.'
-    },
-    {
-      number: '16',
-      title: 'Solar Geyser / Water Heating Solutions',
-      text: 'Solar water-heating systems use solar energy to heat water for suitable residential, commercial, and institutional applications.',
-      detail: 'System selection can be based on hot-water demand, available installation space, usage pattern, location, and application requirements.',
-      benefits: [
-        'Uses renewable solar energy',
-        'Reduces dependence on conventional water heating',
-        'Suitable for regular hot-water requirements',
-        'Efficient use of solar energy',
-        'Different system capacities available',
-        'Supports energy-conscious operations'
-      ],
-      applications: 'Homes, hotels, hostels, hospitals, educational institutions, and other suitable facilities.'
-    },
-    {
-      number: '17',
-      title: 'Solar Pump Solutions',
-      text: 'Solar pumping solutions use solar energy to operate water pumps for suitable agricultural, water-supply, and other pumping requirements.',
-      detail: 'The system can be planned according to water requirement, pumping capacity, available solar resource, installation conditions, and application.',
-      benefits: [
-        'Solar-powered water pumping',
-        'Reduced dependence on conventional electricity',
-        'Suitable for remote locations',
-        'Uses renewable energy',
-        'Customized pumping solutions',
-        'Supports agricultural applications',
-        'Suitable for different water requirements'
-      ],
-      applications: 'Agriculture, irrigation, water supply, farms, and other suitable pumping applications.'
-    },
-    {
-      number: '18',
-      title: 'Energy Efficiency, Subsidies, Financing & Net Metering',
-      subtitle: 'Supporting Smarter Solar Adoption',
-      text: "Beyond installation, customers often need support with energy efficiency, applicable subsidies, financing options, and net-metering requirements. N Solutions' resource specifically identifies subsidies & financing as a service area, alongside solar installation, O&M, and product supply.",
-      subAreas: [
-        {
-          title: 'Energy Efficiency Solutions',
-          text: "We help identify opportunities to make better use of energy through practical energy-efficiency approaches aligned with the customer's requirements."
-        },
-        {
-          title: 'Subsidy Assistance',
-          text: 'Guidance regarding applicable government solar subsidy schemes, eligibility considerations, documentation, and related processes.'
-        },
-        {
-          title: 'Financing Assistance',
-          text: 'Support in understanding available financing possibilities and the considerations involved in planning a solar investment.'
-        },
-        {
-          title: 'Net Metering Assistance',
-          text: 'Guidance on the applicable net-metering process, technical requirements, documentation, and coordination for eligible solar installations.'
-        }
-      ],
-      benefits: [
-        'Better understanding of energy consumption',
-        'Guidance on applicable solar schemes',
-        'Support with relevant documentation',
-        'Financing guidance',
-        'Net-metering process assistance',
-        'Better planning of solar investments',
-        'Support throughout the applicable process'
-      ],
-      applications: 'Residential rooftop solar, commercial projects, industrial installations, eligible government schemes, and grid-connected solar systems.'
     }
   ],
 
@@ -589,7 +553,7 @@ export const servicesAndSolutionsContent = {
     eyebrow: 'ONE PARTNER. COMPLETE SOLAR SOLUTIONS.',
     title: 'Assess. Design.',
     subtitle: 'Supply. Install.',
-    text: 'From rooftop solar and EPC projects to renewable power, asset management, O&M, solar products, and energy solutions, N Solutions brings together multiple capabilities to support customers across the solar lifecycle.',
+    text: 'From rooftop solar and EPC projects to renewable power, asset management, O&M, and solar products, N Solutions brings together multiple capabilities to support customers across the solar lifecycle.',
     flow: 'Assess → Design → Supply → Install → Commission → Operate → Maintain',
     buttonText: 'Talk to N Solutions About Your Project'
   }

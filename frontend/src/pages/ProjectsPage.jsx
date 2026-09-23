@@ -1,5 +1,10 @@
 import { useState, useEffect } from 'react'
 import { SiteHeader, SiteFooter, Arrow, AnimatedMetric, Reveal, navigate } from '../components/Shared'
+import { 
+  FiMapPin, FiX, FiArrowDown, FiChevronRight, FiChevronLeft,
+  FiSun, FiZap, FiTrendingUp, FiAward, FiShield, FiLayers, 
+  FiCheck, FiActivity, FiCpu, FiCheckCircle
+} from 'react-icons/fi'
 
 export const projectsData = [
   {
@@ -402,6 +407,140 @@ export default function ProjectsPage() {
   const [selectedProject, setSelectedProject] = useState(null)
   const [activeModalImg, setActiveModalImg] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
+  const [cockpitMode, setCockpitMode] = useState('telemetry')
+  const [activeSchematicNode, setActiveSchematicNode] = useState(0)
+  const [activeLifecycleStage, setActiveLifecycleStage] = useState(0)
+  const [activeBomLayer, setActiveBomLayer] = useState(0)
+
+  const lifecycleStages = [
+    {
+      num: '01',
+      title: 'Feasibility & LIDAR Solar Irradiance Modeling',
+      short: 'Feasibility & 3D LIDAR',
+      objective: 'Comprehensive 3D topographical drone LIDAR mapping and PVSyst simulation to forecast generation yield with 99.4% accuracy.',
+      tools: 'DJI Enterprise LIDAR Drone, PVSyst Solar Yield Simulation, Meteonorm Climate Database',
+      checklist: [
+        '3D shadow loss trajectory modeled through 365 sun positions',
+        'Structural dead-weight and live-wind load calculations verified',
+        'Financial LCOE, payback schedule, and IRR feasibility analysis'
+      ]
+    },
+    {
+      num: '02',
+      title: 'DISCOM Approvals & High-Voltage Schematics',
+      short: 'DISCOM Net-Metering',
+      objective: 'Filing statutory net-metering feasibility with state DISCOMs and developing CEA-compliant single-line electrical schematics.',
+      tools: 'AutoCAD Electrical, DISCOM National Portal Integration, CEIG Statutory Audit System',
+      checklist: [
+        'DISCOM technical net-metering feasibility sanction obtained',
+        'Single-line diagram (SLD) and protection relay coordination approved',
+        'Structural engineering certification with PE stamp'
+      ]
+    },
+    {
+      num: '03',
+      title: 'Tier-1 ALMM Hardware Procurement & In-Factory QA',
+      short: 'Tier-1 Procurement',
+      objective: 'Procuring verified Grade-A N-Type TOPCon/Mono PERC modules directly from top tier-1 manufacturers with traceable serial numbers.',
+      tools: 'Factory Electroluminescence (EL) Defect Testing, Flash Report Telemetry, BIS/ALMM Verification',
+      checklist: [
+        'Every solar panel verified for zero micro-cracks via factory EL imaging',
+        'Class-1 ESE lightning arrestors and heavy-duty GI box pipes inspected',
+        'Dual-certified TUV solar cables with flame-retardant cross-linking'
+      ]
+    },
+    {
+      num: '04',
+      title: 'Precision Mechanical Erection & Electrical Safety',
+      short: 'Precision Erection',
+      objective: 'Deploying certified technicians for hot-dip galvanized mounting structure assembly, waterproof chemical anchoring, and DC string routing.',
+      tools: 'Calibrated Torque Wrenches, Hilti Chemical Anchor Systems, UV Conduit Trenching',
+      checklist: [
+        'Zero rooftop puncture guarantees with chemical anchor seals',
+        'Galvanized iron hardware torqued to exact engineering Nm tolerances',
+        'String voltages tested for open-circuit parity prior to inverter connection'
+      ]
+    },
+    {
+      num: '05',
+      title: 'Grid Net-Meter Synchronization & Megger Diagnostics',
+      short: 'Grid Net-Meter Sync',
+      objective: 'Executing multi-point insulation resistance tests, sub-1 Ohm earth pit audits, and DISCOM bidirectional meter commissioning.',
+      tools: 'Fluke 1507 5kV Megger Tester, Fluke 1625 Earth Ground Clamp, CEIG Official Commissioning Kit',
+      checklist: [
+        'Insulation resistance validated (>50 MegaOhms at 1000V DC)',
+        'Earth pit ground resistance audited to strictly sub-1 Ohm (<0.85 Ω)',
+        'Bi-directional 4-quadrant smart net-meter installed with real-time export'
+      ]
+    },
+    {
+      num: '06',
+      title: 'Cloud SCADA Telemetry & 25-Year Performance SLA',
+      short: 'Cloud SCADA & O&M',
+      objective: 'Connecting plant inverters to cloud SCADA servers for minute-by-minute generation logging, automated alert dispatch, and robotic wash support.',
+      tools: 'Industrial IoT Telemetry Gateways, FLIR Thermal Drone Thermography, Automated Module Washers',
+      checklist: [
+        'Minute-by-minute generation tracking via mobile & web monitoring portals',
+        'Thermographic drone scans detecting hot-spots and micro-soiling',
+        'Guaranteed 24-hour on-site engineering turnaround for any fault code'
+      ]
+    }
+  ]
+
+  const bomLayers = [
+    {
+      id: 'modules',
+      category: 'Solar PV Modules',
+      name: 'Tier-1 Bi-Facial 625 Wp Mono PERC / TOPCon',
+      desc: 'Dual-glass bi-facial architecture harvesting direct sunlight on the front and ground albedo reflection from the rear surface for up to 25% higher lifetime energy yield.',
+      metrics: [
+        '25-Year Linear Power Warranty',
+        'ALMM & BIS Statutory Listed',
+        'Anti-Reflective Toughened Dual-Glass',
+        'Zero PID / LID Degradation Resistance'
+      ],
+      highlights: 'Captures both front and diffuse rear irradiance. Certified against extreme coastal salt-mist corrosion and severe monsoon humidity.'
+    },
+    {
+      id: 'inverters',
+      category: 'Power Electronics',
+      name: 'Central & High-Capacity Multi-MPPT String Inverters',
+      desc: 'High-conversion efficiency (>98.8%) smart solar inverters with individual string tracking, integrated DC disconnect switches, and type-II surge protection.',
+      metrics: [
+        '10-Year Comprehensive Warranty',
+        'IP65 / IP66 All-Weather Enclosure',
+        'Built-in Wi-Fi / 4G SCADA Telemetry',
+        'Multi-MPPT Solar Yield Optimization'
+      ],
+      highlights: 'Advanced grid synchronization with instantaneous islanding protection, power factor correction, and harmonic distortion under 3%.'
+    },
+    {
+      id: 'structures',
+      category: 'Structural Engineering',
+      name: 'Elevated Galvanized Iron Box Pipe Superstructure',
+      desc: 'Heavy-gauge 7 x 8 FT elevated galvanized iron box pipe superstructures (JSW / Mangal) engineered to elevate panels while preserving 100% usable rooftop terrace space below.',
+      metrics: [
+        '80+ Micron Hot-Dip Galvanization',
+        '180 km/h Cyclone Wind Resilience',
+        'Full Usable Terrace Clearance Below',
+        'Zero Roof Leakage Chemical Anchors'
+      ],
+      highlights: 'Engineered specifically for coastal Andhra Pradesh wind velocity zones. Solid hot-dip zinc coating ensures zero oxidation for over 30 years.'
+    },
+    {
+      id: 'cabling-safety',
+      category: 'Cabling & Safety Grid',
+      name: 'Polycab DC Solar & Aluminum Armoured Transmission',
+      desc: 'Cross-linked halogen-free DC solar cables paired with heavy-duty steel wire armoured aluminum power cables and dual-stage chemical earthing with sub-1 Ohm electrodes.',
+      metrics: [
+        'TUV 2 Pfg 1169 / EN 50618 Certified',
+        'IS 7098 Subterranean Armoured Steel Wire',
+        'Copper-Bonded Chemical Earth Pits (<1Ω)',
+        'Class-1 Early Streamer Lightning Arrestor'
+      ],
+      highlights: 'Comprehensive electrical containment protecting inverter, panels, and connected building loads against high-voltage surges and atmospheric strikes.'
+    }
+  ]
 
   useEffect(() => {
     document.title = 'Projects Showcase | N Solutions Solar EPC'
@@ -468,7 +607,7 @@ export default function ProjectsPage() {
                 className="button button-ghost" 
                 href="#case-studies"
               >
-                Explore Flagship Case Studies ↓
+                Explore Flagship Case Studies <FiArrowDown style={{ verticalAlign: 'middle' }} />
               </a>
             </div>
           </div>
@@ -617,7 +756,7 @@ export default function ProjectsPage() {
                   onClick={() => setSearchQuery('')}
                   aria-label="Clear search"
                 >
-                  ×
+                  <FiX size={14} />
                 </button>
               )}
             </div>
@@ -741,72 +880,47 @@ export default function ProjectsPage() {
               </p>
             </Reveal>
 
-            <div className="bom-cards-grid">
-              <Reveal className="bom-card">
-                <span className="bom-card-tag">Solar Modules</span>
-                <h3>Bi-Facial 625 Wp Mono PERC NDCR</h3>
-                <p>High-efficiency dual-glass bi-facial modules capturing both direct sunlight and ground albedo reflection for up to 25% higher lifetime yield.</p>
-                <ul className="bom-specs-list">
-                  <li>25-Year Linear Power Warranty</li>
-                  <li>NDCR & ALMM Certified Quality</li>
-                  <li>Anti-reflective toughened glass</li>
-                </ul>
-              </Reveal>
+            <div className="hardware-anatomy-layout">
+              {/* Left Selector Tabs */}
+              <div className="hardware-tabs-panel">
+                {bomLayers.map((layer, idx) => (
+                  <button
+                    key={layer.id}
+                    type="button"
+                    className={`hardware-tab-item ${activeBomLayer === idx ? 'is-active' : ''}`}
+                    onClick={() => setActiveBomLayer(idx)}
+                  >
+                    <div className="hardware-tab-text">
+                      <small>{layer.category}</small>
+                      <strong>{layer.name}</strong>
+                    </div>
+                    <FiChevronRight style={{ color: activeBomLayer === idx ? 'var(--brand-accent)' : 'var(--muted)' }} />
+                  </button>
+                ))}
+              </div>
 
-              <Reveal className="bom-card">
-                <span className="bom-card-tag">Solar Inverters</span>
-                <h3>DEYE & Microtek 3-Phase Grid Inverters</h3>
-                <p>Advanced multi-MPPT grid-tied inverters (3 kW, 5 kW, 10 kW to central utility MW banks) with Solis & SG smart telemetry loggers.</p>
-                <ul className="bom-specs-list">
-                  <li>10-Year Comprehensive Warranty</li>
-                  <li>IP65 / IP66 Outdoor Rated Enclosures</li>
-                  <li>Built-in Wi-Fi cloud performance logging</li>
-                </ul>
-              </Reveal>
+              {/* Right Interactive Telemetry Detail Display */}
+              <div className="hardware-detail-display">
+                <div>
+                  <span className="hardware-detail-badge">{bomLayers[activeBomLayer].category} · Tier-1 Hardware Standard</span>
+                  <h3>{bomLayers[activeBomLayer].name}</h3>
+                  <p>{bomLayers[activeBomLayer].desc}</p>
+                  
+                  <div className="hardware-metric-capsules">
+                    {bomLayers[activeBomLayer].metrics.map((m, mIdx) => (
+                      <span key={mIdx} className="hardware-chip">
+                        <FiCheckCircle size={14} />
+                        {m}
+                      </span>
+                    ))}
+                  </div>
+                </div>
 
-              <Reveal className="bom-card">
-                <span className="bom-card-tag">Solar Structures</span>
-                <h3>Elevated GI Box Pipes (JSW / Mangal)</h3>
-                <p>Heavy-gauge 7 x 8 FT elevated galvanized iron box pipe structures engineered for high wind resilience, zero corrosion, and optimal usable space below.</p>
-                <ul className="bom-specs-list">
-                  <li>80+ Micron Hot-Dip Galvanization</li>
-                  <li>180 km/h Cyclone Wind Resistance</li>
-                  <li>Full usable rooftop clearance below</li>
-                </ul>
-              </Reveal>
-
-              <Reveal className="bom-card">
-                <span className="bom-card-tag">DC Cabling</span>
-                <h3>Polycab DC Solar Cable (4 sq mm)</h3>
-                <p>Electron-beam cross-linked halogen-free cables designed to withstand extreme UV radiation, ozone, moisture, and high thermal loads without degradation.</p>
-                <ul className="bom-specs-list">
-                  <li>Flame retardant & UV resistant</li>
-                  <li>TUV 2 Pfg 1169 / EN 50618 certified</li>
-                  <li>Minimum voltage drop optimization</li>
-                </ul>
-              </Reveal>
-
-              <Reveal className="bom-card">
-                <span className="bom-card-tag">AC Armoured Cabling</span>
-                <h3>Polycab 3.5 Core 50 sq mm Al Armoured</h3>
-                <p>Heavy-duty galvanized steel wire armoured aluminum power cables ensuring mechanical protection, subterranean routing safety, and reliable grid feed.</p>
-                <ul className="bom-specs-list">
-                  <li>IS 7098 / IS 1554 compliance</li>
-                  <li>Steel wire armoured mechanical armor</li>
-                  <li>Low electrical impedance transmission</li>
-                </ul>
-              </Reveal>
-
-              <Reveal className="bom-card">
-                <span className="bom-card-tag">Safety & Maintenance</span>
-                <h3>Chemical Earth Pits & Lightning Arrestors</h3>
-                <p>Comprehensive protection including copper-bonded chemical earthing electrodes (&lt;1Ω), Class-1 lightning arrestors, and automated module wash systems.</p>
-                <ul className="bom-specs-list">
-                  <li>Dual-stage chemical earthing grid</li>
-                  <li>ESE high-rise lightning protection</li>
-                  <li>Integrated pressurized wash pipelines</li>
-                </ul>
-              </Reveal>
+                <div style={{ background: '#f0f7fb', padding: '14px 18px', borderRadius: '8px', borderLeft: '3px solid var(--brand-accent)' }}>
+                  <strong style={{ fontSize: '11px', textTransform: 'uppercase', color: 'var(--brand-primary-deep)', letterSpacing: '0.05em', display: 'block', marginBottom: '4px' }}>Engineering Field Guarantee</strong>
+                  <span style={{ fontSize: '13px', color: '#334e68' }}>{bomLayers[activeBomLayer].highlights}</span>
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -875,42 +989,72 @@ export default function ProjectsPage() {
               </p>
             </Reveal>
 
-            <div className="lifecycle-grid">
-              <Reveal className="lifecycle-step">
-                <span className="step-num">01</span>
-                <h4>Feasibility & Shadow Analysis</h4>
-                <p>3D LIDAR and drone roof mapping, solar irradiance modeling (PVSyst), structural load-bearing calculation, and electrical single-line design.</p>
-              </Reveal>
-              <Reveal className="lifecycle-step">
-                <span className="step-num">02</span>
-                <h4>Engineering & DISCOM Approvals</h4>
-                <p>Preparation of electrical schematic drawings, grid net-metering feasibility filing, DISCOM statutory approvals, and structural validation.</p>
-              </Reveal>
-              <Reveal className="lifecycle-step">
-                <span className="step-num">03</span>
-                <h4>Tier-1 Procurement</h4>
-                <p>Procurement of ALMM-listed mono-crystalline/TOPCon modules, high-efficiency smart inverters, Class-1 lightning arrestors, and GI mounting structures.</p>
-              </Reveal>
-              <Reveal className="lifecycle-step">
-                <span className="step-num">04</span>
-                <h4>Installation & Safety Protocol</h4>
-                <p>Qualified technicians carry out precise structural erection, DC cable trenching, chemical earthing pits, and waterproof sealing.</p>
-              </Reveal>
-              <Reveal className="lifecycle-step">
-                <span className="step-num">05</span>
-                <h4>Testing, Grid Sync & Net-Meter</h4>
-                <p>Insulation resistance (megger) testing, earth pit resistance audit (&lt;1 ohm), CEIG / DISCOM inspection, and bi-directional meter synchronization.</p>
-              </Reveal>
-              <Reveal className="lifecycle-step">
-                <span className="step-num">06</span>
-                <h4>24/7 Monitoring & O&M SLA</h4>
-                <p>Cloud SCADA live telemetry, preventative seasonal module cleaning, thermal drone thermography, and rapid breakdown support.</p>
-              </Reveal>
-            </div>
+            <div className="circuit-stream-wrapper">
+              {/* Connected Pipeline Track */}
+              <div className="circuit-timeline-track">
+                {lifecycleStages.map((stage, sIdx) => (
+                  <button
+                    key={stage.num}
+                    type="button"
+                    className={`circuit-stage-node ${activeLifecycleStage === sIdx ? 'is-active' : ''}`}
+                    onClick={() => setActiveLifecycleStage(sIdx)}
+                  >
+                    <span className="circuit-node-bubble">{stage.num}</span>
+                    <span className="circuit-node-label">{stage.short}</span>
+                  </button>
+                ))}
+              </div>
 
-            <p className="projects-flow-indicator">
-              Understand <i>→</i> Assess <i>→</i> Design <i>→</i> Procure <i>→</i> Execute <i>→</i> Support
-            </p>
+              {/* Active Stage Command Dossier */}
+              <div className="circuit-dossier-card">
+                <div className="dossier-grid-layout">
+                  <div>
+                    <div className="dossier-header-badge">
+                      <FiActivity /> Stage {lifecycleStages[activeLifecycleStage].num} · Engineering Protocol
+                    </div>
+                    <h3 className="dossier-title">{lifecycleStages[activeLifecycleStage].title}</h3>
+                    <p className="dossier-desc">{lifecycleStages[activeLifecycleStage].objective}</p>
+
+                    <div className="dossier-nav-controls">
+                      <button
+                        type="button"
+                        className="dossier-nav-btn"
+                        onClick={() => setActiveLifecycleStage(prev => (prev > 0 ? prev - 1 : lifecycleStages.length - 1))}
+                      >
+                        <FiChevronLeft /> Previous Stage
+                      </button>
+                      <span style={{ fontSize: '12px', color: '#76bad9', fontStyle: 'italic' }}>
+                        Step {activeLifecycleStage + 1} of {lifecycleStages.length}
+                      </span>
+                      <button
+                        type="button"
+                        className="dossier-nav-btn"
+                        onClick={() => setActiveLifecycleStage(prev => (prev < lifecycleStages.length - 1 ? prev + 1 : 0))}
+                      >
+                        Next Stage <FiChevronRight />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="dossier-tools-box">
+                    <h5>Diagnostic Instrumentation & Tools</h5>
+                    <p style={{ fontSize: '13px', color: '#ffffff', marginBottom: '16px', fontWeight: '600' }}>
+                      {lifecycleStages[activeLifecycleStage].tools}
+                    </p>
+
+                    <h5>QA Sign-Off Checklist</h5>
+                    <ul className="dossier-checklist">
+                      {lifecycleStages[activeLifecycleStage].checklist.map((item, cIdx) => (
+                        <li key={cIdx}>
+                          <FiCheck />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -952,7 +1096,7 @@ export default function ProjectsPage() {
                 onClick={() => setSelectedProject(null)}
                 aria-label="Close modal"
               >
-                ✕
+                <FiX size={20} />
               </button>
 
               <div className="modal-header">
@@ -963,7 +1107,7 @@ export default function ProjectsPage() {
                 </div>
                 <h2>{selectedProject.title}</h2>
                 <p className="modal-location">
-                  📍 {selectedProject.location} · Client: <strong>{selectedProject.client}</strong> ({selectedProject.year})
+                   <FiMapPin size={14} style={{ verticalAlign: 'middle', marginRight: 4 }} />{selectedProject.location} · Client: <strong>{selectedProject.client}</strong> ({selectedProject.year})
                 </p>
               </div>
 
@@ -996,45 +1140,180 @@ export default function ProjectsPage() {
                 </div>
 
                 {selectedProject.specs && (
-                  <div className="modal-specs-section">
-                    <h3>Technical Engineering Parameters</h3>
-                    <div className="specs-table-grid">
-                      <div className="spec-row">
-                        <strong>Solar Modules:</strong>
-                        <span>{selectedProject.specs.modules}</span>
+                  <div className="telemetry-cockpit">
+                    <div className="cockpit-header-bar">
+                      <div className="cockpit-title-wrap">
+                        <div className="cockpit-radar-icon">
+                          <FiActivity size={14} />
+                        </div>
+                        <div>
+                          <h3>Engineering Telemetry & System Specs</h3>
+                        </div>
                       </div>
-                      <div className="spec-row">
-                        <strong>Inverter Architecture:</strong>
-                        <span>{selectedProject.specs.inverters}</span>
-                      </div>
-                      <div className="spec-row">
-                        <strong>Annual Generation:</strong>
-                        <span>{selectedProject.specs.generation}</span>
-                      </div>
-                      <div className="spec-row">
-                        <strong>CO₂ Carbon Offset:</strong>
-                        <span>{selectedProject.specs.co2Offset}</span>
-                      </div>
-                      <div className="spec-row">
-                        <strong>Grid Synchronization:</strong>
-                        <span>{selectedProject.specs.gridSync}</span>
-                      </div>
-                      <div className="spec-row">
-                        <strong>Mounting & Structural:</strong>
-                        <span>{selectedProject.specs.structure}</span>
+
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                        <span className="cockpit-status-chip">
+                          <span className="cockpit-pulse-dot" /> Live Grid Synchronized
+                        </span>
+                        <div className="cockpit-mode-toggle">
+                          <button
+                            type="button"
+                            className={`cockpit-mode-btn ${cockpitMode === 'telemetry' ? 'is-active' : ''}`}
+                            onClick={() => setCockpitMode('telemetry')}
+                          >
+                            <FiCpu size={12} /> Telemetry HUD
+                          </button>
+                          <button
+                            type="button"
+                            className={`cockpit-mode-btn ${cockpitMode === 'schematic' ? 'is-active' : ''}`}
+                            onClick={() => setCockpitMode('schematic')}
+                          >
+                            <FiZap size={12} /> Energy Route
+                          </button>
+                        </div>
                       </div>
                     </div>
+
+                    {cockpitMode === 'telemetry' ? (
+                      <div className="telemetry-matrix">
+                        {/* Channel 1: Modules */}
+                        <div className="telemetry-capsule">
+                          <div className="capsule-meta-top">
+                            <span className="capsule-ch-id"><FiSun /> CH-01 · Array</span>
+                            <span className="capsule-badge-pill">Tier-1 ALMM</span>
+                          </div>
+                          <p className="capsule-label">Solar PV Array</p>
+                          <p className="capsule-value">{selectedProject.specs.modules}</p>
+                          <div className="capsule-meter-line">
+                            <div className="capsule-meter-fill" style={{ width: '96%' }} />
+                          </div>
+                        </div>
+
+                        {/* Channel 2: Inverters */}
+                        <div className="telemetry-capsule">
+                          <div className="capsule-meta-top">
+                            <span className="capsule-ch-id"><FiZap /> CH-02 · Conversion</span>
+                            <span className="capsule-badge-pill">Multi-MPPT</span>
+                          </div>
+                          <p className="capsule-label">Inverter Architecture</p>
+                          <p className="capsule-value">{selectedProject.specs.inverters}</p>
+                          <div className="capsule-meter-line">
+                            <div className="capsule-meter-fill" style={{ width: '98%' }} />
+                          </div>
+                        </div>
+
+                        {/* Channel 3: Annual Generation */}
+                        <div className="telemetry-capsule">
+                          <div className="capsule-meta-top">
+                            <span className="capsule-ch-id"><FiTrendingUp /> CH-03 · Harvest</span>
+                            <span className="capsule-badge-pill">CUF &gt; 19%</span>
+                          </div>
+                          <p className="capsule-label">Annual Generation Harvest</p>
+                          <p className="capsule-value">{selectedProject.specs.generation}</p>
+                          <div className="capsule-meter-line">
+                            <div className="capsule-meter-fill" style={{ width: '94%' }} />
+                          </div>
+                        </div>
+
+                        {/* Channel 4: Carbon Offset */}
+                        <div className="telemetry-capsule">
+                          <div className="capsule-meta-top">
+                            <span className="capsule-ch-id"><FiAward /> CH-04 · Abatement</span>
+                            <span className="capsule-badge-pill">ESG Green</span>
+                          </div>
+                          <p className="capsule-label">CO₂ Carbon Offset</p>
+                          <p className="capsule-value">{selectedProject.specs.co2Offset}</p>
+                          <div className="capsule-meter-line">
+                            <div className="capsule-meter-fill" style={{ width: '92%' }} />
+                          </div>
+                        </div>
+
+                        {/* Channel 5: Grid Synchronization */}
+                        <div className="telemetry-capsule">
+                          <div className="capsule-meta-top">
+                            <span className="capsule-ch-id"><FiShield /> CH-05 · Intertie</span>
+                            <span className="capsule-badge-pill">CEIG Approved</span>
+                          </div>
+                          <p className="capsule-label">Grid Synchronization</p>
+                          <p className="capsule-value">{selectedProject.specs.gridSync}</p>
+                          <div className="capsule-meter-line">
+                            <div className="capsule-meter-fill" style={{ width: '99%' }} />
+                          </div>
+                        </div>
+
+                        {/* Channel 6: Mounting Structure */}
+                        <div className="telemetry-capsule">
+                          <div className="capsule-meta-top">
+                            <span className="capsule-ch-id"><FiLayers /> CH-06 · Superstructure</span>
+                            <span className="capsule-badge-pill">180 km/h Rated</span>
+                          </div>
+                          <p className="capsule-label">Mounting & Structural</p>
+                          <p className="capsule-value">{selectedProject.specs.structure}</p>
+                          <div className="capsule-meter-line">
+                            <div className="capsule-meter-fill" style={{ width: '97%' }} />
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="schematic-flow-canvas">
+                        <div className="schematic-busway">
+                          <div 
+                            className={`schematic-node ${activeSchematicNode === 0 ? 'is-active' : ''}`}
+                            onClick={() => setActiveSchematicNode(0)}
+                          >
+                            <span className="schematic-step-indicator">01</span>
+                            <h4>Solar Array</h4>
+                            <p>{selectedProject.specs.modules}</p>
+                          </div>
+                          <div className="schematic-wire-arrow">➔</div>
+                          <div 
+                            className={`schematic-node ${activeSchematicNode === 1 ? 'is-active' : ''}`}
+                            onClick={() => setActiveSchematicNode(1)}
+                          >
+                            <span className="schematic-step-indicator">02</span>
+                            <h4>Inverter Bank</h4>
+                            <p>{selectedProject.specs.inverters}</p>
+                          </div>
+                          <div className="schematic-wire-arrow">➔</div>
+                          <div 
+                            className={`schematic-node ${activeSchematicNode === 2 ? 'is-active' : ''}`}
+                            onClick={() => setActiveSchematicNode(2)}
+                          >
+                            <span className="schematic-step-indicator">03</span>
+                            <h4>Grid Intertie</h4>
+                            <p>{selectedProject.specs.gridSync}</p>
+                          </div>
+                          <div className="schematic-wire-arrow">➔</div>
+                          <div 
+                            className={`schematic-node ${activeSchematicNode === 3 ? 'is-active' : ''}`}
+                            onClick={() => setActiveSchematicNode(3)}
+                          >
+                            <span className="schematic-step-indicator">04</span>
+                            <h4>Clean Power Output</h4>
+                            <p>{selectedProject.specs.generation}</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
 
                 {selectedProject.highlights && (
                   <div className="modal-highlights-section">
-                    <h3>Key Execution Highlights</h3>
-                    <ul>
+                    <h3>Engineering Milestone & Execution Log</h3>
+                    <div className="engineering-log-stream">
                       {selectedProject.highlights.map((h, i) => (
-                        <li key={i}>{h}</li>
+                        <div key={i} className="log-stream-entry">
+                          <div className="log-stream-node">
+                            <div className="log-stream-node-inner" />
+                          </div>
+                          <div className="log-stream-content">
+                            <span className="log-stream-tag">✓ Audited Execution Standard · Milestone {i + 1}</span>
+                            <p className="log-stream-text">{h}</p>
+                          </div>
+                        </div>
                       ))}
-                    </ul>
+                    </div>
                   </div>
                 )}
 

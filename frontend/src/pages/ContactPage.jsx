@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { SiteHeader, SiteFooter, Arrow, Reveal } from '../components/Shared'
+import { FiPhone, FiSmartphone, FiMail, FiGlobe, FiClock, FiZap, FiCheck, FiPlus, FiMinus } from 'react-icons/fi'
 
 export default function ContactPage() {
   // Form State
@@ -127,10 +128,10 @@ export default function ContactPage() {
                     <strong>Managing Partner:</strong> Mr. Ch. C. S. V. Raju
                   </p>
                   <div className="hub-links">
-                    <span>📞 <strong>Mobile:</strong> +91 7993836424 / +91 9492731212</span>
-                    <span>📱 <strong>Project Hotline:</strong> +91 9494703452</span>
-                    <span>✉️ <strong>E-Mail:</strong> info@nsol.in / nsolutions@live.com</span>
-                    <span>🌐 <strong>Official Portal:</strong> www.nsol.in</span>
+                    <span><FiPhone size={13} style={{ marginRight: 5, verticalAlign: 'middle', color: 'var(--brand-primary-dark, #0875b6)' }} /><strong>Mobile:</strong> +91 7993836424 / +91 9492731212</span>
+                    <span><FiSmartphone size={13} style={{ marginRight: 5, verticalAlign: 'middle', color: 'var(--brand-primary-dark, #0875b6)' }} /><strong>Project Hotline:</strong> +91 9494703452</span>
+                    <span><FiMail size={13} style={{ marginRight: 5, verticalAlign: 'middle', color: 'var(--brand-primary-dark, #0875b6)' }} /><strong>E-Mail:</strong> info@nsol.in / nsolutions@live.com</span>
+                    <span><FiGlobe size={13} style={{ marginRight: 5, verticalAlign: 'middle', color: 'var(--brand-primary-dark, #0875b6)' }} /><strong>Official Portal:</strong> www.nsol.in</span>
                   </div>
                 </div>
 
@@ -143,8 +144,8 @@ export default function ContactPage() {
                     Active project execution teams across 9 states: Andhra Pradesh, Telangana, Tamil Nadu, Karnataka, Maharashtra, Odisha, Gujarat, Madhya Pradesh, and Rajasthan.
                   </p>
                   <div className="hub-links">
-                    <span>⏱ <strong>Business Hours:</strong> Monday – Saturday: 9:00 AM – 6:30 PM IST</span>
-                    <span>⚡ <strong>24/7 O&M Hotline:</strong> emergency-om@nsolutions.in</span>
+                    <span><FiClock size={13} style={{ marginRight: 5, verticalAlign: 'middle', color: 'var(--brand-primary-dark, #0875b6)' }} /><strong>Business Hours:</strong> Monday – Saturday: 9:00 AM – 6:30 PM IST</span>
+                    <span><FiZap size={13} style={{ marginRight: 5, verticalAlign: 'middle', color: 'var(--brand-primary-dark, #0875b6)' }} /><strong>24/7 O&M Hotline:</strong> emergency-om@nsolutions.in</span>
                   </div>
                 </div>
               </div>
@@ -161,7 +162,7 @@ export default function ContactPage() {
 
                 {isSubmitted ? (
                   <div className="contact-success-box">
-                    <div className="success-check-icon">✓</div>
+                    <div className="success-check-icon"><FiCheck size={24} strokeWidth={3} /></div>
                     <h3>Inquiry Received Successfully!</h3>
                     <p>
                       Thank you, <strong>{formData.fullName || 'Valued Customer'}</strong>. Your consultation request for <strong>{formData.projectType}</strong> has been logged with our engineering dispatch desk.
@@ -313,7 +314,7 @@ export default function ContactPage() {
                   aria-expanded={activeFaq === index}
                 >
                   <span>{faq.q}</span>
-                  <span className="faq-toggle-icon">{activeFaq === index ? '−' : '+'}</span>
+                  <span className="faq-toggle-icon">{activeFaq === index ? <FiMinus size={16} /> : <FiPlus size={16} />}</span>
                 </button>
                 {activeFaq === index && (
                   <div className="faq-answer-body">

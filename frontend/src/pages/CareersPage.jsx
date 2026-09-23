@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { SiteHeader, SiteFooter, Arrow, Reveal, navigate } from '../components/Shared'
+import { FiMapPin, FiClock, FiUsers, FiFileText, FiPaperclip, FiX, FiCheck, FiZap, FiSun } from 'react-icons/fi'
 
 export const jobListings = [
   {
@@ -259,42 +260,57 @@ export default function CareersPage() {
             </p>
           </Reveal>
 
-          <div className="pillars-grid">
-            <Reveal className="pillar-card">
-              <span className="pillar-num">01</span>
-              <h3>Authentic Engineering Mastery</h3>
-              <p>
-                Work with latest N-Type TOPCon bi-facial modules, high-capacity string inverters, and high-voltage 11kV/33kV substations. We do not just assemble systems; we engineer long-term energy solutions.
-              </p>
-              <div className="pillar-badge">Advanced Solar Tech</div>
+          <div className="careers-value-mosaic">
+            {/* Hero Pillar */}
+            <Reveal className="mosaic-hero-card">
+              <div>
+                <span className="cockpit-status-chip" style={{ marginBottom: '16px' }}>
+                  <span className="cockpit-pulse-dot" /> Core Engineering Creed
+                </span>
+                <h3 style={{ font: "700 28px 'Manrope', sans-serif", letterSpacing: '-0.02em', margin: '0 0 16px 0', lineHeight: 1.25 }}>
+                  Authentic Engineering Mastery & Large-Scale Systems
+                </h3>
+                <p style={{ fontSize: '15px', color: 'rgba(255, 255, 255, 0.85)', lineHeight: 1.7, margin: '0 0 24px 0' }}>
+                  Work directly with the latest N-Type TOPCon bi-facial modules, high-capacity string inverters, and high-voltage 11kV/33kV substations. We do not just assemble cookie-cutter systems; we engineer long-term energy infrastructure engineered for 25+ years of continuous generation.
+                </p>
+              </div>
+
+              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                <span className="hardware-chip" style={{ background: 'rgba(255, 255, 255, 0.1)', color: '#ffffff', borderColor: 'rgba(255, 255, 255, 0.2)' }}>
+                  <FiZap style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Utility & C&I Scale Exposure
+                </span>
+                <span className="hardware-chip" style={{ background: 'rgba(255, 255, 255, 0.1)', color: '#ffffff', borderColor: 'rgba(255, 255, 255, 0.2)' }}>
+                  <FiSun style={{ marginRight: '6px', verticalAlign: 'middle' }} /> 100% Green Energy Impact
+                </span>
+              </div>
             </Reveal>
 
-            <Reveal className="pillar-card">
-              <span className="pillar-num">02</span>
-              <h3>Fast-Track Project Ownership</h3>
-              <p>
-                Take direct charge of project milestones from feasibility and PVSyst simulation to site construction and grid net-metering. Your contribution directly determines clean energy delivery.
-              </p>
-              <div className="pillar-badge">Real Responsibility</div>
-            </Reveal>
+            {/* Sub-Pillars Stack */}
+            <div className="mosaic-sub-stack">
+              <Reveal className="mosaic-accent-card">
+                <span style={{ font: "700 10px 'Manrope', sans-serif", color: 'var(--brand-accent)', textTransform: 'uppercase', letterSpacing: '0.08em', display: 'block', marginBottom: '6px' }}>
+                  Pillar 02 · Autonomy & Impact
+                </span>
+                <h4>Fast-Track Project Ownership</h4>
+                <p>Take direct charge of project milestones from feasibility and PVSyst simulation to site construction and grid net-metering. Your contribution directly determines clean energy delivery.</p>
+              </Reveal>
 
-            <Reveal className="pillar-card">
-              <span className="pillar-num">03</span>
-              <h3>Safety & Professional Ethics</h3>
-              <p>
-                Safety is not an afterthought; it is our foundation. From high-altitude rooftop lifeline systems to electrical lockout/tagout protocols, every employee is protected by certified standards.
-              </p>
-              <div className="pillar-badge">Zero-Compromise Safety</div>
-            </Reveal>
+              <Reveal className="mosaic-accent-card">
+                <span style={{ font: "700 10px 'Manrope', sans-serif", color: 'var(--brand-accent)', textTransform: 'uppercase', letterSpacing: '0.08em', display: 'block', marginBottom: '6px' }}>
+                  Pillar 03 · Zero-Compromise Safety
+                </span>
+                <h4>Certified Safety & Professional Ethics</h4>
+                <p>Safety is not an afterthought; it is our foundation. From high-altitude rooftop lifeline systems to electrical lockout/tagout protocols, every employee is protected by certified standards.</p>
+              </Reveal>
 
-            <Reveal className="pillar-card">
-              <span className="pillar-num">04</span>
-              <h3>Tangible Decarbonization Impact</h3>
-              <p>
-                Every megawatt commissioned avoids thousands of metric tonnes of carbon emissions annually and reduces financial burdens for local families and manufacturing mills alike.
-              </p>
-              <div className="pillar-badge">Clean Energy Impact</div>
-            </Reveal>
+              <Reveal className="mosaic-accent-card">
+                <span style={{ font: "700 10px 'Manrope', sans-serif", color: 'var(--brand-accent)', textTransform: 'uppercase', letterSpacing: '0.08em', display: 'block', marginBottom: '6px' }}>
+                  Pillar 04 · Decarbonization
+                </span>
+                <h4>Tangible Climate & Economic Impact</h4>
+                <p>Every megawatt commissioned avoids thousands of metric tonnes of carbon emissions annually and reduces financial burdens for local families and manufacturing mills alike.</p>
+              </Reveal>
+            </div>
           </div>
         </section>
 
@@ -352,9 +368,9 @@ export default function CareersPage() {
                   </div>
                   <h3>{job.title}</h3>
                   <div className="job-details-pills">
-                    <span>📍 {job.location}</span>
-                    <span>⏱ {job.experience}</span>
-                    <span>👥 {job.openings} Openings</span>
+                    <span><FiMapPin style={{ marginRight: '5px', verticalAlign: 'middle' }} /> {job.location}</span>
+                    <span><FiClock style={{ marginRight: '5px', verticalAlign: 'middle' }} /> {job.experience}</span>
+                    <span><FiUsers style={{ marginRight: '5px', verticalAlign: 'middle' }} /> {job.openings} Openings</span>
                   </div>
                 </div>
 
@@ -394,29 +410,41 @@ export default function CareersPage() {
               </p>
             </Reveal>
 
-            <div className="process-stages-grid">
-              <Reveal className="process-stage-card">
-                <span className="stage-num">01</span>
-                <h4>Application Review</h4>
-                <p>Our engineering and HR leadership reviews your background, portfolio, and solar project history within 48 business hours.</p>
+            <div className="candidate-orbit-stream">
+              <Reveal className="candidate-stage-capsule">
+                <span className="orbit-node-number">01</span>
+                <div className="orbit-stage-body">
+                  <h4>Application & Portfolio Review</h4>
+                  <p>Our engineering and HR leadership evaluates your background, PVSyst credentials, and project track record with full transparency.</p>
+                </div>
+                <span className="orbit-sla-pill">⏱ 48h Response SLA</span>
               </Reveal>
 
-              <Reveal className="process-stage-card">
-                <span className="stage-num">02</span>
-                <h4>Technical Discussion</h4>
-                <p>In-depth technical dialogue with a senior solar design engineer or project lead on real-world engineering challenges.</p>
+              <Reveal className="candidate-stage-capsule">
+                <span className="orbit-node-number">02</span>
+                <div className="orbit-stage-body">
+                  <h4>Practical Technical Dialogue</h4>
+                  <p>Deep-dive discussion with our senior EPC engineering lead covering real-world inverter configuration, cable sizing, and rooftop structural loads.</p>
+                </div>
+                <span className="orbit-sla-pill">⏱ 60 Min Technical Interview</span>
               </Reveal>
 
-              <Reveal className="process-stage-card">
-                <span className="stage-num">03</span>
-                <h4>Project Case / Field Fit</h4>
-                <p>A practical discussion on site safety, DISCOM coordination, or system layout sizing relevant to the prospective role.</p>
+              <Reveal className="candidate-stage-capsule">
+                <span className="orbit-node-number">03</span>
+                <div className="orbit-stage-body">
+                  <h4>Site Engineering Case / Field Simulation</h4>
+                  <p>Practical scenario on DISCOM net-metering approvals, CEIG safety protocols, or site coordination challenges encountered on live projects.</p>
+                </div>
+                <span className="orbit-sla-pill">⏱ Hands-on Practical Fit</span>
               </Reveal>
 
-              <Reveal className="process-stage-card">
-                <span className="stage-num">04</span>
-                <h4>Offer & Onboarding</h4>
-                <p>Transparent compensation offer, structured onboarding curriculum, and introduction to our active project sites.</p>
+              <Reveal className="candidate-stage-capsule">
+                <span className="orbit-node-number">04</span>
+                <div className="orbit-stage-body">
+                  <h4>Fair Compensation & Site Onboarding</h4>
+                  <p>Competitive offer package, statutory benefits, and dedicated onboarding with our EPC project squads on active solar plants.</p>
+                </div>
+                <span className="orbit-sla-pill">⏱ Fast-Track Induction</span>
               </Reveal>
             </div>
           </div>
@@ -457,17 +485,18 @@ export default function CareersPage() {
                 type="button" 
                 className="modal-close-btn"
                 onClick={() => setSelectedJob(null)}
+                aria-label="Close dialog"
               >
-                ✕
+                <FiX />
               </button>
 
               <div className="job-modal-header">
                 <span className="badge-tag">{selectedJob.deptLabel}</span>
                 <h2>{selectedJob.title}</h2>
                 <div className="job-modal-pills">
-                  <span>📍 {selectedJob.location}</span>
-                  <span>⏱ {selectedJob.experience}</span>
-                  <span>📋 {selectedJob.type}</span>
+                  <span><FiMapPin style={{ marginRight: '5px', verticalAlign: 'middle' }} /> {selectedJob.location}</span>
+                  <span><FiClock style={{ marginRight: '5px', verticalAlign: 'middle' }} /> {selectedJob.experience}</span>
+                  <span><FiFileText style={{ marginRight: '5px', verticalAlign: 'middle' }} /> {selectedJob.type}</span>
                 </div>
               </div>
 
@@ -528,8 +557,9 @@ export default function CareersPage() {
                 type="button" 
                 className="modal-close-btn"
                 onClick={() => setIsApplying(false)}
+                aria-label="Close dialog"
               >
-                ✕
+                <FiX />
               </button>
 
               <div className="job-modal-header">
@@ -542,7 +572,7 @@ export default function CareersPage() {
 
               {applicationSuccess ? (
                 <div className="application-success-view">
-                  <div className="success-icon">✓</div>
+                  <div className="success-icon"><FiCheck /></div>
                   <h3>Application Submitted Successfully!</h3>
                   <p>
                     Thank you, <strong>{applicantName || 'Candidate'}</strong>. Your application for <strong>{selectedJob?.title}</strong> has been received by our recruitment desk.
@@ -641,7 +671,7 @@ export default function CareersPage() {
                   </div>
 
                   <div className="form-file-box">
-                    <span>📎 Resume Upload: Send your CV directly with this form or email to careers@nsolutions.in</span>
+                    <span><FiPaperclip style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Resume Upload: Send your CV directly with this form or email to careers@nsolutions.in</span>
                   </div>
 
                   <div className="application-form-footer">

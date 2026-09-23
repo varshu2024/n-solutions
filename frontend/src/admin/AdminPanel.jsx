@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { getStoredData, saveStoredData, adminLogout } from './adminAuth'
 import { navigate } from '../components/Shared'
+import { FiBarChart2, FiUsers, FiZap, FiPackage, FiInbox, FiBriefcase, FiSettings, FiLogOut, FiGlobe, FiArrowUpRight, FiTrendingUp, FiCheck, FiPhone, FiMail, FiX } from 'react-icons/fi'
+import { FaSun } from 'react-icons/fa'
 import './admin.css'
 
 export default function AdminPanel({ adminUser, onLogout }) {
@@ -244,14 +246,14 @@ export default function AdminPanel({ adminUser, onLogout }) {
             className={`adm-nav-item ${activeTab === 'overview' ? 'active' : ''}`}
             onClick={() => setActiveTab('overview')}
           >
-            <span className="adm-nav-icon">📊</span>
+            <span className="adm-nav-icon"><FiBarChart2 /></span>
             <span>Dashboard</span>
           </button>
           <button
             className={`adm-nav-item ${activeTab === 'leads' ? 'active' : ''}`}
             onClick={() => setActiveTab('leads')}
           >
-            <span className="adm-nav-icon">👥</span>
+            <span className="adm-nav-icon"><FiUsers /></span>
             <span>Leads</span>
             <span className="adm-badge highlight">{data.leads.length}</span>
           </button>
@@ -259,7 +261,7 @@ export default function AdminPanel({ adminUser, onLogout }) {
             className={`adm-nav-item ${activeTab === 'projects' ? 'active' : ''}`}
             onClick={() => setActiveTab('projects')}
           >
-            <span className="adm-nav-icon">⚡</span>
+            <span className="adm-nav-icon"><FiZap /></span>
             <span>Projects</span>
             <span className="adm-badge">{data.projects.length}</span>
           </button>
@@ -267,7 +269,7 @@ export default function AdminPanel({ adminUser, onLogout }) {
             className={`adm-nav-item ${activeTab === 'products' ? 'active' : ''}`}
             onClick={() => setActiveTab('products')}
           >
-            <span className="adm-nav-icon">📦</span>
+            <span className="adm-nav-icon"><FiPackage /></span>
             <span>Products</span>
             <span className="adm-badge">{data.products.length}</span>
           </button>
@@ -275,7 +277,7 @@ export default function AdminPanel({ adminUser, onLogout }) {
             className={`adm-nav-item ${activeTab === 'enquiries' ? 'active' : ''}`}
             onClick={() => setActiveTab('enquiries')}
           >
-            <span className="adm-nav-icon">📩</span>
+            <span className="adm-nav-icon"><FiInbox /></span>
             <span>Enquiries</span>
             <span className="adm-badge">{data.enquiries.length}</span>
           </button>
@@ -283,7 +285,7 @@ export default function AdminPanel({ adminUser, onLogout }) {
             className={`adm-nav-item ${activeTab === 'careers' ? 'active' : ''}`}
             onClick={() => setActiveTab('careers')}
           >
-            <span className="adm-nav-icon">💼</span>
+            <span className="adm-nav-icon"><FiBriefcase /></span>
             <span>Job Applications</span>
             <span className="adm-badge">{data.applications.length}</span>
           </button>
@@ -293,7 +295,7 @@ export default function AdminPanel({ adminUser, onLogout }) {
             className={`adm-nav-item ${activeTab === 'settings' ? 'active' : ''}`}
             onClick={() => setActiveTab('settings')}
           >
-            <span className="adm-nav-icon">⚙️</span>
+            <span className="adm-nav-icon"><FiSettings /></span>
             <span>Settings & Auth</span>
           </button>
         </nav>
@@ -309,7 +311,7 @@ export default function AdminPanel({ adminUser, onLogout }) {
             </div>
           </div>
           <button className="adm-btn-logout" onClick={handleLogout}>
-            <span>🚪</span>
+            <span><FiLogOut /></span>
             <span>Sign Out</span>
           </button>
         </div>
@@ -339,8 +341,8 @@ export default function AdminPanel({ adminUser, onLogout }) {
               className="adm-website-btn"
               title="Open public website in new tab"
             >
-              <span>🌐 Public Website</span>
-              <span style={{ fontSize: '0.75rem' }}>↗</span>
+              <span><FiGlobe size={14} style={{ verticalAlign: 'middle', marginRight: 4 }} /> Public Website</span>
+              <span style={{ fontSize: '0.75rem' }}><FiArrowUpRight style={{ verticalAlign: 'middle' }} /></span>
             </a>
           </div>
         </header>
@@ -355,12 +357,12 @@ export default function AdminPanel({ adminUser, onLogout }) {
                   <div className="adm-stat-header">
                     <span className="adm-stat-label">Total Leads</span>
                     <div className="adm-stat-icon" style={{ background: 'rgba(8, 117, 182, 0.1)', color: '#0875b6' }}>
-                      👥
+                      <FiUsers size={20} />
                     </div>
                   </div>
                   <div className="adm-stat-value">{data.leads.length}</div>
                   <div className="adm-stat-meta">
-                    <span className="adm-pill-up">↑ Active inquiries</span> across AP & Telangana
+                    <span className="adm-pill-up"><FiTrendingUp size={12} style={{ verticalAlign: 'middle', marginRight: 3 }} /> Active inquiries</span> across AP & Telangana
                   </div>
                 </div>
 
@@ -368,7 +370,7 @@ export default function AdminPanel({ adminUser, onLogout }) {
                   <div className="adm-stat-header">
                     <span className="adm-stat-label">Active Projects</span>
                     <div className="adm-stat-icon" style={{ background: 'rgba(2, 132, 199, 0.1)', color: '#0284c7' }}>
-                      ⚡
+                      <FiZap size={20} />
                     </div>
                   </div>
                   <div className="adm-stat-value">
@@ -383,7 +385,7 @@ export default function AdminPanel({ adminUser, onLogout }) {
                   <div className="adm-stat-header">
                     <span className="adm-stat-label">Installed Capacity</span>
                     <div className="adm-stat-icon" style={{ background: 'rgba(5, 150, 105, 0.1)', color: '#059669' }}>
-                      ☀️
+                      <FaSun size={20} />
                     </div>
                   </div>
                   <div className="adm-stat-value">{data.stats.solarCapacityInstalled}</div>
@@ -396,7 +398,7 @@ export default function AdminPanel({ adminUser, onLogout }) {
                   <div className="adm-stat-header">
                     <span className="adm-stat-label">Catalog Products</span>
                     <div className="adm-stat-icon" style={{ background: 'rgba(124, 58, 237, 0.1)', color: '#7c3aed' }}>
-                      📦
+                      <FiPackage size={20} />
                     </div>
                   </div>
                   <div className="adm-stat-value">{data.products.length}</div>
@@ -416,7 +418,7 @@ export default function AdminPanel({ adminUser, onLogout }) {
                     className="adm-btn-action"
                     onClick={() => setActiveTab('leads')}
                   >
-                    View All Leads →
+                     View All Leads <FiArrowUpRight style={{ verticalAlign: 'middle' }} />
                   </button>
                 </div>
                 <div className="adm-table-wrap">
@@ -468,7 +470,7 @@ export default function AdminPanel({ adminUser, onLogout }) {
                     className="adm-btn-action"
                     onClick={() => setActiveTab('enquiries')}
                   >
-                    View Enquiries ({data.enquiries.length}) →
+                    View Enquiries ({data.enquiries.length}) <FiArrowUpRight style={{ verticalAlign: 'middle' }} />
                   </button>
                 </div>
                 <div className="adm-table-wrap">
@@ -672,7 +674,7 @@ export default function AdminPanel({ adminUser, onLogout }) {
                             onClick={() => handleToggleProjectStatus(proj.id)}
                             title="Click to toggle status"
                           >
-                            {proj.status === 'completed' ? '✓ Completed' : '⚙ In Progress'}
+                            {proj.status === 'completed' ? <><FiCheck size={13} style={{ verticalAlign: 'middle', marginRight: 2 }} /> Completed</> : <><FiSettings size={13} style={{ verticalAlign: 'middle', marginRight: 2 }} /> In Progress</>}
                           </button>
                         </td>
                         <td>
@@ -777,12 +779,12 @@ export default function AdminPanel({ adminUser, onLogout }) {
                       <tr key={enq.id}>
                         <td>
                           <strong>{enq.name}</strong>
-                          <div style={{ color: 'var(--adm-text-muted)', fontSize: '0.75rem' }}>
-                            📞 {enq.phone}
-                          </div>
-                          <div style={{ color: 'var(--adm-text-dim)', fontSize: '0.72rem' }}>
-                            ✉️ {enq.email}
-                          </div>
+                            <div style={{ color: 'var(--adm-text-muted)', fontSize: '0.75rem' }}>
+                            <FiPhone size={11} style={{ verticalAlign: 'middle', marginRight: 3 }} />{enq.phone}
+                           </div>
+                            <div style={{ color: 'var(--adm-text-dim)', fontSize: '0.72rem' }}>
+                            <FiMail size={11} style={{ verticalAlign: 'middle', marginRight: 3 }} />{enq.email}
+                           </div>
                         </td>
                         <td>
                           <span className="adm-type-badge">{enq.service}</span>
@@ -926,7 +928,7 @@ export default function AdminPanel({ adminUser, onLogout }) {
           <div className="adm-modal" onClick={(e) => e.stopPropagation()}>
             <div className="adm-modal-header">
               <h3>Add New Customer Lead</h3>
-              <button className="adm-modal-close" onClick={() => setShowAddLeadModal(false)}>✕</button>
+              <button className="adm-modal-close" onClick={() => setShowAddLeadModal(false)}><FiX /></button>
             </div>
             <form onSubmit={handleCreateLead}>
               <div className="adm-modal-body">
@@ -1036,7 +1038,7 @@ export default function AdminPanel({ adminUser, onLogout }) {
           <div className="adm-modal" onClick={(e) => e.stopPropagation()}>
             <div className="adm-modal-header">
               <h3>Register New Solar Project</h3>
-              <button className="adm-modal-close" onClick={() => setShowAddProjectModal(false)}>✕</button>
+              <button className="adm-modal-close" onClick={() => setShowAddProjectModal(false)}><FiX /></button>
             </div>
             <form onSubmit={handleCreateProject}>
               <div className="adm-modal-body">
@@ -1122,7 +1124,7 @@ export default function AdminPanel({ adminUser, onLogout }) {
           <div className="adm-modal" onClick={(e) => e.stopPropagation()}>
             <div className="adm-modal-header">
               <h3>Add Product to Catalog</h3>
-              <button className="adm-modal-close" onClick={() => setShowAddProductModal(false)}>✕</button>
+              <button className="adm-modal-close" onClick={() => setShowAddProductModal(false)}><FiX /></button>
             </div>
             <form onSubmit={handleCreateProduct}>
               <div className="adm-modal-body">
@@ -1196,7 +1198,7 @@ export default function AdminPanel({ adminUser, onLogout }) {
       {/* Toast Notification */}
       {toastMessage && (
         <div className="adm-toast">
-          <span>⚡</span>
+          <span><FiZap size={15} style={{ verticalAlign: 'middle', marginRight: 4 }} /></span>
           <span>{toastMessage}</span>
         </div>
       )}

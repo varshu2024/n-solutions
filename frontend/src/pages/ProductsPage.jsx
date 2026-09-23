@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { SiteHeader, SiteFooter, Arrow, AnimatedMetric, Reveal, navigate } from '../components/Shared'
+import { FiArrowDown, FiX, FiActivity, FiZap, FiShield, FiSun, FiCpu, FiCheckCircle } from 'react-icons/fi'
 
 export const productsCatalog = [
   // 1. SOLAR MODULES
@@ -498,7 +499,7 @@ export default function ProductsPage() {
                 className="button button-ghost" 
                 href="#catalog-view"
               >
-                Browse Product Catalog ↓
+                Browse Product Catalog <FiArrowDown style={{ verticalAlign: 'middle' }} />
               </a>
             </div>
           </div>
@@ -544,7 +545,7 @@ export default function ProductsPage() {
                   onClick={() => setSearchQuery('')}
                   aria-label="Clear search"
                 >
-                  ×
+                  <FiX size={14} />
                 </button>
               )}
             </div>
@@ -711,7 +712,7 @@ export default function ProductsPage() {
                 onClick={() => setSelectedProduct(null)}
                 aria-label="Close modal"
               >
-                ✕
+                <FiX size={20} />
               </button>
 
               <div className="modal-header">
@@ -737,13 +738,27 @@ export default function ProductsPage() {
                 </div>
 
                 {selectedProduct.specs && (
-                  <div className="modal-specs-section">
-                    <h3>Engineering Specifications & Ratings</h3>
-                    <div className="specs-table-grid">
-                      {Object.entries(selectedProduct.specs).map(([key, val]) => (
-                        <div key={key} className="spec-row">
-                          <strong>{key}:</strong>
-                          <span>{val}</span>
+                  <div className="product-telemetry-hud">
+                    <div className="cockpit-header-bar" style={{ marginBottom: '16px' }}>
+                      <div className="cockpit-title-wrap">
+                        <div className="cockpit-radar-icon">
+                          <FiCpu size={14} />
+                        </div>
+                        <h3 style={{ fontSize: '15px', color: '#ffffff' }}>Hardware Engineering & Performance Telemetry</h3>
+                      </div>
+                      <span className="cockpit-status-chip">
+                        <span className="cockpit-pulse-dot" /> Verified Specification
+                      </span>
+                    </div>
+
+                    <div className="hud-capsules-grid">
+                      {Object.entries(selectedProduct.specs).map(([key, val], idx) => (
+                        <div key={key} className="hud-spec-capsule">
+                          <span className="spec-k">PAR-{idx + 1 < 10 ? `0${idx + 1}` : idx + 1} · {key}</span>
+                          <span className="spec-v">{val}</span>
+                          <div className="spec-indicator-bar">
+                            <div className="spec-indicator-fill" style={{ width: `${85 + (idx % 3) * 5}%` }} />
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -752,12 +767,20 @@ export default function ProductsPage() {
 
                 {selectedProduct.features && (
                   <div className="modal-highlights-section">
-                    <h3>Key Advantages & Engineering Features</h3>
-                    <ul>
+                    <h3>Key Advantages & Engineering Benchmarks</h3>
+                    <div className="engineering-log-stream">
                       {selectedProduct.features.map((f, i) => (
-                        <li key={i}>{f}</li>
+                        <div key={i} className="log-stream-entry">
+                          <div className="log-stream-node">
+                            <div className="log-stream-node-inner" />
+                          </div>
+                          <div className="log-stream-content">
+                            <span className="log-stream-tag">✓ Certified Standard Advantage {i + 1}</span>
+                            <p className="log-stream-text">{f}</p>
+                          </div>
+                        </div>
                       ))}
-                    </ul>
+                    </div>
                   </div>
                 )}
 

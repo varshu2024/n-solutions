@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
+import { FiArrowUpRight } from 'react-icons/fi';
 
 export function Arrow() {
-  return <span aria-hidden="true">↗</span>
+  return <FiArrowUpRight aria-hidden="true" style={{ display: 'inline', verticalAlign: 'middle', strokeWidth: 2.5 }} />
 }
 
 export function navigate(path) {
@@ -428,7 +429,7 @@ export function SiteFooter() {
               <span><strong>Projects:</strong> projects@nsolutions.in</span>
               <span><strong>Helpline:</strong> +91 891 278 9400</span>
               <div className="footer-cta-link">
-                <a href="/contact" onClick={(e) => handleNav(e, '/contact')}>Request Feasibility Study →</a>
+                <a href="/contact" onClick={(e) => handleNav(e, '/contact')}>Request Feasibility Study <FiArrowUpRight style={{ display: 'inline', verticalAlign: 'middle', strokeWidth: 2.5 }} /></a>
               </div>
             </div>
           </div>
