@@ -1,7 +1,13 @@
-import { createEnquiry, deleteEnquiry, getEnquiry, listEnquiries, resolveEnquiry } from '../services/enquiry.service.js';
 import { sendSuccess } from '../utils/response.js';
 import { ENQUIRY_PROJECT_TYPES, ENQUIRY_STATUS_VALUES } from '../models/Enquiry.js';
-
+import {
+  createEnquiry,
+  deleteEnquiry,
+  getEnquiry,
+  listEnquiries,
+  resolveEnquiry,
+  updateEnquiryStatus
+} from '../services/enquiry.service.js';
 const allowedFields = new Set([
   'fullName',
   'companyName',
@@ -68,7 +74,7 @@ const validateCreateInput = (input) => {
   return details;
 };
 
-const validateResolveInput = (input) => {
+const validateStatusInput = (input) => {
   const details = {};
 
   if (!input || typeof input !== 'object' || Array.isArray(input)) {
@@ -76,8 +82,11 @@ const validateResolveInput = (input) => {
     return details;
   }
 
-  if (Object.keys(input).length !== 1 || input.status !== 'Resolved') {
-    details.status = 'Status must be Resolved and no other fields are allowed.';
+  if (
+    Object.keys(input).length !== 1 ||
+    !ENQUIRY_STATUS_VALUES.includes(input.status)
+  ) {
+    details.status = 'Status must be Unread, Read, or Resolved.';
   }
 
   return details;
@@ -116,14 +125,20 @@ export const get = async (request, response) => sendSuccess(
 );
 
 export const updateStatus = async (request, response) => {
-  const details = validateResolveInput(request.body);
-  if (Object.keys(details).length > 0) throw validationError(details);
+  const details = validateStatusInput(request.body);
+
+  if (Object.keys(details).length > 0) {
+    throw validationError(details);
+  }
 
   return sendSuccess(
     response,
     200,
     'Enquiry status updated successfully.',
-    await resolveEnquiry(request.params.id)
+    await updateEnquiryStatus(
+      request.params.id,
+      request.body.status
+    )
   );
 };
 

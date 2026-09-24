@@ -79,3 +79,12 @@ export const deleteEnquiry = async (id) => {
   const enquiry = await findEnquiry(id);
   await enquiry.deleteOne();
 };
+
+export const updateEnquiryStatus = async (id, status) => {
+  const enquiry = await findEnquiry(id);
+
+  enquiry.status = status;
+  await enquiry.save();
+
+  return enquiryResponse(enquiry, true);
+};
