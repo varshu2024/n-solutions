@@ -619,7 +619,6 @@ GET {{baseUrl}}/api/job-applications
 Authorization: Bearer {{adminToken}}
 
 ### Public - Submit Job Application (multipart/form-data)
-
 POST {{baseUrl}}/api/job-applications
 Content-Type: multipart/form-data; boundary=JobApplicationBoundary
 

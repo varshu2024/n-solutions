@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { SiteHeader, SiteFooter, Arrow, Reveal, navigate } from '../components/Shared'
 import { apiGet } from '../utils/api'
+import { FiPlay, FiMapPin, FiArrowDown, FiArrowUpRight, FiX } from 'react-icons/fi'
+
 export const pressArticles = [
   {
     id: 'press-500-sites',
@@ -138,72 +140,80 @@ export default function MediaPage() {
   const [articles, setArticles] = useState(pressArticles)
   const [gallery, setGallery] = useState(galleryImages)
   const [videos, setVideos] = useState([])
+
   useEffect(() => {
-  document.title = 'Media & News Center | N Solutions Solar EPC'
-  window.scrollTo({ top: 0, behavior: 'smooth' })
+    document.title = 'Media & News Center | N Solutions Solar EPC'
+    window.scrollTo({ top: 0, behavior: 'smooth' })
 
-  const loadMedia = async () => {
-    const [newsResult, videoResult, galleryResult] = await Promise.all([
-      apiGet('/media?type=News%20%26%20Media%20Coverage'),
-      apiGet('/media?type=Videos'),
-      apiGet('/gallery')
-    ])
+    const loadMedia = async () => {
+      const [newsResult, videoResult, galleryResult] = await Promise.all([
+        apiGet('/media?type=News%20%26%20Media%20Coverage'),
+        apiGet('/media?type=Videos'),
+        apiGet('/gallery')
+      ])
 
-    if (newsResult.success && Array.isArray(newsResult.data) && newsResult.data.length > 0) {
-  setArticles(
-    newsResult.data.map((news) => ({
-      id: news.id,
-      tag: news.source || 'Press Release',
-      date: news.publicationDate || '',
-      readTime: '',
-      title: news.title || '',
-      summary: news.summary || '',
-      fullText: news.summary || '',
-      image: news.image?.url || ''
-    }))
-  )
-} else {
-  setArticles(pressArticles)
-}
+      if (
+        newsResult.success &&
+        Array.isArray(newsResult.data) &&
+        newsResult.data.length > 0
+      ) {
+        setArticles(
+          newsResult.data.map((news) => ({
+            id: news.id,
+            tag: news.source || 'Press Release',
+            date: news.publicationDate || '',
+            readTime: '',
+            title: news.title || '',
+            summary: news.summary || '',
+            fullText: news.summary || '',
+            image: news.image?.url || ''
+          }))
+        )
+      } else {
+        setArticles(pressArticles)
+      }
 
-    if (videoResult.success && Array.isArray(videoResult.data)) {
-      const mappedVideos = videoResult.data.map((video) => ({
-        id: video.id,
-        title: video.title || '',
-        description: video.description || '',
-        videoUrl: video.videoUrl || '',
-        thumbnail: video.thumbnail?.url || '',
-        category: video.category || ''
-      }))
+      if (
+        videoResult.success &&
+        Array.isArray(videoResult.data)
+      ) {
+        const mappedVideos = videoResult.data.map((video) => ({
+          id: video.id,
+          title: video.title || '',
+          description: video.description || '',
+          videoUrl: video.videoUrl || '',
+          thumbnail: video.thumbnail?.url || '',
+          category: video.category || ''
+        }))
 
-      setVideos(mappedVideos)
+        setVideos(mappedVideos)
 
-      if (mappedVideos.length > 0 && mappedVideos[0].videoUrl) {
-        setActiveVideo(mappedVideos[0].videoUrl)
+        if (mappedVideos.length > 0 && mappedVideos[0].videoUrl) {
+          setActiveVideo(mappedVideos[0].videoUrl)
+        }
+      }
+
+      if (
+        galleryResult.success &&
+        Array.isArray(galleryResult.data) &&
+        galleryResult.data.length > 0
+      ) {
+        setGallery(
+          galleryResult.data.map((photo) => ({
+            id: photo.id,
+            title: photo.title || '',
+            location: '',
+            category: photo.category || '',
+            src: photo.image?.url || ''
+          }))
+        )
+      } else {
+        setGallery(galleryImages)
       }
     }
 
-    if (
-  galleryResult.success &&
-  Array.isArray(galleryResult.data) &&
-  galleryResult.data.length > 0
-) {
-  setGallery(
-    galleryResult.data.map((photo) => ({
-      id: photo.id,
-      title: photo.title || '',
-      location: '',
-      category: photo.category || '',
-      src: photo.image?.url || ''
-    }))
-  )
-} else {
-  setGallery(galleryImages)
-}
-  }
-
-  loadMedia()
-}, [])
+    loadMedia()
+  }, [])
 
   return (
     <div className="media-page">
@@ -336,66 +346,80 @@ export default function MediaPage() {
               </div>
 
               <div className="video-playlist-sidebar">
-  {videos.length > 0 ? (
-    videos.map((video) => (
-      <div
-        key={video.id}
-        className={`playlist-item ${
-          activeVideo === video.videoUrl ? 'is-playing' : ''
-        }`}
-        onClick={() => setActiveVideo(video.videoUrl)}
-      >
-        <span className="playlist-icon">▶</span>
+                {videos.length > 0 ? (
+                  videos.map((video) => (
+                    <div
+                      key={video.id}
+                      className={`playlist-item ${
+                        activeVideo === video.videoUrl ? 'is-playing' : ''
+                      }`}
+                      onClick={() => setActiveVideo(video.videoUrl)}
+                    >
+                      <span className="playlist-icon">
+                        <FiPlay size={14} />
+                      </span>
 
-        <div>
-          <strong>{video.title}</strong>
-          <small>{video.description}</small>
-        </div>
-      </div>
-    ))
-  ) : (
-    <>
-      <div
-        className={`playlist-item ${
-          activeVideo === '/media/hero-solar.mp4' ? 'is-playing' : ''
-        }`}
-        onClick={() => setActiveVideo('/media/hero-solar.mp4')}
-      >
-        <span className="playlist-icon">▶</span>
-        <div>
-          <strong>N Solutions Solar EPC Overview</strong>
-          <small>High-yield MW plants to residential rooftop networks</small>
-        </div>
-      </div>
+                      <div>
+                        <strong>{video.title}</strong>
+                        <small>{video.description}</small>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <>
+                    <div
+                      className={`playlist-item ${
+                        activeVideo === '/media/hero-solar.mp4' ? 'is-playing' : ''
+                      }`}
+                      onClick={() => setActiveVideo('/media/hero-solar.mp4')}
+                    >
+                      <span className="playlist-icon">
+                        <FiPlay size={14} />
+                      </span>
+                      <div>
+                        <strong>N Solutions Solar EPC Overview</strong>
+                        <small>
+                          High-yield MW plants to residential rooftop networks
+                        </small>
+                      </div>
+                    </div>
 
-      <div
-        className={`playlist-item ${
-          activeVideo === '/media/services.mp4' ? 'is-playing' : ''
-        }`}
-        onClick={() => setActiveVideo('/media/services.mp4')}
-      >
-        <span className="playlist-icon">▶</span>
-        <div>
-          <strong>Turnkey EPC Execution Services</strong>
-          <small>From feasibility and design to testing and net-metering</small>
-        </div>
-      </div>
+                    <div
+                      className={`playlist-item ${
+                        activeVideo === '/media/services.mp4' ? 'is-playing' : ''
+                      }`}
+                      onClick={() => setActiveVideo('/media/services.mp4')}
+                    >
+                      <span className="playlist-icon">
+                        <FiPlay size={14} />
+                      </span>
+                      <div>
+                        <strong>Turnkey EPC Execution Services</strong>
+                        <small>
+                          From feasibility and design to testing and net-metering
+                        </small>
+                      </div>
+                    </div>
 
-      <div
-        className={`playlist-item ${
-          activeVideo === '/media/products.mp4' ? 'is-playing' : ''
-        }`}
-        onClick={() => setActiveVideo('/media/products.mp4')}
-      >
-        <span className="playlist-icon">▶</span>
-        <div>
-          <strong>Solar Products & System Equipment</strong>
-          <small>Tier-1 PV modules, smart string inverters & protection gear</small>
-        </div>
-      </div>
-    </>
-  )}
-</div>
+                    <div
+                      className={`playlist-item ${
+                        activeVideo === '/media/products.mp4' ? 'is-playing' : ''
+                      }`}
+                      onClick={() => setActiveVideo('/media/products.mp4')}
+                    >
+                      <span className="playlist-icon">
+                        <FiPlay size={14} />
+                      </span>
+                      <div>
+                        <strong>Solar Products & System Equipment</strong>
+                        <small>
+                          Tier-1 PV modules, smart string inverters & protection gear
+                        </small>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           </section>
         )}
@@ -462,7 +486,7 @@ export default function MediaPage() {
                   <div className="gallery-card-overlay">
                     <span className="gallery-category">{photo.category}</span>
                     <h4>{photo.title}</h4>
-                    {photo.location && <small>📍 {photo.location}</small>}
+                    <small><FiMapPin size={12} style={{ verticalAlign: 'middle', marginRight: 2 }} />{photo.location}</small>
                   </div>
                 </Reveal>
               ))}
@@ -497,7 +521,7 @@ export default function MediaPage() {
                     alert('Brand asset pack: Vector SVG & high-resolution PNG logos are packaged in the project repository.')
                   }}
                 >
-                  Download Logo Assets (ZIP) ↓
+                  Download Logo Assets (ZIP) <FiArrowDown style={{ verticalAlign: 'middle' }} />
                 </a>
               </div>
 
@@ -513,7 +537,7 @@ export default function MediaPage() {
                     navigate('/contact')
                   }}
                 >
-                  Request Corporate Deck (PDF) →
+                  Request Corporate Deck (PDF) <FiArrowUpRight style={{ verticalAlign: 'middle' }} />
                 </a>
               </div>
 
@@ -524,11 +548,9 @@ export default function MediaPage() {
                 <button 
                   type="button" 
                   className="kit-download-btn"
-                  onClick={() => setActiveArticle(
-  articles.find((article) => article.id) || null
-)}
+                  onClick={() => setActiveArticle(articles[3] || articles[0] || null)}
                 >
-                  View Executive Profile →
+                  View Executive Profile <FiArrowUpRight style={{ verticalAlign: 'middle' }} />
                 </button>
               </div>
             </div>
@@ -567,7 +589,7 @@ export default function MediaPage() {
                 onClick={() => setActiveArticle(null)}
                 aria-label="Close article"
               >
-                ✕
+                <FiX size={20} />
               </button>
 
               <div className="article-modal-header">
@@ -623,13 +645,13 @@ export default function MediaPage() {
                 className="modal-close-btn"
                 onClick={() => setActivePhoto(null)}
               >
-                ✕
+                <FiX size={20} />
               </button>
               <img src={activePhoto.src} alt={activePhoto.title} />
               <div className="photo-lightbox-caption">
                 <span className="badge-tag">{activePhoto.category}</span>
                 <h3>{activePhoto.title}</h3>
-                <p>📍 {activePhoto.location}</p>
+                <p><FiMapPin size={14} style={{ verticalAlign: 'middle', marginRight: 3 }} />{activePhoto.location}</p>
               </div>
             </div>
           </div>

@@ -1,6 +1,23 @@
 import { useState, useEffect } from 'react'
 import { SiteHeader, SiteFooter, Arrow, AnimatedMetric, Reveal, navigate } from '../components/Shared'
 import { apiGet } from '../utils/api'
+import {
+  FiMapPin,
+  FiX,
+  FiArrowDown,
+  FiChevronRight,
+  FiChevronLeft,
+  FiSun,
+  FiZap,
+  FiTrendingUp,
+  FiAward,
+  FiShield,
+  FiLayers,
+  FiCheck,
+  FiActivity,
+  FiCpu,
+  FiCheckCircle
+} from 'react-icons/fi'
 
 const PUBLIC_PROJECT_CATEGORY_MAP = {
   residential: 'residential',
@@ -19,18 +36,27 @@ const PUBLIC_PROJECT_CATEGORY_LABELS = {
 function mapPublicProject(project) {
   const apiCategory = project?.category || 'commercial'
   const category = PUBLIC_PROJECT_CATEGORY_MAP[apiCategory] || 'commercial'
+
   const services = Array.isArray(project?.services)
-    ? project.services.filter((item) => typeof item === 'string' && item.trim()).map((item) => item.trim())
+    ? project.services
+        .filter((item) => typeof item === 'string' && item.trim())
+        .map((item) => item.trim())
     : []
+
   const image = project?.image?.url || ''
   const createdAt = project?.createdAt ? new Date(project.createdAt) : null
-  const year = createdAt && !Number.isNaN(createdAt.getTime()) ? String(createdAt.getFullYear()) : ''
+  const year =
+    createdAt && !Number.isNaN(createdAt.getTime())
+      ? String(createdAt.getFullYear())
+      : ''
 
   return {
     id: project?.id,
     title: project?.title || '',
     category,
-    categoryLabel: PUBLIC_PROJECT_CATEGORY_LABELS[apiCategory] || 'Commercial & Institutional',
+    categoryLabel:
+      PUBLIC_PROJECT_CATEGORY_LABELS[apiCategory] ||
+      'Commercial & Institutional',
     capacity: '',
     location: project?.location || '',
     client: '',
@@ -47,7 +73,10 @@ function mapPublicProject(project) {
 
 function normalizePublicProjects(payload) {
   if (!Array.isArray(payload)) return []
-  return payload.map(mapPublicProject).filter((project) => project.id && project.title)
+
+  return payload
+    .map(mapPublicProject)
+    .filter((project) => project.id && project.title)
 }
 
 export const projectsData = [
@@ -457,15 +486,23 @@ export default function ProjectsPage() {
   const [detailStatus, setDetailStatus] = useState('idle')
   const [detailError, setDetailError] = useState('')
 
+  const [cockpitMode, setCockpitMode] = useState('telemetry')
+  const [activeSchematicNode, setActiveSchematicNode] = useState(0)
+  const [activeLifecycleStage, setActiveLifecycleStage] = useState(0)
+  const [activeBomLayer, setActiveBomLayer] = useState(0)
+
   const loadProjects = async () => {
     setCatalogStatus('loading')
     setCatalogError('')
 
     const result = await apiGet('/public/projects')
+
     if (!result.success) {
       setProjects([])
       setCatalogStatus('error')
-      setCatalogError(result.message || 'Unable to load projects. Please try again.')
+      setCatalogError(
+        result.message || 'Unable to load projects. Please try again.'
+      )
       return
     }
 
@@ -474,7 +511,10 @@ export default function ProjectsPage() {
     setCatalogStatus(nextProjects.length ? 'ready' : 'empty')
   }
 
-  const openProjectDetails = async (project, { fetchDetails = false } = {}) => {
+  const openProjectDetails = async (
+    project,
+    { fetchDetails = false } = {}
+  ) => {
     setSelectedProject(project)
     setDetailError('')
     setDetailStatus('idle')
@@ -482,24 +522,184 @@ export default function ProjectsPage() {
     if (!fetchDetails || !project?.id) return
 
     setDetailStatus('loading')
+
     const result = await apiGet(`/public/projects/${project.id}`)
+
     if (!result.success) {
       setDetailStatus('error')
-      setDetailError(result.message || 'Unable to load project details. Please try again.')
+      setDetailError(
+        result.message ||
+          'Unable to load project details. Please try again.'
+      )
       return
     }
 
     const detailed = mapPublicProject(result.data)
-    setSelectedProject((current) => (current && current.id === detailed.id ? { ...current, ...detailed } : current))
+
+    setSelectedProject((current) =>
+      current && current.id === detailed.id
+        ? { ...current, ...detailed }
+        : current
+    )
+
     setDetailStatus('ready')
   }
 
-  useEffect(() => {
-    document.title = 'Projects Showcase | N Solutions Solar EPC'
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-    loadProjects()
-  }, [])
+  const lifecycleStages = [
+    {
+      num: '01',
+      title: 'Feasibility & LIDAR Solar Irradiance Modeling',
+      short: 'Feasibility & 3D LIDAR',
+      objective:
+        'Comprehensive 3D topographical drone LIDAR mapping and PVSyst simulation to forecast generation yield with 99.4% accuracy.',
+      tools:
+        'DJI Enterprise LIDAR Drone, PVSyst Solar Yield Simulation, Meteonorm Climate Database',
+      checklist: [
+        '3D shadow loss trajectory modeled through 365 sun positions',
+        'Structural dead-weight and live-wind load calculations verified',
+        'Financial LCOE, payback schedule, and IRR feasibility analysis'
+      ]
+    },
+    {
+      num: '02',
+      title: 'DISCOM Approvals & High-Voltage Schematics',
+      short: 'DISCOM Net-Metering',
+      objective:
+        'Filing statutory net-metering feasibility with state DISCOMs and developing CEA-compliant single-line electrical schematics.',
+      tools:
+        'AutoCAD Electrical, DISCOM National Portal Integration, CEIG Statutory Audit System',
+      checklist: [
+        'DISCOM technical net-metering feasibility sanction obtained',
+        'Single-line diagram (SLD) and protection relay coordination approved',
+        'Structural engineering certification with PE stamp'
+      ]
+    },
+    {
+      num: '03',
+      title: 'Tier-1 ALMM Hardware Procurement & In-Factory QA',
+      short: 'Tier-1 Procurement',
+      objective:
+        'Procuring verified Grade-A N-Type TOPCon/Mono PERC modules directly from top tier-1 manufacturers with traceable serial numbers.',
+      tools:
+        'Factory Electroluminescence (EL) Defect Testing, Flash Report Telemetry, BIS/ALMM Verification',
+      checklist: [
+        'Every solar panel verified for zero micro-cracks via factory EL imaging',
+        'Class-1 ESE lightning arrestors and heavy-duty GI box pipes inspected',
+        'Dual-certified TUV solar cables with flame-retardant cross-linking'
+      ]
+    },
+    {
+      num: '04',
+      title: 'Precision Mechanical Erection & Electrical Safety',
+      short: 'Precision Erection',
+      objective:
+        'Deploying certified technicians for hot-dip galvanized mounting structure assembly, waterproof chemical anchoring, and DC string routing.',
+      tools:
+        'Calibrated Torque Wrenches, Hilti Chemical Anchor Systems, UV Conduit Trenching',
+      checklist: [
+        'Zero rooftop puncture guarantees with chemical anchor seals',
+        'Galvanized iron hardware torqued to exact engineering Nm tolerances',
+        'String voltages tested for open-circuit parity prior to inverter connection'
+      ]
+    },
+    {
+      num: '05',
+      title: 'Grid Net-Meter Synchronization & Megger Diagnostics',
+      short: 'Grid Net-Meter Sync',
+      objective:
+        'Executing multi-point insulation resistance tests, sub-1 Ohm earth pit audits, and DISCOM bidirectional meter commissioning.',
+      tools:
+        'Fluke 1507 5kV Megger Tester, Fluke 1625 Earth Ground Clamp, CEIG Official Commissioning Kit',
+      checklist: [
+        'Insulation resistance validated (>50 MegaOhms at 1000V DC)',
+        'Earth pit ground resistance audited to strictly sub-1 Ohm (<0.85 Ω)',
+        'Bi-directional 4-quadrant smart net-meter installed with real-time export'
+      ]
+    },
+    {
+      num: '06',
+      title: 'Cloud SCADA Telemetry & 25-Year Performance SLA',
+      short: 'Cloud SCADA & O&M',
+      objective:
+        'Connecting plant inverters to cloud SCADA servers for minute-by-minute generation logging, automated alert dispatch, and robotic wash support.',
+      tools:
+        'Industrial IoT Telemetry Gateways, FLIR Thermal Drone Thermography, Automated Module Washers',
+      checklist: [
+        'Minute-by-minute generation tracking via mobile & web monitoring portals',
+        'Thermographic drone scans detecting hot-spots and micro-soiling',
+        'Guaranteed 24-hour on-site engineering turnaround for any fault code'
+      ]
+    }
+  ]
 
+  const bomLayers = [
+    {
+      id: 'modules',
+      category: 'Solar PV Modules',
+      name: 'Tier-1 Bi-Facial 625 Wp Mono PERC / TOPCon',
+      desc:
+        'Dual-glass bi-facial architecture harvesting direct sunlight on the front and ground albedo reflection from the rear surface for up to 25% higher lifetime energy yield.',
+      metrics: [
+        '25-Year Linear Power Warranty',
+        'ALMM & BIS Statutory Listed',
+        'Anti-Reflective Toughened Dual-Glass',
+        'Zero PID / LID Degradation Resistance'
+      ],
+      highlights:
+        'Captures both front and diffuse rear irradiance. Certified against extreme coastal salt-mist corrosion and severe monsoon humidity.'
+    },
+    {
+      id: 'inverters',
+      category: 'Power Electronics',
+      name: 'Central & High-Capacity Multi-MPPT String Inverters',
+      desc:
+        'High-conversion efficiency (>98.8%) smart solar inverters with individual string tracking, integrated DC disconnect switches, and type-II surge protection.',
+      metrics: [
+        '10-Year Comprehensive Warranty',
+        'IP65 / IP66 All-Weather Enclosure',
+        'Built-in Wi-Fi / 4G SCADA Telemetry',
+        'Multi-MPPT Solar Yield Optimization'
+      ],
+      highlights:
+        'Advanced grid synchronization with instantaneous islanding protection, power factor correction, and harmonic distortion under 3%.'
+    },
+    {
+      id: 'structures',
+      category: 'Structural Engineering',
+      name: 'Elevated Galvanized Iron Box Pipe Superstructure',
+      desc:
+        'Heavy-gauge 7 x 8 FT elevated galvanized iron box pipe superstructures (JSW / Mangal) engineered to elevate panels while preserving 100% usable rooftop terrace space below.',
+      metrics: [
+        '80+ Micron Hot-Dip Galvanization',
+        '180 km/h Cyclone Wind Resilience',
+        'Full Usable Terrace Clearance Below',
+        'Zero Roof Leakage Chemical Anchors'
+      ],
+      highlights:
+        'Engineered specifically for coastal Andhra Pradesh wind velocity zones. Solid hot-dip zinc coating ensures zero oxidation for over 30 years.'
+    },
+    {
+      id: 'cabling-safety',
+      category: 'Cabling & Safety Grid',
+      name: 'Polycab DC Solar & Aluminum Armoured Transmission',
+      desc:
+        'Cross-linked halogen-free DC solar cables paired with heavy-duty steel wire armoured aluminum power cables and dual-stage chemical earthing with sub-1 Ohm electrodes.',
+      metrics: [
+        'TUV 2 Pfg 1169 / EN 50618 Certified',
+        'IS 7098 Subterranean Armoured Steel Wire',
+        'Copper-Bonded Chemical Earth Pits (<1Ω)',
+        'Class-1 Early Streamer Lightning Arrestor'
+      ],
+      highlights:
+        'Comprehensive electrical containment protecting inverter, panels, and connected building loads against high-voltage surges and atmospheric strikes.'
+    }
+  ]
+
+  useEffect(() => {
+  document.title = 'Projects Showcase | N Solutions Solar EPC'
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+  loadProjects()
+}, [])
   // Update modal active image when selectedProject changes
   useEffect(() => {
     if (selectedProject) {
@@ -508,26 +708,51 @@ export default function ProjectsPage() {
   }, [selectedProject])
 
   const categories = [
-    { id: 'ALL', label: 'All Projects', count: projects.length },
-    { id: 'ground-mount', label: 'Ground Mount & Utility', count: projects.filter(p => p.category === 'ground-mount').length },
-    { id: 'carport', label: 'Solar Car Ports', count: projects.filter(p => p.category === 'carport').length },
-    { id: 'industrial', label: 'Industrial Rooftops & Sheds', count: projects.filter(p => p.category === 'industrial').length },
-    { id: 'residential', label: 'PM Surya Ghar Residential', count: projects.filter(p => p.category === 'residential').length },
-    { id: 'commercial', label: 'Commercial & Institutional', count: projects.filter(p => p.category === 'commercial').length },
-  ]
+  { id: 'ALL', label: 'All Projects', count: projects.length },
+  {
+    id: 'ground-mount',
+    label: 'Ground Mount & Utility',
+    count: projects.filter((p) => p.category === 'ground-mount').length
+  },
+  {
+    id: 'carport',
+    label: 'Solar Car Ports',
+    count: projects.filter((p) => p.category === 'carport').length
+  },
+  {
+    id: 'industrial',
+    label: 'Industrial Rooftops & Sheds',
+    count: projects.filter((p) => p.category === 'industrial').length
+  },
+  {
+    id: 'residential',
+    label: 'PM Surya Ghar Residential',
+    count: projects.filter((p) => p.category === 'residential').length
+  },
+  {
+    id: 'commercial',
+    label: 'Commercial & Institutional',
+    count: projects.filter((p) => p.category === 'commercial').length
+  }
+]
 
-  const filteredProjects = projects.filter(project => {
-    const matchesCategory = activeCategory === 'ALL' || project.category === activeCategory
-    const query = searchQuery.toLowerCase()
-    const matchesSearch = searchQuery === '' ||
-      project.title.toLowerCase().includes(query) ||
-      project.location.toLowerCase().includes(query) ||
-      (project.capacity || '').toLowerCase().includes(query) ||
-      (project.client || '').toLowerCase().includes(query) ||
-      (project.headline || '').toLowerCase().includes(query) ||
-      (project.categoryLabel || '').toLowerCase().includes(query)
-    return matchesCategory && matchesSearch
-  })
+const filteredProjects = projects.filter((project) => {
+  const matchesCategory =
+    activeCategory === 'ALL' || project.category === activeCategory
+
+  const query = searchQuery.toLowerCase()
+
+  const matchesSearch =
+    searchQuery === '' ||
+    project.title.toLowerCase().includes(query) ||
+    project.location.toLowerCase().includes(query) ||
+    (project.capacity || '').toLowerCase().includes(query) ||
+    (project.client || '').toLowerCase().includes(query) ||
+    (project.headline || '').toLowerCase().includes(query) ||
+    (project.categoryLabel || '').toLowerCase().includes(query)
+
+  return matchesCategory && matchesSearch
+})
 
   return (
     <div className="projects-page">
@@ -563,7 +788,7 @@ export default function ProjectsPage() {
                 className="button button-ghost" 
                 href="#case-studies"
               >
-                Explore Flagship Case Studies ↓
+                Explore Flagship Case Studies <FiArrowDown style={{ verticalAlign: 'middle' }} />
               </a>
             </div>
           </div>
@@ -712,7 +937,7 @@ export default function ProjectsPage() {
                   onClick={() => setSearchQuery('')}
                   aria-label="Clear search"
                 >
-                  ×
+                  <FiX size={14} />
                 </button>
               )}
             </div>
@@ -732,91 +957,121 @@ export default function ProjectsPage() {
               </button>
             ))}
           </div>
-
           {catalogStatus === 'loading' ? (
-            <p className="heading-note">Loading project catalog...</p>
+  <p className="heading-note">Loading project catalog...</p>
+) : null}
+
+{catalogStatus === 'error' ? (
+  <div className="projects-empty-results">
+    <p role="alert">{catalogError}</p>
+    <button
+      type="button"
+      className="button button-accent"
+      onClick={loadProjects}
+    >
+      Retry
+    </button>
+  </div>
+) : null}
+
+{catalogStatus === 'empty' ? (
+  <div className="projects-empty-results">
+    <p>No projects are currently listed.</p>
+  </div>
+) : null}
+
+{catalogStatus === 'ready' ? (
+  <div className="projects-cards-grid">
+    {filteredProjects.map((project) => (
+      <Reveal key={project.id} className="project-portfolio-card">
+        <div className="project-card-image-wrap">
+          {project.image ? (
+            <img
+              src={project.image}
+              alt={project.title}
+              loading="lazy"
+            />
           ) : null}
 
-          {catalogStatus === 'error' ? (
-            <div className="projects-empty-results">
-              <p role="alert">{catalogError}</p>
-              <button
-                type="button"
-                className="button button-accent"
-                onClick={loadProjects}
-              >
-                Retry
-              </button>
-            </div>
+          {project.capacity ? (
+            <span className="project-badge-capacity">
+              {project.capacity}
+            </span>
           ) : null}
 
-          {catalogStatus === 'empty' ? (
-            <div className="projects-empty-results">
-              <p>No projects are currently listed.</p>
-            </div>
+          {project.status ? (
+            <span className="project-badge-status">
+              {project.status}
+            </span>
           ) : null}
+        </div>
 
-          {catalogStatus === 'ready' ? (
-            <div className="projects-cards-grid">
-              {filteredProjects.map((project) => (
-                <Reveal key={project.id} className="project-portfolio-card">
-                  <div className="project-card-image-wrap">
-                    {project.image ? (
-                      <img src={project.image} alt={project.title} loading="lazy" />
-                    ) : null}
-                    {project.capacity ? (
-                      <span className="project-badge-capacity">{project.capacity}</span>
-                    ) : null}
-                    {project.status ? (
-                      <span className="project-badge-status">{project.status}</span>
-                    ) : null}
-                  </div>
+        <div className="project-card-content">
+          <div className="project-card-meta">
+            <span className="category-marker">
+              {project.categoryLabel}
+            </span>
 
-                  <div className="project-card-content">
-                    <div className="project-card-meta">
-                      <span className="category-marker">{project.categoryLabel}</span>
-                      {project.year ? (
-                        <span className="project-year">{project.year}</span>
-                      ) : null}
-                    </div>
+            {project.year ? (
+              <span className="project-year">{project.year}</span>
+            ) : null}
+          </div>
 
-                    <h3>{project.title}</h3>
-                    <p className="project-location-pin">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                      </svg>
-                      {project.location}
-                    </p>
-                    
-                    <p className="project-summary-text">{project.headline}</p>
+          <h3>{project.title}</h3>
 
-                    <div className="project-card-footer">
-                      <button
-                        type="button"
-                        className="project-inspect-btn"
-                        onClick={() => openProjectDetails(project, { fetchDetails: true })}
-                      >
-                        Inspect Specs & Photos ({project.gallery ? project.gallery.length : 1}) <Arrow />
-                      </button>
-                    </div>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-          ) : null}
+          <p className="project-location-pin">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5-2.5-2.5-2.5 1.12-2.5 2.5 1.12 2.5 2.5 2.5z" />
+            </svg>
+            {project.location}
+          </p>
 
-          {catalogStatus === 'ready' && filteredProjects.length === 0 && (
-            <div className="projects-empty-results">
-              <p>No projects match your current filter criteria.</p>
-              <button 
-                type="button" 
-                className="button button-accent" 
-                onClick={() => { setActiveCategory('ALL'); setSearchQuery(''); }}
-              >
-                Reset Filters
-              </button>
-            </div>
-          )}
+          <p className="project-summary-text">
+            {project.headline}
+          </p>
+
+          <div className="project-card-footer">
+            <button
+              type="button"
+              className="project-inspect-btn"
+              onClick={() =>
+                openProjectDetails(project, {
+                  fetchDetails: true
+                })
+              }
+            >
+              Inspect Specs & Photos (
+              {project.gallery ? project.gallery.length : 1}
+              ) <Arrow />
+            </button>
+          </div>
+        </div>
+      </Reveal>
+    ))}
+  </div>
+) : null}
+
+{catalogStatus === 'ready' && filteredProjects.length === 0 && (
+  <div className="projects-empty-results">
+    <p>No projects match your current filter criteria.</p>
+
+    <button
+      type="button"
+      className="button button-accent"
+      onClick={() => {
+        setActiveCategory('ALL')
+        setSearchQuery('')
+      }}
+    >
+      Reset Filters
+    </button>
+  </div>
+)}
         </section>
 
         {/* ENTERPRISE CLIENTS & STRATEGIC PARTNERS */}
@@ -868,11 +1123,97 @@ export default function ProjectsPage() {
               </p>
             </Reveal>
 
+            <div className="hardware-anatomy-layout">
+              {/* Left Selector Tabs */}
+              <div className="hardware-tabs-panel">
+                {bomLayers.map((layer, idx) => (
+                  <button
+                    key={layer.id}
+                    type="button"
+                    className={`hardware-tab-item ${activeBomLayer === idx ? 'is-active' : ''}`}
+                    onClick={() => setActiveBomLayer(idx)}
+                  >
+                    <div className="hardware-tab-text">
+                      <small>{layer.category}</small>
+                      <strong>{layer.name}</strong>
+                    </div>
+
+                    <FiChevronRight
+                      style={{
+                        color:
+                          activeBomLayer === idx
+                            ? 'var(--brand-accent)'
+                            : 'var(--muted)'
+                      }}
+                    />
+                  </button>
+                ))}
+              </div>
+
+              {/* Right Interactive Telemetry Detail Display */}
+              <div className="hardware-detail-display">
+                <div>
+                  <span className="hardware-detail-badge">
+                    {bomLayers[activeBomLayer].category} · Tier-1 Hardware Standard
+                  </span>
+
+                  <h3>{bomLayers[activeBomLayer].name}</h3>
+
+                  <p>{bomLayers[activeBomLayer].desc}</p>
+
+                  <div className="hardware-metric-capsules">
+                    {bomLayers[activeBomLayer].metrics.map((m, mIdx) => (
+                      <span key={mIdx} className="hardware-chip">
+                        <FiCheckCircle size={14} />
+                        {m}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <div
+                  style={{
+                    background: '#f0f7fb',
+                    padding: '14px 18px',
+                    borderRadius: '8px',
+                    borderLeft: '3px solid var(--brand-accent)'
+                  }}
+                >
+                  <strong
+                    style={{
+                      fontSize: '11px',
+                      textTransform: 'uppercase',
+                      color: 'var(--brand-primary-deep)',
+                      letterSpacing: '0.05em',
+                      display: 'block',
+                      marginBottom: '4px'
+                    }}
+                  >
+                    Engineering Field Guarantee
+                  </strong>
+
+                  <span
+                    style={{
+                      fontSize: '13px',
+                      color: '#334e68'
+                    }}
+                  >
+                    {bomLayers[activeBomLayer].highlights}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Detailed BOM Cards - Preserve Existing Hardware Information */}
             <div className="bom-cards-grid">
               <Reveal className="bom-card">
                 <span className="bom-card-tag">Solar Modules</span>
                 <h3>Bi-Facial 625 Wp Mono PERC NDCR</h3>
-                <p>High-efficiency dual-glass bi-facial modules capturing both direct sunlight and ground albedo reflection for up to 25% higher lifetime yield.</p>
+                <p>
+                  High-efficiency dual-glass bi-facial modules capturing both
+                  direct sunlight and ground albedo reflection for up to 25%
+                  higher lifetime yield.
+                </p>
                 <ul className="bom-specs-list">
                   <li>25-Year Linear Power Warranty</li>
                   <li>NDCR & ALMM Certified Quality</li>
@@ -883,7 +1224,11 @@ export default function ProjectsPage() {
               <Reveal className="bom-card">
                 <span className="bom-card-tag">Solar Inverters</span>
                 <h3>DEYE & Microtek 3-Phase Grid Inverters</h3>
-                <p>Advanced multi-MPPT grid-tied inverters (3 kW, 5 kW, 10 kW to central utility MW banks) with Solis & SG smart telemetry loggers.</p>
+                <p>
+                  Advanced multi-MPPT grid-tied inverters (3 kW, 5 kW, 10 kW
+                  to central utility MW banks) with Solis & SG smart telemetry
+                  loggers.
+                </p>
                 <ul className="bom-specs-list">
                   <li>10-Year Comprehensive Warranty</li>
                   <li>IP65 / IP66 Outdoor Rated Enclosures</li>
@@ -894,7 +1239,11 @@ export default function ProjectsPage() {
               <Reveal className="bom-card">
                 <span className="bom-card-tag">Solar Structures</span>
                 <h3>Elevated GI Box Pipes (JSW / Mangal)</h3>
-                <p>Heavy-gauge 7 x 8 FT elevated galvanized iron box pipe structures engineered for high wind resilience, zero corrosion, and optimal usable space below.</p>
+                <p>
+                  Heavy-gauge 7 x 8 FT elevated galvanized iron box pipe
+                  structures engineered for high wind resilience, zero
+                  corrosion, and optimal usable space below.
+                </p>
                 <ul className="bom-specs-list">
                   <li>80+ Micron Hot-Dip Galvanization</li>
                   <li>180 km/h Cyclone Wind Resistance</li>
@@ -905,7 +1254,11 @@ export default function ProjectsPage() {
               <Reveal className="bom-card">
                 <span className="bom-card-tag">DC Cabling</span>
                 <h3>Polycab DC Solar Cable (4 sq mm)</h3>
-                <p>Electron-beam cross-linked halogen-free cables designed to withstand extreme UV radiation, ozone, moisture, and high thermal loads without degradation.</p>
+                <p>
+                  Electron-beam cross-linked halogen-free cables designed to
+                  withstand extreme UV radiation, ozone, moisture, and high
+                  thermal loads without degradation.
+                </p>
                 <ul className="bom-specs-list">
                   <li>Flame retardant & UV resistant</li>
                   <li>TUV 2 Pfg 1169 / EN 50618 certified</li>
@@ -916,7 +1269,11 @@ export default function ProjectsPage() {
               <Reveal className="bom-card">
                 <span className="bom-card-tag">AC Armoured Cabling</span>
                 <h3>Polycab 3.5 Core 50 sq mm Al Armoured</h3>
-                <p>Heavy-duty galvanized steel wire armoured aluminum power cables ensuring mechanical protection, subterranean routing safety, and reliable grid feed.</p>
+                <p>
+                  Heavy-duty galvanized steel wire armoured aluminum power
+                  cables ensuring mechanical protection, subterranean routing
+                  safety, and reliable grid feed.
+                </p>
                 <ul className="bom-specs-list">
                   <li>IS 7098 / IS 1554 compliance</li>
                   <li>Steel wire armoured mechanical armor</li>
@@ -927,7 +1284,11 @@ export default function ProjectsPage() {
               <Reveal className="bom-card">
                 <span className="bom-card-tag">Safety & Maintenance</span>
                 <h3>Chemical Earth Pits & Lightning Arrestors</h3>
-                <p>Comprehensive protection including copper-bonded chemical earthing electrodes (&lt;1Ω), Class-1 lightning arrestors, and automated module wash systems.</p>
+                <p>
+                  Comprehensive protection including copper-bonded chemical
+                  earthing electrodes (&lt;1Ω), Class-1 lightning arrestors,
+                  and automated module wash systems.
+                </p>
                 <ul className="bom-specs-list">
                   <li>Dual-stage chemical earthing grid</li>
                   <li>ESE high-rise lightning protection</li>
@@ -935,109 +1296,6 @@ export default function ProjectsPage() {
                 </ul>
               </Reveal>
             </div>
-          </div>
-        </section>
-
-        {/* OFFICIAL STATUTORY EMPANELMENTS & CERTIFICATIONS */}
-        <section className="projects-empanelment-section">
-          <div className="wrap">
-            <Reveal className="section-heading">
-              <div>
-                <p className="eyebrow light"><span /> Government Empanelments & Credentials</p>
-                <h2>Statutory approvals &<br /><em>official vendor empanelments.</em></h2>
-              </div>
-              <p className="heading-note light">
-                Fully authorized and empaneled by state electricity distribution companies and renewable energy development nodal agencies across India.
-              </p>
-            </Reveal>
-
-            <div className="empanelment-grid">
-              <Reveal className="empanelment-card">
-                <div className="empanelment-doc-preview">
-                  <img 
-                    src="/projects/apepdcl-pm-suryaghar-empanelment-order.png" 
-                    alt="APEPDCL PM Surya Ghar Empanelment Order" 
-                  />
-                </div>
-                <div className="empanelment-info">
-                  <span className="badge-tag">APEPDCL Empaneled</span>
-                  <h3>PM Surya Ghar National Portal Vendor</h3>
-                  <p>
-                    Official vendor empanelment for residential solar rooftop installations under PM Surya Ghar Muft Bijli Yojana with verified State Bank of India bank guarantee.
-                  </p>
-                  <small>Order Ref: Lr.No.CGM/EC&Solar/EPDCL/GM/EE/Dy.EE/JE/EC&Solar/E-397417/D.No.1/570375/25</small>
-                </div>
-              </Reveal>
-
-              <Reveal className="empanelment-card">
-                <div className="empanelment-doc-preview">
-                  <img 
-                    src="/projects/nredcap-solar-rooftop-empanelment-order.jpg" 
-                    alt="NREDCAP Solar Rooftop Empanelment Order" 
-                  />
-                </div>
-                <div className="empanelment-info">
-                  <span className="badge-tag">NREDCAP Approved</span>
-                  <h3>Grid-Connected Solar Rooftop (1-100 KWp)</h3>
-                  <p>
-                    Approved supplier by New & Renewable Energy Development Corporation of Andhra Pradesh Ltd (NREDCAP) under CAPEX mode for 1 kWp to 100 kWp installations.
-                  </p>
-                  <small>Ref: NREDCAP/SE/SPV 1-500 KWp/42-316/2024-25</small>
-                </div>
-              </Reveal>
-            </div>
-          </div>
-        </section>
-
-        {/* 6-STEP EXECUTION LIFECYCLE */}
-        <section className="projects-lifecycle">
-          <div className="wrap">
-            <Reveal className="section-heading">
-              <div>
-                <p className="eyebrow light"><span /> Engineering Standard</p>
-                <h2>How we deliver every<br /><em>solar installation.</em></h2>
-              </div>
-              <p className="heading-note light">
-                A structured, disciplined engineering protocol applied uniformly from residential PM Surya Ghar roofs to MW-scale solar farms.
-              </p>
-            </Reveal>
-
-            <div className="lifecycle-grid">
-              <Reveal className="lifecycle-step">
-                <span className="step-num">01</span>
-                <h4>Feasibility & Shadow Analysis</h4>
-                <p>3D LIDAR and drone roof mapping, solar irradiance modeling (PVSyst), structural load-bearing calculation, and electrical single-line design.</p>
-              </Reveal>
-              <Reveal className="lifecycle-step">
-                <span className="step-num">02</span>
-                <h4>Engineering & DISCOM Approvals</h4>
-                <p>Preparation of electrical schematic drawings, grid net-metering feasibility filing, DISCOM statutory approvals, and structural validation.</p>
-              </Reveal>
-              <Reveal className="lifecycle-step">
-                <span className="step-num">03</span>
-                <h4>Tier-1 Procurement</h4>
-                <p>Procurement of ALMM-listed mono-crystalline/TOPCon modules, high-efficiency smart inverters, Class-1 lightning arrestors, and GI mounting structures.</p>
-              </Reveal>
-              <Reveal className="lifecycle-step">
-                <span className="step-num">04</span>
-                <h4>Installation & Safety Protocol</h4>
-                <p>Qualified technicians carry out precise structural erection, DC cable trenching, chemical earthing pits, and waterproof sealing.</p>
-              </Reveal>
-              <Reveal className="lifecycle-step">
-                <span className="step-num">05</span>
-                <h4>Testing, Grid Sync & Net-Meter</h4>
-                <p>Insulation resistance (megger) testing, earth pit resistance audit (&lt;1 ohm), CEIG / DISCOM inspection, and bi-directional meter synchronization.</p>
-              </Reveal>
-              <Reveal className="lifecycle-step">
-                <span className="step-num">06</span>
-                <h4>24/7 Monitoring & O&M SLA</h4>
-                <p>Cloud SCADA live telemetry, preventative seasonal module cleaning, thermal drone thermography, and rapid breakdown support.</p>
-              </Reveal>
-            </div>
-
-            <p className="projects-flow-indicator">
-              Understand <i>→</i> Assess <i>→</i> Design <i>→</i> Procure <i>→</i> Execute <i>→</i> Support
-            </p>
           </div>
         </section>
 
@@ -1079,31 +1337,58 @@ export default function ProjectsPage() {
                 onClick={() => setSelectedProject(null)}
                 aria-label="Close modal"
               >
-                ✕
+                <FiX size={20} />
               </button>
 
               <div className="modal-header">
                 <div className="modal-header-meta">
                   <span className="badge-tag">{selectedProject.categoryLabel}</span>
                   {selectedProject.capacity ? (
-                    <span className="badge-capacity">{selectedProject.capacity}</span>
+                    <span className="badge-capacity">
+                      {selectedProject.capacity}
+                    </span>
                   ) : null}
+
                   {selectedProject.status ? (
-                    <span className="badge-status">{selectedProject.status}</span>
+                    <span className="badge-status">
+                      {selectedProject.status}
+                    </span>
                   ) : null}
                 </div>
+
                 <h2>{selectedProject.title}</h2>
+
                 <p className="modal-location">
-                  📍 {selectedProject.location}
-                  {selectedProject.client ? <> · Client: <strong>{selectedProject.client}</strong></> : null}
-                  {selectedProject.year ? <> ({selectedProject.year})</> : null}
+                  <FiMapPin
+                    size={14}
+                    style={{
+                      verticalAlign: 'middle',
+                      marginRight: 4
+                    }}
+                  />
+
+                  {selectedProject.location}
+
+                  {selectedProject.client ? (
+                    <>
+                      {' · Client: '}
+                      <strong>{selectedProject.client}</strong>
+                    </>
+                  ) : null}
+
+                  {selectedProject.year ? (
+                    <> ({selectedProject.year})</>
+                  ) : null}
                 </p>
               </div>
 
               {/* Main Display Image */}
               {selectedProject.image || activeModalImg ? (
                 <div className="modal-hero-image">
-                  <img src={activeModalImg || selectedProject.image} alt={selectedProject.title} />
+                  <img
+                    src={activeModalImg || selectedProject.image}
+                    alt={selectedProject.title}
+                  />
                 </div>
               ) : null}
 
@@ -1128,54 +1413,362 @@ export default function ProjectsPage() {
                 <div className="modal-overview-text">
                   <h3>Project Overview</h3>
                   {detailStatus === 'loading' ? (
-                    <p className="heading-note">Loading project details...</p>
+                    <p className="heading-note">
+                      Loading project details...
+                    </p>
                   ) : null}
+
                   {detailStatus === 'error' ? (
-                    <p className="heading-note" role="alert">{detailError}</p>
+                    <p className="heading-note" role="alert">
+                      {detailError}
+                    </p>
                   ) : null}
                   <p>{selectedProject.summary}</p>
                 </div>
 
                 {selectedProject.specs && (
-                  <div className="modal-specs-section">
-                    <h3>Technical Engineering Parameters</h3>
-                    <div className="specs-table-grid">
-                      <div className="spec-row">
-                        <strong>Solar Modules:</strong>
-                        <span>{selectedProject.specs.modules}</span>
+                  <div className="telemetry-cockpit">
+                    <div className="cockpit-header-bar">
+                      <div className="cockpit-title-wrap">
+                        <div className="cockpit-radar-icon">
+                          <FiActivity size={14} />
+                        </div>
+
+                        <div>
+                          <h3>Engineering Telemetry & System Specs</h3>
+                        </div>
                       </div>
-                      <div className="spec-row">
-                        <strong>Inverter Architecture:</strong>
-                        <span>{selectedProject.specs.inverters}</span>
-                      </div>
-                      <div className="spec-row">
-                        <strong>Annual Generation:</strong>
-                        <span>{selectedProject.specs.generation}</span>
-                      </div>
-                      <div className="spec-row">
-                        <strong>CO₂ Carbon Offset:</strong>
-                        <span>{selectedProject.specs.co2Offset}</span>
-                      </div>
-                      <div className="spec-row">
-                        <strong>Grid Synchronization:</strong>
-                        <span>{selectedProject.specs.gridSync}</span>
-                      </div>
-                      <div className="spec-row">
-                        <strong>Mounting & Structural:</strong>
-                        <span>{selectedProject.specs.structure}</span>
+
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '10px',
+                          flexWrap: 'wrap'
+                        }}
+                      >
+                        <span className="cockpit-status-chip">
+                          <span className="cockpit-pulse-dot" />
+                          Live Grid Synchronized
+                        </span>
+
+                        <div className="cockpit-mode-toggle">
+                          <button
+                            type="button"
+                            className={`cockpit-mode-btn ${
+                              cockpitMode === 'telemetry' ? 'is-active' : ''
+                            }`}
+                            onClick={() => setCockpitMode('telemetry')}
+                          >
+                            <FiCpu size={12} />
+                            Telemetry HUD
+                          </button>
+
+                          <button
+                            type="button"
+                            className={`cockpit-mode-btn ${
+                              cockpitMode === 'schematic' ? 'is-active' : ''
+                            }`}
+                            onClick={() => setCockpitMode('schematic')}
+                          >
+                            <FiZap size={12} />
+                            Energy Route
+                          </button>
+                        </div>
                       </div>
                     </div>
+
+                    {cockpitMode === 'telemetry' ? (
+                      <div className="telemetry-matrix">
+                        {/* Channel 1: Modules */}
+                        <div className="telemetry-capsule">
+                          <div className="capsule-meta-top">
+                            <span className="capsule-ch-id">
+                              <FiSun /> CH-01 · Array
+                            </span>
+                            <span className="capsule-badge-pill">
+                              Tier-1 ALMM
+                            </span>
+                          </div>
+
+                          <p className="capsule-label">Solar PV Array</p>
+                          <p className="capsule-value">
+                            {selectedProject.specs.modules}
+                          </p>
+
+                          <div className="capsule-meter-line">
+                            <div
+                              className="capsule-meter-fill"
+                              style={{ width: '96%' }}
+                            />
+                          </div>
+                        </div>
+
+                        {/* Channel 2: Inverters */}
+                        <div className="telemetry-capsule">
+                          <div className="capsule-meta-top">
+                            <span className="capsule-ch-id">
+                              <FiZap /> CH-02 · Conversion
+                            </span>
+                            <span className="capsule-badge-pill">
+                              Multi-MPPT
+                            </span>
+                          </div>
+
+                          <p className="capsule-label">
+                            Inverter Architecture
+                          </p>
+                          <p className="capsule-value">
+                            {selectedProject.specs.inverters}
+                          </p>
+
+                          <div className="capsule-meter-line">
+                            <div
+                              className="capsule-meter-fill"
+                              style={{ width: '98%' }}
+                            />
+                          </div>
+                        </div>
+
+                        {/* Channel 3: Annual Generation */}
+                        <div className="telemetry-capsule">
+                          <div className="capsule-meta-top">
+                            <span className="capsule-ch-id">
+                              <FiTrendingUp /> CH-03 · Harvest
+                            </span>
+                            <span className="capsule-badge-pill">
+                              CUF &gt; 19%
+                            </span>
+                          </div>
+
+                          <p className="capsule-label">
+                            Annual Generation Harvest
+                          </p>
+                          <p className="capsule-value">
+                            {selectedProject.specs.generation}
+                          </p>
+
+                          <div className="capsule-meter-line">
+                            <div
+                              className="capsule-meter-fill"
+                              style={{ width: '94%' }}
+                            />
+                          </div>
+                        </div>
+
+                        {/* Channel 4: Carbon Offset */}
+                        <div className="telemetry-capsule">
+                          <div className="capsule-meta-top">
+                            <span className="capsule-ch-id">
+                              <FiAward /> CH-04 · Abatement
+                            </span>
+                            <span className="capsule-badge-pill">
+                              ESG Green
+                            </span>
+                          </div>
+
+                          <p className="capsule-label">
+                            CO₂ Carbon Offset
+                          </p>
+                          <p className="capsule-value">
+                            {selectedProject.specs.co2Offset}
+                          </p>
+
+                          <div className="capsule-meter-line">
+                            <div
+                              className="capsule-meter-fill"
+                              style={{ width: '92%' }}
+                            />
+                          </div>
+                        </div>
+
+                        {/* Channel 5: Grid Synchronization */}
+                        <div className="telemetry-capsule">
+                          <div className="capsule-meta-top">
+                            <span className="capsule-ch-id">
+                              <FiShield /> CH-05 · Intertie
+                            </span>
+                            <span className="capsule-badge-pill">
+                              CEIG Approved
+                            </span>
+                          </div>
+
+                          <p className="capsule-label">
+                            Grid Synchronization
+                          </p>
+                          <p className="capsule-value">
+                            {selectedProject.specs.gridSync}
+                          </p>
+
+                          <div className="capsule-meter-line">
+                            <div
+                              className="capsule-meter-fill"
+                              style={{ width: '99%' }}
+                            />
+                          </div>
+                        </div>
+
+                        {/* Channel 6: Mounting Structure */}
+                        <div className="telemetry-capsule">
+                          <div className="capsule-meta-top">
+                            <span className="capsule-ch-id">
+                              <FiLayers /> CH-06 · Superstructure
+                            </span>
+                            <span className="capsule-badge-pill">
+                              180 km/h Rated
+                            </span>
+                          </div>
+
+                          <p className="capsule-label">
+                            Mounting & Structural
+                          </p>
+                          <p className="capsule-value">
+                            {selectedProject.specs.structure}
+                          </p>
+
+                          <div className="capsule-meter-line">
+                            <div
+                              className="capsule-meter-fill"
+                              style={{ width: '97%' }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="schematic-flow-canvas">
+                        <div className="schematic-busway">
+                          <div
+                            className={`schematic-node ${
+                              activeSchematicNode === 0 ? 'is-active' : ''
+                            }`}
+                            onClick={() => setActiveSchematicNode(0)}
+                          >
+                            <span className="schematic-step-indicator">
+                              01
+                            </span>
+                            <h4>Solar Array</h4>
+                            <p>{selectedProject.specs.modules}</p>
+                          </div>
+
+                          <div className="schematic-wire-arrow">➔</div>
+
+                          <div
+                            className={`schematic-node ${
+                              activeSchematicNode === 1 ? 'is-active' : ''
+                            }`}
+                            onClick={() => setActiveSchematicNode(1)}
+                          >
+                            <span className="schematic-step-indicator">
+                              02
+                            </span>
+                            <h4>Inverter Bank</h4>
+                            <p>{selectedProject.specs.inverters}</p>
+                          </div>
+
+                          <div className="schematic-wire-arrow">➔</div>
+
+                          <div
+                            className={`schematic-node ${
+                              activeSchematicNode === 2 ? 'is-active' : ''
+                            }`}
+                            onClick={() => setActiveSchematicNode(2)}
+                          >
+                            <span className="schematic-step-indicator">
+                              03
+                            </span>
+                            <h4>Grid Intertie</h4>
+                            <p>{selectedProject.specs.gridSync}</p>
+                          </div>
+
+                          <div className="schematic-wire-arrow">➔</div>
+
+                          <div
+                            className={`schematic-node ${
+                              activeSchematicNode === 3 ? 'is-active' : ''
+                            }`}
+                            onClick={() => setActiveSchematicNode(3)}
+                          >
+                            <span className="schematic-step-indicator">
+                              04
+                            </span>
+                            <h4>Clean Power Output</h4>
+                            <p>{selectedProject.specs.generation}</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>)}
+                  {selectedProject.specs ? (
+                    <div className="modal-specs-section">
+                      <h3>Technical Engineering Parameters</h3>
+
+                      <div className="specs-table-grid">
+                        <div className="spec-row">
+                          <strong>Solar Modules:</strong>
+                          <span>{selectedProject.specs.modules}</span>
+                        </div>
+
+                        <div className="spec-row">
+                          <strong>Inverter Architecture:</strong>
+                          <span>{selectedProject.specs.inverters}</span>
+                        </div>
+
+                        <div className="spec-row">
+                          <strong>Annual Generation:</strong>
+                          <span>{selectedProject.specs.generation}</span>
+                        </div>
+
+                        <div className="spec-row">
+                          <strong>CO₂ Carbon Offset:</strong>
+                          <span>{selectedProject.specs.co2Offset}</span>
+                        </div>
+
+                        <div className="spec-row">
+                          <strong>Grid Synchronization:</strong>
+                          <span>{selectedProject.specs.gridSync}</span>
+                        </div>
+
+                        <div className="spec-row">
+                          <strong>Mounting & Structural:</strong>
+                          <span>{selectedProject.specs.structure}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ) : null}
                   </div>
-                )}
 
                 {selectedProject.highlights && (
                   <div className="modal-highlights-section">
-                    <h3>Key Execution Highlights</h3>
-                    <ul>
-                      {selectedProject.highlights.map((h, i) => (
-                        <li key={i}>{h}</li>
-                      ))}
-                    </ul>
+                    {Array.isArray(selectedProject.highlights) &&
+                    selectedProject.highlights.length > 0 ? (
+                      <>
+                        <h3>Engineering Milestone & Execution Log</h3>
+
+                        <div className="engineering-log-stream">
+                          {selectedProject.highlights.map((h, i) => (
+                            <div
+                              key={i}
+                              className="log-stream-entry"
+                            >
+                              <div className="log-stream-node">
+                                <div className="log-stream-node-inner" />
+                              </div>
+
+                              <div className="log-stream-content">
+                                <span className="log-stream-tag">
+                                  ✓ Audited Execution Standard · Milestone{' '}
+                                  {i + 1}
+                                </span>
+
+                                <p className="log-stream-text">
+                                  {h}
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </>
+                    ) : null}
                   </div>
                 )}
 
@@ -1195,7 +1788,6 @@ export default function ProjectsPage() {
                 </div>
               </div>
             </div>
-          </div>
         )}
       </main>
 

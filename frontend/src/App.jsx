@@ -7,12 +7,92 @@ import ContactPage from './pages/ContactPage'
 import AdminPortal from './admin/AdminPortal'
 import { navigate, SiteFooter } from './components/Shared'
 import { homeContent, aboutContent, servicesAndSolutionsContent } from './content/siteContent'
+import { 
+  FiArrowUpRight, FiArrowDown, FiCheck, FiChevronRight,
+  FiZap, FiSun, FiShield, FiTarget, FiTrendingUp, FiGlobe, 
+  FiCompass, FiCpu, FiAward, FiCheckCircle, FiRefreshCw, 
+  FiBriefcase, FiHome, FiTool, FiActivity, FiSliders, 
+  FiUsers, FiClock, FiLayers, FiFileText, FiMapPin, FiStar
+} from 'react-icons/fi'
 
 const services = homeContent.whatWeDo.services
 const process = homeContent.howWeWork.steps
 const strengths = homeContent.whyChooseUs.strengths
 
-function Arrow() { return <span aria-hidden="true">↗</span> }
+function getVisionIcon(num) {
+  switch (num) {
+    case '01': return <FiSun />
+    case '02': return <FiUsers />
+    case '03': return <FiZap />
+    case '04': return <FiTrendingUp />
+    case '05': return <FiGlobe />
+    case '06': return <FiCompass />
+    default: return <FiSun />
+  }
+}
+
+function getMissionIcon(num) {
+  switch (num) {
+    case '01': return <FiSliders />
+    case '02': return <FiShield />
+    case '03': return <FiTarget />
+    case '04': return <FiRefreshCw />
+    case '05': return <FiCpu />
+    case '06': return <FiAward />
+    default: return <FiShield />
+  }
+}
+
+function getCapabilityIcon(num) {
+  switch (num) {
+    case '01': return <FiZap />
+    case '02': return <FiBriefcase />
+    case '03': return <FiHome />
+    case '04': return <FiAward />
+    case '05': return <FiTool />
+    case '06': return <FiActivity />
+    case '07': return <FiLayers />
+    case '08': return <FiTrendingUp />
+    default: return <FiSun />
+  }
+}
+
+function getStrengthIcon(num) {
+  switch (num) {
+    case '01': return <FiClock />
+    case '02': return <FiMapPin />
+    case '03': return <FiCompass />
+    case '04': return <FiBriefcase />
+    case '05': return <FiSliders />
+    case '06': return <FiAward />
+    case '07': return <FiShield />
+    case '08': return <FiCheckCircle />
+    default: return <FiZap />
+  }
+}
+
+function getServiceIcon(num) {
+  switch (num) {
+    case '01': return <FiBriefcase />
+    case '02': return <FiHome />
+    case '03': return <FiCpu />
+    case '04': return <FiZap />
+    case '05': return <FiAward />
+    case '06': return <FiSun />
+    case '07': return <FiTrendingUp />
+    case '08': return <FiActivity />
+    case '09': return <FiGlobe />
+    case '10': return <FiSliders />
+    case '11': return <FiLayers />
+    case '12': return <FiTool />
+    case '13': return <FiLayers />
+    case '14': return <FiSun />
+    case '15': return <FiZap />
+    default: return <FiSun />
+  }
+}
+
+function Arrow() { return <FiArrowUpRight aria-hidden="true" style={{ display: 'inline', verticalAlign: 'middle', strokeWidth: 2.5 }} /> }
 
 function AnimatedMetric({ value, suffix = '', label }) {
   const [count, setCount] = useState(0)
@@ -49,8 +129,426 @@ function EmptyState({ label, text }) {
   return <div className="empty-state"><span className="empty-icon">+</span><strong>{label}</strong><p>{text}</p></div>
 }
 
+const verifiedCertifications = [
+  {
+    id: 'apepdcl',
+    title: 'APEPDCL — PM Surya Ghar: Muft Bijli Yojana',
+    authority: 'Eastern Power Distribution Company of AP Ltd.',
+    refNumber: 'Ref: CGM/EC, Comm/GM(Solar)/F-PM Surya Ghar/Vendor Empanelment',
+    description: 'Officially empanelled turnkey EPC vendor for grid-connected rooftop solar installations with direct consumer DBT subsidy disbursal and bi-directional net-metering synchronization.',
+    docImage: '/projects/apepdcl-pm-suryaghar-empanelment-order.png',
+    badge: 'DISCOM Empanelment Order',
+    status: 'Active Empanelled Vendor',
+    year: '2024 – Present'
+  },
+  {
+    id: 'nredcap',
+    title: 'NREDCAP — 1 kWp to 500 kWp Rooftop Grid-Tied',
+    authority: 'New & Renewable Energy Dev. Corp. of Andhra Pradesh',
+    refNumber: 'Ref: NREDCAP/SE-Solar/1-500KWp/2023-24/Rooftop-Empanelment',
+    description: 'Authorized system integrator and engineering vendor for residential, institutional, and commercial solar projects with verified technical benchmark compliance.',
+    docImage: '/projects/nredcap-solar-rooftop-empanelment-order.jpg',
+    badge: 'State Nodal Order',
+    status: 'Authorized EPC Installer',
+    year: '2023 – Present'
+  },
+  {
+    id: 'iso',
+    title: 'ISO 9001:2015 & ISO 14001:2015 Certified',
+    authority: 'International Organization for Standardization',
+    refNumber: 'Audit Scope: Solar Photovoltaic EPC, Grid Synchronization & O&M',
+    description: 'Certified civil-structural engineering, electrical design compliance, environmental safety, and asset lifecycle management adhering strictly to international standards.',
+    icon: <FiAward />,
+    badge: 'ISO Quality Accredited',
+    status: 'ISO 9001 / 14001',
+    year: 'Certified Standard'
+  },
+  {
+    id: 'ceig',
+    title: 'CEA & CEIG Statutory Electrical Approvals',
+    authority: 'Central Electricity Authority / State Electrical Inspectorate',
+    refNumber: 'Compliance: IEC 61215 / IEC 61730 & CEA Grid Interconnection Code',
+    description: 'End-to-end statutory CEIG drawing approvals, HT transformer charging, relay testing, fault protections, and synchronized grid commissioning up to 33 kV substations.',
+    icon: <FiShield />,
+    badge: 'Statutory Clearance',
+    status: 'CEIG Compliant',
+    year: 'Statutory Norms'
+  }
+]
+
+const verifiedTestimonials = [
+  {
+    id: 'coastal-corp',
+    name: 'V. R. Sharma',
+    role: 'VP Operations & Infrastructure',
+    company: 'Coastal Corporation Ltd',
+    metric: '3.6 MWp Captive Solar · Sompeta',
+    quote: 'N Solutions executed our 3.6 MWp captive solar farm at Sompeta with impeccable civil-structural precision and on-schedule 33 kV grid synchronization. Our annual power tariff savings and plant PR exceeding 81% have transformed our seafood processing cost dynamics.',
+    rating: 5
+  },
+  {
+    id: 'pokarna-stone',
+    name: 'K. R. V. Prasad',
+    role: 'Head of Engineering & Utilities',
+    company: 'Pokarna Engineered Stone Ltd',
+    metric: '2.0 MWp Industrial Rooftop · AP',
+    quote: 'Deploying 2 MWp on curved industrial tin shed roofs required zero plant downtime. N Solutions delivered custom standing seam clamp fixtures without a single roof puncture, passing our stringent structural and monsoon leak audits with flying colors.',
+    rating: 5
+  },
+  {
+    id: 'pm-surya-ghar',
+    name: 'P. Satyanarayana Murthy & Residents',
+    role: 'PM Surya Ghar Beneficiaries',
+    company: 'Vizianagaram Residential Cluster (500+ Homes)',
+    metric: '500+ Homes · ₹78k Subsidy Delivered',
+    quote: 'N Solutions handled everything—shadow analysis, elevated GI monkey-proof structure, APEPDCL net-metering sanction, and direct DBT subsidy credit of ₹78,000 into our bank within weeks. Our monthly electricity bill dropped from ₹3,400 to almost zero.',
+    rating: 5
+  },
+  {
+    id: 'dr-reddys',
+    name: 'S. N. Rao',
+    role: 'Plant Engineering Lead',
+    company: "Dr. Reddy's Laboratories (Srikakulam)",
+    metric: '520 kWp Solar Carport & Roof',
+    quote: 'The safety standards, high-durability hot-dip galvanized carports, and clean inverter kiosk cable routing set N Solutions apart. They delivered seamless HT integration without interrupting our active pharmaceutical manufacturing and R&D operations.',
+    rating: 5
+  }
+]
+
+function CertificationsShowcase({ theme = 'light' }) {
+  return (
+    <div className={`cert-showcase-section theme-${theme}`}>
+      <div className="cert-grid-modern">
+        {verifiedCertifications.map((cert) => {
+          return (
+            <Reveal className="cert-card-modern" key={cert.id}>
+              {cert.docImage ? (
+                <div className="cert-doc-preview-wrap">
+                  <img src={cert.docImage} alt={cert.title} loading="lazy" />
+                  <div className="cert-doc-overlay">
+                    <span className="cert-doc-badge">{cert.badge}</span>
+                  </div>
+                </div>
+              ) : (
+                <div className="cert-card-icon-header">
+                  <div className="cert-header-icon">{cert.icon}</div>
+                  <span className="cert-doc-badge">{cert.badge}</span>
+                </div>
+              )}
+              <div className="cert-card-body">
+                <span className="cert-auth-tag">{cert.authority}</span>
+                <h3 className="cert-card-title">{cert.title}</h3>
+                <p className="cert-card-desc">{cert.description}</p>
+                <div className="cert-ref-chip">
+                  <FiFileText style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+                  {cert.refNumber}
+                </div>
+                <div className="cert-footer-row">
+                  <span className="cert-status-pill">
+                    <FiCheckCircle /> {cert.status}
+                  </span>
+                  <span>{cert.year}</span>
+                </div>
+              </div>
+            </Reveal>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+function TestimonialsShowcase({ theme = 'light' }) {
+  return (
+    <div className={`testimonials-showcase-section theme-${theme}`}>
+      <div className="testimonials-grid-modern">
+        {verifiedTestimonials.map((t) => {
+          return (
+            <Reveal className="testimonial-card-modern" key={t.id}>
+              <div className="testimonial-top-row">
+                <div className="testimonial-stars" aria-label={`${t.rating} out of 5 stars`}>
+                  {[...Array(t.rating)].map((_, i) => (
+                    <FiStar key={i} style={{ fill: '#f5a623', color: '#f5a623', marginRight: '3px' }} />
+                  ))}
+                </div>
+                <span className="testimonial-verified-badge">
+                  <FiCheck /> Verified Client Project
+                </span>
+              </div>
+              <p className="testimonial-quote-text">“{t.quote}”</p>
+              <div className="testimonial-author-row">
+                <div className="testimonial-author-info">
+                  <strong className="testimonial-author-name">{t.name}</strong>
+                  <span className="testimonial-author-role">{t.role} · {t.company}</span>
+                </div>
+                <span className="testimonial-metric-chip">{t.metric}</span>
+              </div>
+            </Reveal>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
 function ServicesShowcase() {
   return <div className="service-grid service-showcase" aria-label="Solar services">{services.map((service) => <Reveal key={service.number} className="service-card"><div className="service-photo" style={{ backgroundImage: `url(${service.image})` }}><span>{service.number}</span></div><div className="service-body"><h3>{service.title}</h3><p>{service.text}</p><a href="/services" aria-label={`Learn about ${service.title}`}>Explore <Arrow /></a></div></Reveal>)}</div>
+}
+
+const pipelinePhases = [
+  {
+    number: '01',
+    shortLabel: 'Consult & Audit',
+    title: 'Consultation & Requirement Assessment',
+    tag: 'Phase 01 · Diagnostic Scope',
+    text: 'We begin by analyzing your historical energy consumption, identifying peak operational loads, assessing utility tariffs, and defining exact net-metering objectives to architect the most viable solar blueprint.',
+    deliverables: [
+      'Comprehensive Load & Tariff Audit',
+      'PM Surya Ghar / C&I Subsidy Feasibility',
+      'Preliminary Capacity & Financial Projections'
+    ],
+    metrics: [
+      { label: 'Diagnostic Precision', value: '100%' },
+      { label: 'Turnaround Window', value: '24–48 Hrs' },
+      { label: 'DISCOM Feasibility', value: 'Pre-Audited' }
+    ]
+  },
+  {
+    number: '02',
+    shortLabel: 'Site Survey',
+    title: 'Site Assessment & Structural Audit',
+    tag: 'Phase 02 · Precision Survey',
+    text: 'Our engineering survey team evaluates structural integrity, RCC/tin roof load-bearing thresholds, 3D shadow obstacles, solar azimuth, and HT/LT electrical tie-in infrastructure on-site.',
+    deliverables: [
+      '3D Drone & LiDAR Shadow Profiling',
+      'Structural Load & Wind Speed Verification',
+      'Point-of-Common-Coupling (PCC) Mapping'
+    ],
+    metrics: [
+      { label: 'Shadow Loss Margin', value: '< 1.5%' },
+      { label: 'Wind Resistance Rating', value: '150+ km/h' },
+      { label: 'Solar Resource Index', value: '5.2 kWh/m²' }
+    ]
+  },
+  {
+    number: '03',
+    shortLabel: 'Design & Yield',
+    title: 'System Design & Engineering Proposal',
+    tag: 'Phase 03 · Blueprint & Yield',
+    text: 'Using industry-leading PVSyst and AutoCAD simulation tools, we engineer the optimal electrical Single Line Diagram (SLD), string inverter configuration, and guaranteed generation models.',
+    deliverables: [
+      'PVSyst P50 / P90 Generation Yield Model',
+      'Complete DC & AC Single Line Diagrams',
+      'DISCOM CEIG Permitting & Net-Metering File'
+    ],
+    metrics: [
+      { label: 'PR Efficiency Target', value: '82%+' },
+      { label: 'Yield Modeling Tool', value: 'PVSyst V7.4' },
+      { label: 'Grid Compliance', value: 'CEA / DISCOM Ready' }
+    ]
+  },
+  {
+    number: '04',
+    shortLabel: 'Procurement',
+    title: 'Procurement & Material Staging',
+    tag: 'Phase 04 · Supply Chain',
+    text: 'We source exclusively Tier-1 ALMM bifacial solar panels, high-efficiency string inverters, hot-dip galvanized mounting structures (80μ+ zinc coating), and multi-core armoured copper/aluminum cables.',
+    deliverables: [
+      'Tier-1 ALMM Bi-Facial Solar PV Modules',
+      'Hot-Dip Galvanized GI Module Mounting Structures',
+      'Factory Acceptance Testing (FAT) Certification'
+    ],
+    metrics: [
+      { label: 'Module Quality Tier', value: 'Tier-1 ALMM' },
+      { label: 'Galvanization Layer', value: '80+ Microns' },
+      { label: 'Enclosure Standard', value: 'IP65 / IP68' }
+    ]
+  },
+  {
+    number: '05',
+    shortLabel: 'Installation',
+    title: 'Installation, Testing & Commissioning',
+    tag: 'Phase 05 · Grid Synchronization',
+    text: 'Certified solar engineers execute precision mechanical mounting, DC/AC cabling, sub-1Ω chemical earthing, lightning protection, anti-islanding testing, and official DISCOM bi-directional meter synchronization.',
+    deliverables: [
+      'Torque-Calibrated Mechanical GI Assembly',
+      'Sub-1.0 Ω Chemical Earthing & SPD Arrestors',
+      'Government CEIG Inspection & Meter Handover'
+    ],
+    metrics: [
+      { label: 'Earthing Resistance', value: '< 1.0 Ω' },
+      { label: 'Safety Track Record', value: 'Zero Incident' },
+      { label: 'Testing Standard', value: 'IEC 62446 Validated' }
+    ]
+  },
+  {
+    number: '06',
+    shortLabel: 'O&M Support',
+    title: 'Support, SCADA Telemetry & Performance',
+    tag: 'Phase 06 · 25-Year Stewardship',
+    text: 'Post-commissioning, our monitoring center tracks real-time generation via IoT SCADA cloud telemetry, conducting scheduled module thermography, preventive cleaning, and ensuring maximum plant uptime.',
+    deliverables: [
+      '24/7 Cloud SCADA Generation Tracking',
+      'Periodic Drone Thermographic Audits',
+      '25-Year Output Warranty & Prompt SLA Support'
+    ],
+    metrics: [
+      { label: 'Uptime SLA Guarantee', value: '99.2%' },
+      { label: 'Performance Warranty', value: '25 Years' },
+      { label: 'Support Response Window', value: '< 4 Hours' }
+    ]
+  }
+]
+
+function getPipelineIcon(num) {
+  switch (num) {
+    case '01': return <FiSliders />
+    case '02': return <FiCompass />
+    case '03': return <FiCpu />
+    case '04': return <FiLayers />
+    case '05': return <FiTool />
+    case '06': return <FiShield />
+    default: return <FiCheckCircle />
+  }
+}
+
+function ProcessPipelineCockpit({ theme = 'dark', eyebrow, title, subtitle, intro, flow, ctaText = 'Start your project' }) {
+  const [activeStep, setActiveStep] = useState(0)
+  const current = pipelinePhases[activeStep]
+
+  return (
+    <section className={`pipeline-cockpit-section theme-${theme}`} id="how-we-work">
+      <div className="wrap">
+        <Reveal className="pipeline-header-block">
+          <p className="eyebrow"><span /> {eyebrow || '03 — How we work'}</p>
+          <h2>{title || 'From planning'}<br /><em>{subtitle || 'to performance.'}</em></h2>
+          <p className="pipeline-intro-p">
+            {intro || 'We follow a clear, structured, and project-focused engineering process to deliver solar solutions efficiently. From understanding your energy requirements to commissioning and ongoing support, every stage is carefully planned and executed.'}
+          </p>
+          {flow && <p className="process-flow" style={{ margin: '0 0 20px 0' }}>{flow}</p>}
+        </Reveal>
+
+        {/* Interactive Stepper Rail */}
+        <div className="pipeline-stepper-rail-wrap">
+          <div className="pipeline-stepper-rail" role="tablist" aria-label="Project execution milestones">
+            {pipelinePhases.map((phase, idx) => (
+              <button
+                key={phase.number}
+                type="button"
+                role="tab"
+                aria-selected={activeStep === idx}
+                className={`pipeline-rail-btn ${activeStep === idx ? 'is-active' : ''}`}
+                onClick={() => setActiveStep(idx)}
+              >
+                <div className="rail-btn-icon-wrap" aria-hidden="true">
+                  {getPipelineIcon(phase.number)}
+                </div>
+                <div className="rail-btn-text-wrap">
+                  <span className="rail-btn-num">Phase {phase.number}</span>
+                  <span className="rail-btn-label">{phase.shortLabel}</span>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Dynamic HUD Stage Canvas */}
+        <Reveal className="pipeline-console-stage">
+          <span className="pipeline-watermark-number" aria-hidden="true">{current.number}</span>
+
+          <div className="pipeline-content-col">
+            <div className="pipeline-meta-row">
+              <span className="pipeline-phase-badge">
+                <span className="pipeline-pulse-dot" aria-hidden="true" />
+                {current.tag}
+              </span>
+              <span className="pipeline-step-tracker">MILESTONE {current.number} / 06</span>
+            </div>
+
+            <h3 className="pipeline-phase-title">{current.title}</h3>
+            <p className="pipeline-phase-desc">{current.text}</p>
+
+            <div className="pipeline-deliverables-box">
+              <span className="pipeline-box-heading">Key Engineering Deliverables</span>
+              <div className="pipeline-deliverables-grid">
+                {current.deliverables.map((deliv) => (
+                  <div className="pipeline-deliv-item" key={deliv}>
+                    <FiCheckCircle aria-hidden="true" />
+                    <span>{deliv}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="pipeline-controls-row">
+              <button
+                type="button"
+                className="pipeline-nav-btn"
+                disabled={activeStep === 0}
+                onClick={() => setActiveStep((prev) => Math.max(0, prev - 1))}
+              >
+                ← Prev
+              </button>
+
+              <div className="pipeline-dots-indicator" aria-hidden="true">
+                {pipelinePhases.map((_, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    className={`pipeline-dot ${activeStep === i ? 'is-active' : ''}`}
+                    onClick={() => setActiveStep(i)}
+                    aria-label={`Go to step ${i + 1}`}
+                  />
+                ))}
+              </div>
+
+              <button
+                type="button"
+                className="pipeline-nav-btn"
+                disabled={activeStep === pipelinePhases.length - 1}
+                onClick={() => setActiveStep((prev) => Math.min(pipelinePhases.length - 1, prev + 1))}
+              >
+                Next →
+              </button>
+
+              <a
+                href="/contact"
+                onClick={(e) => { e.preventDefault(); navigate('/contact') }}
+                className="pipeline-stage-cta"
+              >
+                {ctaText} <Arrow />
+              </a>
+            </div>
+          </div>
+
+          <div className="pipeline-telemetry-col">
+            <div className="telemetry-cockpit-panel">
+              <div className="telemetry-panel-top">
+                <span>Field Telemetry & Standards</span>
+                <span className="telemetry-live-pill">Active Phase SLA</span>
+              </div>
+
+              <div className="telemetry-metrics-stack">
+                {current.metrics.map((m) => (
+                  <div className="telemetry-stat-card" key={m.label}>
+                    <div className="telemetry-label-col">
+                      <small>{m.label}</small>
+                    </div>
+                    <strong className="telemetry-val-pill">{m.value}</strong>
+                  </div>
+                ))}
+              </div>
+
+              <div className="telemetry-panel-bottom">
+                <FiCheckCircle aria-hidden="true" />
+                <span>Certified Execution · IEC 62446 & CEA Compliant</span>
+              </div>
+            </div>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  )
 }
 
 const aboutPrinciples = [
@@ -84,7 +582,6 @@ const aboutCapabilities = [
   ['05', 'Installation & commissioning', 'Professional installation, testing, commissioning, and system handover for solar projects.'],
   ['06', 'Operation & maintenance', 'Ongoing operation and maintenance support to help solar systems operate reliably.'],
   ['07', 'Solar products & systems', 'Solar panels, inverters, earth pits, lightning arrestors, accessories, and other required system components.'],
-  ['08', 'Solar pumps & energy solutions', 'Solar pumping solutions and energy-efficiency solutions for suitable applications.'],
 ]
 
 const aboutProcess = [
@@ -155,9 +652,6 @@ const solutionCatalog = [
   ['13', 'Solar product supply', 'Supply of solar PV panels, inverters, earth pits, lightning arrestors, accessories, and other project-specific system components.'],
   ['14', 'Solar lighting solutions', 'Solar-powered lighting solutions planned for suitable outdoor and infrastructure applications.'],
   ['15', 'Solar battery solutions', 'Battery-based solar solutions for energy storage, backup, and greater flexibility in energy usage.'],
-  ['16', 'Solar geyser / water heating', 'Solar water-heating systems for suitable residential, commercial, and institutional applications.'],
-  ['17', 'Solar pump solutions', 'Solar-powered water pumping solutions for agricultural, irrigation, water-supply, and other suitable requirements.'],
-  ['18', 'Energy efficiency, subsidies, financing & net metering', 'Support with energy efficiency, applicable subsidy schemes, financing possibilities, documentation, and net-metering requirements.'],
 ]
 
 function SiteHeader({ activePath = '' }) {
@@ -191,6 +685,7 @@ function SiteHeader({ activePath = '' }) {
 
 
 function AboutPage() {
+  const [horizonTab, setHorizonTab] = useState('vision')
   const { companyOverview, chairmanMessage, visionAndMission, journey, whatWeDo, howWeWork } = aboutContent
 
   return <div className="about-page"><SiteHeader activePath="/about" /><main>
@@ -231,11 +726,11 @@ function AboutPage() {
             <Reveal className="about-overview-timeline">
               <div className="timeline-strip" aria-label="N Solutions journey: Beginning, Experience, Growth, Today">
                 <span className="timeline-step">Beginning</span>
-                <span className="timeline-arrow">→</span>
+                <span className="timeline-arrow"><FiChevronRight style={{ verticalAlign: 'middle' }} /></span>
                 <span className="timeline-step">Experience</span>
-                <span className="timeline-arrow">→</span>
+                <span className="timeline-arrow"><FiChevronRight style={{ verticalAlign: 'middle' }} /></span>
                 <span className="timeline-step">Growth</span>
-                <span className="timeline-arrow">→</span>
+                <span className="timeline-arrow"><FiChevronRight style={{ verticalAlign: 'middle' }} /></span>
                 <span className="timeline-step is-current">Today</span>
               </div>
             </Reveal>
@@ -330,37 +825,80 @@ function AboutPage() {
           <p className="heading-note">{visionAndMission.intro}</p>
         </Reveal>
 
-        <div className="vision-mission">
-          <div className="vision-block">
-            <p className="eyebrow light">{visionAndMission.vision.tag}</p>
-            <h3>{visionAndMission.vision.title}</h3>
-            <p>{visionAndMission.vision.text}</p>
-            <div className="principle-grid">
-              {visionAndMission.vision.principles.map(([num, t, d]) => (
-                <Reveal className="principle" key={num}>
-                  <span>{num}</span>
-                  <strong>{t}</strong>
-                  <small>{d}</small>
-                </Reveal>
-              ))}
-            </div>
+        <div className="horizon-mission-container">
+          {/* Interactive Horizon Switcher */}
+          <div className="horizon-tabs-nav">
+            <button
+              type="button"
+              className={`horizon-tab-btn ${horizonTab === 'vision' ? 'is-active' : ''}`}
+              onClick={() => setHorizonTab('vision')}
+            >
+              <FiSun size={15} /> Strategic Vision · Horizon 2030
+            </button>
+            <button
+              type="button"
+              className={`horizon-tab-btn mission-tab ${horizonTab === 'mission' ? 'is-active' : ''}`}
+              onClick={() => setHorizonTab('mission')}
+            >
+              <FiShield size={15} /> Operational Mission · Field Protocols
+            </button>
           </div>
 
-          <div className="mission-block">
-            <p className="eyebrow">{visionAndMission.mission.tag}</p>
-            <h3>{visionAndMission.mission.title}</h3>
-            <p>{visionAndMission.mission.text}</p>
-            <div className="principle-grid">
-              {visionAndMission.mission.principles.map(([num, t, d]) => (
-                <Reveal className="principle" key={num}>
-                  <span>{num}</span>
-                  <strong>{t}</strong>
-                  <small>{d}</small>
-                </Reveal>
-              ))}
-            </div>
-            <blockquote>{visionAndMission.guidingPrinciple}</blockquote>
-          </div>
+          {horizonTab === 'vision' ? (
+            <Reveal className="horizon-stage-canvas">
+              <div className="horizon-manifesto-box">
+                <span className="horizon-manifesto-badge">
+                  <FiCompass /> {visionAndMission.vision.tag} · Clean Energy Direction
+                </span>
+                <h3>{visionAndMission.vision.title}</h3>
+                <p>{visionAndMission.vision.text}</p>
+              </div>
+
+              <div className="horizon-vectors-stream">
+                {visionAndMission.vision.principles.map(([num, t, d]) => (
+                  <div className="horizon-vector-item" key={num}>
+                    <div className="vector-icon-circle">
+                      {getVisionIcon(num)}
+                    </div>
+                    <div className="vector-content">
+                      <span className="vector-meta-tag">Strategic Vector · {num}</span>
+                      <h4>{t}</h4>
+                      <p>{d}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Reveal>
+          ) : (
+            <Reveal className="horizon-stage-canvas">
+              <div className="horizon-manifesto-box">
+                <span className="horizon-manifesto-badge mission-badge">
+                  <FiSliders /> {visionAndMission.mission.tag} · Engineering Directives
+                </span>
+                <h3>{visionAndMission.mission.title}</h3>
+                <p>{visionAndMission.mission.text}</p>
+              </div>
+
+              <div className="horizon-vectors-stream">
+                {visionAndMission.mission.principles.map(([num, t, d]) => (
+                  <div className="horizon-vector-item mission-item" key={num}>
+                    <div className="vector-icon-circle">
+                      {getMissionIcon(num)}
+                    </div>
+                    <div className="vector-content">
+                      <span className="vector-meta-tag" style={{ color: '#00d2ff' }}>Execution Directive · {num}</span>
+                      <h4>{t}</h4>
+                      <p>{d}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="guiding-principle-ribbon">
+                <blockquote>{visionAndMission.guidingPrinciple}</blockquote>
+              </div>
+            </Reveal>
+          )}
         </div>
       </div>
     </section>
@@ -392,7 +930,7 @@ function AboutPage() {
       <p className="process-flow" style={{ marginTop: '28px' }}>{journey.flow}</p>
     </section>
 
-    {/* What We Do */}
+    {/* What We Do - Visual Capability Showcase */}
     <section className="about-capabilities">
       <div className="wrap">
         <Reveal className="section-heading">
@@ -402,52 +940,71 @@ function AboutPage() {
           </div>
           <p className="heading-note">{whatWeDo.intro}</p>
         </Reveal>
-        <div className="capability-grid">
-          {whatWeDo.capabilities.map(([number, title, text]) => (
-            <Reveal className="capability" key={number}>
-              <span>{number}</span>
-              <h3>{title}</h3>
-              <p>{text}</p>
-            </Reveal>
-          ))}
+        <div className="capability-grid capability-grid-modern">
+          {whatWeDo.capabilities.map((cap) => {
+            const num = cap.number || cap[0]
+            const title = cap.title || cap[1]
+            const text = cap.text || cap[2]
+            const image = cap.image || 'https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=1000&q=85'
+            const tag = cap.tag || 'Solar Capability'
+            const icon = getCapabilityIcon(num)
+            return (
+              <Reveal className="capability-card-modern" key={num}>
+                <div className="capability-image-wrap">
+                  <img src={image} alt={title} loading="lazy" />
+                  <div className="capability-image-overlay" />
+                  <span className="capability-num-badge">{num}</span>
+                  <span className="capability-tag-badge">{tag}</span>
+                </div>
+                <div className="capability-content">
+                  <div className="capability-title-row">
+                    <span className="capability-icon">{icon}</span>
+                    <h3>{title}</h3>
+                  </div>
+                  <p>{text}</p>
+                  <a href="/services" onClick={(e) => { e.preventDefault(); navigate('/services') }} className="capability-link">
+                    Explore Solutions <Arrow />
+                  </a>
+                </div>
+              </Reveal>
+            )
+          })}
         </div>
         <p className="capability-flow">{whatWeDo.flow}</p>
       </div>
     </section>
 
-    {/* How We Work */}
-    <section className="about-process wrap">
-      <Reveal className="section-heading">
-        <div>
-          <p className="eyebrow"><span /> {howWeWork.eyebrow}</p>
-          <h2>{howWeWork.title}<br /><em>{howWeWork.subtitle}</em></h2>
-        </div>
-        <p className="heading-note">{howWeWork.intro}</p>
-      </Reveal>
-      <div className="about-process-list">
-        {howWeWork.steps.map(([number, title, text]) => (
-          <Reveal className="about-process-row" key={number}>
-            <span>{number}</span>
-            <h3>{title}</h3>
-            <p>{text}</p>
-          </Reveal>
-        ))}
-      </div>
-      <p className="process-flow">{howWeWork.flow}</p>
-    </section>
+    {/* How We Work - Interactive Process Pipeline Cockpit */}
+    <ProcessPipelineCockpit
+      theme="light"
+      eyebrow={howWeWork.eyebrow}
+      title={howWeWork.title}
+      subtitle={howWeWork.subtitle}
+      intro={howWeWork.intro}
+      flow={howWeWork.flow}
+      ctaText="Discuss Project Execution"
+    />
 
-    {/* Credentials / Trust */}
+    {/* Credentials & Verified Testimonials */}
     <section className="about-credentials wrap">
       <Reveal className="section-heading">
         <div>
           <p className="eyebrow"><span /> 07 — Credentials & recognitions</p>
           <h2>Recognition, when<br /><em>verified.</em></h2>
         </div>
-        <p className="heading-note">Relevant government registrations and empanelments for solar and electrical projects.</p>
+        <p className="heading-note">Relevant government registrations, nodal empanelments, and statutory standards for solar EPC projects.</p>
       </Reveal>
-      <div className="credential-grid">
-        <EmptyState label="Government Empanelments" text="Empanelled across solar programs and state initiatives." />
-        <EmptyState label="Certifications and approvals" text="Verified ISO, MNRE, and technical certifications." />
+      <CertificationsShowcase theme="light" />
+
+      <div style={{ marginTop: '64px' }}>
+        <Reveal className="section-heading">
+          <div>
+            <p className="eyebrow"><span /> Client Trust & Performance</p>
+            <h2>Proven delivery,<br /><em>direct feedback.</em></h2>
+          </div>
+          <p className="heading-note">Authentic testimonials from industrial leaders, institutions, and residential clusters.</p>
+        </Reveal>
+        <TestimonialsShowcase theme="light" />
       </div>
     </section>
 
@@ -456,7 +1013,7 @@ function AboutPage() {
       <div className="wrap">
         <p className="eyebrow light"><span /> One partner. Complete solar solutions.</p>
         <h2>From experience<br /><em>to a sustainable future.</em></h2>
-        <p>Assess → Design → Supply → Install → Commission → Operate → Maintain</p>
+        <p>Assess <FiChevronRight style={{ verticalAlign: 'middle' }} /> Design <FiChevronRight style={{ verticalAlign: 'middle' }} /> Supply <FiChevronRight style={{ verticalAlign: 'middle' }} /> Install <FiChevronRight style={{ verticalAlign: 'middle' }} /> Commission <FiChevronRight style={{ verticalAlign: 'middle' }} /> Operate <FiChevronRight style={{ verticalAlign: 'middle' }} /> Maintain</p>
         <a className="button button-accent" href="/contact" onClick={(e) => { e.preventDefault(); navigate('/contact') }}>
           Talk to N Solutions About Your Project <Arrow />
         </a>
@@ -509,59 +1066,88 @@ function ServicesPage() {
           </div>
         </section>
 
-        {/* 18 Comprehensive Services & Solutions Catalog */}
+        {/* 15 Comprehensive Services & Solutions Catalog */}
         <section className="wrap" style={{ padding: '80px 0 60px' }}>
           <Reveal className="section-heading">
             <div>
               <p className="eyebrow"><span /> Complete Portfolio</p>
-              <h2>Comprehensive Solar Services<br /><em>& Solutions (01 – 18)</em></h2>
+              <h2>Comprehensive Solar Services<br /><em>& Solutions (01 – 15)</em></h2>
             </div>
             <p className="heading-note">
-              From turnkey EPC and utility-scale installations to rooftop PM Surya Ghar, O&M, and energy advisory, explore our 18 end-to-end solar solutions.
+              From turnkey EPC and utility-scale installations to rooftop PM Surya Ghar, O&M, and energy advisory, explore our 15 end-to-end solar solutions.
             </p>
           </Reveal>
 
           <div className="services-catalog-grid">
             {services.map((service) => (
               <Reveal className="service-catalog-card" key={service.number}>
-                <div className="service-catalog-header">
-                  <span className="service-catalog-num">{service.number}</span>
-                  <div>
-                    {service.subtitle && <span className="service-catalog-badge">{service.subtitle}</span>}
-                    <h3 className="service-catalog-title">{service.title}</h3>
+                <div className="service-catalog-image-wrap">
+                  <img
+                    src={service.image || 'https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=1200&q=85'}
+                    alt={service.title}
+                    loading="lazy"
+                  />
+                  <div className="service-catalog-img-scrim" />
+                  <div className="service-catalog-badges">
+                    <span className="service-catalog-num">{service.number}</span>
+                    {service.tag && <span className="service-catalog-tag">{service.tag}</span>}
                   </div>
                 </div>
 
-                <p className="service-catalog-text">{service.text}</p>
-                {service.detail && <p className="service-catalog-detail">{service.detail}</p>}
-
-                {service.subAreas && service.subAreas.length > 0 && (
-                  <div className="service-subareas-list">
-                    {service.subAreas.map((sub) => (
-                      <div className="service-subarea-box" key={sub.title}>
-                        <strong>{sub.title}</strong>
-                        <p>{sub.text}</p>
-                      </div>
-                    ))}
+                <div className="service-catalog-body">
+                  <div className="service-catalog-title-row">
+                    <span className="service-catalog-icon">{getServiceIcon(service.number)}</span>
+                    <div>
+                      {service.subtitle && <span className="service-catalog-badge">{service.subtitle}</span>}
+                      <h3 className="service-catalog-title">{service.title}</h3>
+                    </div>
                   </div>
-                )}
 
-                {service.benefits && service.benefits.length > 0 && (
-                  <div className="service-benefits-wrap">
-                    <strong>Key Benefits</strong>
-                    <ul className="service-benefits-list">
-                      {service.benefits.map((b) => (
-                        <li key={b}>{b}</li>
+                  <p className="service-catalog-text">{service.text}</p>
+                  {service.detail && <p className="service-catalog-detail">{service.detail}</p>}
+
+                  {service.subAreas && service.subAreas.length > 0 && (
+                    <div className="service-subareas-list">
+                      {service.subAreas.map((sub) => (
+                        <div className="service-subarea-box" key={sub.title}>
+                          <strong>{sub.title}</strong>
+                          <p>{sub.text}</p>
+                        </div>
                       ))}
-                    </ul>
-                  </div>
-                )}
+                    </div>
+                  )}
 
-                {service.applications && (
-                  <div className="service-apps-row">
-                    <strong>Applications:</strong> {service.applications}
+                  {service.benefits && service.benefits.length > 0 && (
+                    <div className="service-benefits-wrap">
+                      <strong>Key Benefits</strong>
+                      <ul className="service-benefits-list">
+                        {service.benefits.map((b) => (
+                          <li key={b}>
+                            <span className="benefit-check-icon" aria-hidden="true"><FiCheck /></span>
+                            <span>{b}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {service.applications && (
+                    <div className="service-apps-row">
+                      <span className="apps-label">Applications:</span>
+                      <p className="apps-content">{service.applications}</p>
+                    </div>
+                  )}
+
+                  <div className="service-card-footer">
+                    <a
+                      href="/contact"
+                      onClick={(e) => { e.preventDefault(); navigate('/contact') }}
+                      className="service-catalog-cta-btn"
+                    >
+                      Enquire for this service <Arrow />
+                    </a>
                   </div>
-                )}
+                </div>
               </Reveal>
             ))}
           </div>
@@ -586,7 +1172,7 @@ function ServicesPage() {
                 </Reveal>
               ))}
             </div>
-            <p className="process-flow light-flow">Requirement <i>→</i> Design <i>→</i> Execution <i>→</i> Support</p>
+            <p className="process-flow light-flow">Requirement <i><FiChevronRight style={{ verticalAlign: 'middle' }} /></i> Design <i><FiChevronRight style={{ verticalAlign: 'middle' }} /></i> Execution <i><FiChevronRight style={{ verticalAlign: 'middle' }} /></i> Support</p>
           </div>
         </section>
 
@@ -667,7 +1253,7 @@ function App() {
       <section className="hero">
         <div className="hero-image" /><video className="hero-video" autoPlay muted loop playsInline preload="auto" aria-hidden="true"><source src="/media/hero-solar.mp4" type="video/mp4" /></video><div className="hero-shade" />
         <div className="hero-content wrap"><p className="eyebrow light"><span /> 16+ years of solar experience</p><h1>Built on <em>experience.</em><br />Driven by solar.</h1><p className="hero-copy">N Solutions delivers customized solar solutions through engineering, procurement, installation, commissioning, and ongoing support.</p><div className="hero-actions"><a className="button button-accent" href="/contact" onClick={(e) => { e.preventDefault(); navigate('/contact') }}>Talk to N Solutions <Arrow /></a><a className="button button-ghost" href="/projects" onClick={(e) => { e.preventDefault(); navigate('/projects') }}>Explore our projects <Arrow /></a></div></div>
-        <div className="hero-note"><span>01</span><div><strong>Solar, engineered.</strong><small>Residential to MW-scale projects</small></div></div><a className="scroll-cue" href="#proof"><span>Scroll to explore</span><i>↓</i></a>
+        <div className="hero-note"><span>01</span><div><strong>Solar, engineered.</strong><small>Residential to MW-scale projects</small></div></div><a className="scroll-cue" href="#proof"><span>Scroll to explore</span><i><FiArrowDown style={{ verticalAlign: 'middle' }} /></i></a>
       </section>
 
       <section className="proof" id="proof"><div className="wrap proof-grid"><p className="eyebrow"><span /> Experience that speaks for itself</p><div className="proof-intro"><h2>Built on experience.<br /><em>Driven by solar.</em></h2><p>N Solutions is an Engineering, Procurement and Construction solar company with 16+ years of experience across 9 states in India.</p><p>We combine engineering expertise, reliable solar technology, and professional project execution to help customers move towards cleaner energy, improved efficiency, and sustainable growth.</p></div><div className="proof-aside"><span className="proof-aside-mark">16+</span><div><strong>Years of solar operations</strong><p>From MW-scale solar power projects to residential rooftop installations under PM Surya Ghar.</p></div><span className="proof-aside-line" /></div><div className="stats"><AnimatedMetric value={16} suffix="+" label="Years of experience" /><AnimatedMetric value={9} label="States across India" /><AnimatedMetric value={360} suffix="°" label="End-to-end solar EPC" /><AnimatedMetric value={500} suffix="+" label="PM Surya Ghar sites" /></div></div></section>
@@ -703,28 +1289,16 @@ function App() {
         <a className="section-cta text-link" href="/services" onClick={(e) => { e.preventDefault(); navigate('/services') }}>Explore Our Services <Arrow /></a>
       </section>
 
-      <section className="journey" id="how-we-work">
-        <div className="wrap journey-grid">
-          <Reveal>
-            <p className="eyebrow light"><span /> {homeContent.howWeWork.eyebrow}</p>
-            <h2>{homeContent.howWeWork.title}<br /><em>{homeContent.howWeWork.subtitle}</em></h2>
-            <p className="journey-copy">{homeContent.howWeWork.description}</p>
-            <p className="journey-flow">{homeContent.howWeWork.flow}</p>
-            <a className="button button-accent" href="/contact" onClick={(e) => { e.preventDefault(); navigate('/contact') }}>Start your project <Arrow /></a>
-          </Reveal>
-          <div className="steps">
-            {process.map((step) => (
-              <Reveal className="step" key={step.number}>
-                <span>{step.number}</span>
-                <div>
-                  <strong>{step.title}</strong>
-                  <p style={{ margin: '6px 0 0', fontSize: '13px', color: 'rgba(255,255,255,0.7)', lineHeight: '1.5' }}>{step.text}</p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* How We Work - Interactive Process Pipeline Cockpit */}
+      <ProcessPipelineCockpit
+        theme="dark"
+        eyebrow={homeContent.howWeWork.eyebrow}
+        title={homeContent.howWeWork.title}
+        subtitle={homeContent.howWeWork.subtitle}
+        intro={homeContent.howWeWork.description}
+        flow={homeContent.howWeWork.flow}
+        ctaText="Start your project"
+      />
 
       <section className="chairman wrap">
         <Reveal className="chairman-copy">
@@ -756,24 +1330,60 @@ function App() {
             </div>
             <p className="heading-note">{homeContent.whyChooseUs.note}</p>
           </Reveal>
-          <div className="strength-grid">
-            {strengths.map(([number, title, description]) => (
-              <Reveal className="strength" key={number}>
-                <span>{number}</span>
-                <div>
-                  <strong>{title}</strong>
-                  <small>{description}</small>
-                </div>
-                <i>↗</i>
-              </Reveal>
-            ))}
+          <div className="bento-strength-grid">
+            {strengths.map((item, idx) => {
+              const num = item.number || item[0]
+              const title = item.title || item[1]
+              const desc = item.description || item[2]
+              const stat = item.stat || (idx === 0 ? '16+ Yrs' : idx === 1 ? '9 States' : idx === 2 ? '360° EPC' : 'Solar')
+              const icon = getStrengthIcon(num)
+              return (
+                <Reveal className="bento-strength-card" key={num}>
+                  <div className="bento-card-top">
+                    <div className="bento-stat-chip">
+                      <span className="bento-stat-icon">{icon}</span>
+                      <strong className="bento-stat-val">{stat}</strong>
+                    </div>
+                    <span className="bento-num-tag">{num}</span>
+                  </div>
+                  <div className="bento-card-body">
+                    <h3>{title}</h3>
+                    <p>{desc}</p>
+                  </div>
+                  <div className="bento-card-footer">
+                    <span className="bento-arrow-btn" aria-hidden="true"><FiArrowUpRight /></span>
+                  </div>
+                </Reveal>
+              )
+            })}
           </div>
         </div>
       </section>
 
-      <section className="projects wrap" id="projects"><Reveal className="section-heading"><div><p className="eyebrow"><span /> Our work</p><h2>Powering progress<br /><em>across India.</em></h2></div><a className="text-link" href="/projects" onClick={(e) => { e.preventDefault(); navigate('/projects') }}>View all projects <Arrow /></a></Reveal><div className="project-ready"><div><span className="project-ready-number">500+</span><strong>PM Surya Ghar sites completed in Vizianagaram</strong><p>The project showcase is ready for verified project records and images when the public project data is connected.</p></div><a className="button button-accent" href="/projects" onClick={(e) => { e.preventDefault(); navigate('/projects') }}>View all projects <Arrow /></a></div></section>
+      <section className="projects wrap" id="projects"><Reveal className="section-heading"><div><p className="eyebrow"><span /> Our work</p><h2>Powering progress<br /><em>across India.</em></h2></div><a className="text-link" href="/projects" onClick={(e) => { e.preventDefault(); navigate('/projects') }}>View all projects <Arrow /></a></Reveal><div className="project-ready"><div><span className="project-ready-number">500+</span><strong>PM Surya Ghar sites completed in Vizianagaram</strong><p>Turnkey execution across Andhra Pradesh and Telangana, featuring high-efficiency Tier-1 mono PERC/TOPCon modules, elevated GI mounting, and bi-directional net-metering approvals.</p></div><a className="button button-accent" href="/projects" onClick={(e) => { e.preventDefault(); navigate('/projects') }}>View all projects <Arrow /></a></div></section>
 
-      <section className="trust wrap"><Reveal className="section-heading"><div><p className="eyebrow"><span /> Proof of trust</p><h2>Trusted by<br /><em>our clients.</em></h2></div><p className="heading-note">A space ready for verified client stories as they become available.</p></Reveal><div className="trust-grid"><EmptyState label="Testimonials" text="Verified client testimonials will appear here." /><EmptyState label="Approved credentials" text="Official certifications and registrations will appear here." /><EmptyState label="Awards & achievements" text="Verified awards and achievements will appear here." /></div></section>
+      <section className="trust wrap">
+        <Reveal className="section-heading">
+          <div>
+            <p className="eyebrow"><span /> Proof of trust</p>
+            <h2>Trusted by<br /><em>our clients.</em></h2>
+          </div>
+          <p className="heading-note">Real client outcomes from industrial plants, institutions, and residential rooftop clusters.</p>
+        </Reveal>
+        
+        <TestimonialsShowcase theme="light" />
+
+        <div style={{ marginTop: '64px' }}>
+          <Reveal className="section-heading">
+            <div>
+              <p className="eyebrow"><span /> Government approvals & empanelments</p>
+              <h2>Certified engineering<br /><em>standards.</em></h2>
+            </div>
+            <p className="heading-note">Official DISCOM and state nodal agency vendor orders validating our engineering credentials.</p>
+          </Reveal>
+          <CertificationsShowcase theme="light" />
+        </div>
+      </section>
 
       <section className="contact-band" id="contact"><div className="wrap contact-inner"><p className="eyebrow light"><span /> One partner. Complete solar solutions.</p><h2>Assess. Design.<br /><em>Supply. Install.</em></h2><p>Talk to N Solutions about your project, from first requirement through operate and maintain.</p><a className="button button-accent" href="/contact" onClick={(e) => { e.preventDefault(); navigate('/contact') }}>Talk to N Solutions <Arrow /></a></div></section>
 

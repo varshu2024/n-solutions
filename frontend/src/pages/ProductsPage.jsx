@@ -1,6 +1,16 @@
 import { useState, useEffect } from 'react'
 import { SiteHeader, SiteFooter, Arrow, AnimatedMetric, Reveal, navigate } from '../components/Shared'
 import { apiGet } from '../utils/api'
+import {
+  FiArrowDown,
+  FiX,
+  FiActivity,
+  FiZap,
+  FiShield,
+  FiSun,
+  FiCpu,
+  FiCheckCircle
+} from 'react-icons/fi'
 
 const PUBLIC_PRODUCT_CATEGORY_MAP = {
   'Solar Panels': 'modules',
@@ -15,8 +25,11 @@ const PUBLIC_PRODUCT_CATEGORY_MAP = {
 
 function mapPublicProduct(product) {
   const categoryLabel = product?.category || 'Other Components'
+
   const applications = Array.isArray(product?.applications)
-    ? product.applications.filter((item) => typeof item === 'string' && item.trim()).map((item) => item.trim())
+    ? product.applications
+        .filter((item) => typeof item === 'string' && item.trim())
+        .map((item) => item.trim())
     : []
 
   return {
@@ -40,7 +53,10 @@ function mapPublicProduct(product) {
 
 function normalizePublicProducts(payload) {
   if (!Array.isArray(payload)) return []
-  return payload.map(mapPublicProduct).filter((product) => product.id && product.name)
+
+  return payload
+    .map(mapPublicProduct)
+    .filter((product) => product.id && product.name)
 }
 
 export const productsCatalog = [
@@ -499,12 +515,36 @@ export default function ProductsPage() {
 
   const categories = [
     { id: 'ALL', label: 'All Products', count: products.length },
-    { id: 'modules', label: 'Solar PV Modules', count: products.filter(p => p.category === 'modules').length },
-    { id: 'inverters', label: 'Grid Inverters', count: products.filter(p => p.category === 'inverters').length },
-    { id: 'pumps', label: 'Solar Agri Pumps', count: products.filter(p => p.category === 'pumps').length },
-    { id: 'structures', label: 'Mounting Structures', count: products.filter(p => p.category === 'structures').length },
-    { id: 'cables-bos', label: 'Cabling & BOS', count: products.filter(p => p.category === 'cables-bos').length },
-    { id: 'protection', label: 'Safety & Protection', count: products.filter(p => p.category === 'protection').length },
+    {
+      id: 'modules',
+      label: 'Solar PV Modules',
+      count: products.filter(p => p.category === 'modules').length
+    },
+    {
+      id: 'inverters',
+      label: 'Grid Inverters',
+      count: products.filter(p => p.category === 'inverters').length
+    },
+    {
+      id: 'pumps',
+      label: 'Solar Agri Pumps',
+      count: products.filter(p => p.category === 'pumps').length
+    },
+    {
+      id: 'structures',
+      label: 'Mounting Structures',
+      count: products.filter(p => p.category === 'structures').length
+    },
+    {
+      id: 'cables-bos',
+      label: 'Cabling & BOS',
+      count: products.filter(p => p.category === 'cables-bos').length
+    },
+    {
+      id: 'protection',
+      label: 'Safety & Protection',
+      count: products.filter(p => p.category === 'protection').length
+    },
   ]
 
   const filteredProducts = products.filter(prod => {
@@ -561,7 +601,7 @@ export default function ProductsPage() {
                 className="button button-ghost" 
                 href="#catalog-view"
               >
-                Browse Product Catalog ↓
+                Browse Product Catalog <FiArrowDown style={{ verticalAlign: 'middle' }} />
               </a>
             </div>
           </div>
@@ -607,7 +647,7 @@ export default function ProductsPage() {
                   onClick={() => setSearchQuery('')}
                   aria-label="Clear search"
                 >
-                  ×
+                  <FiX size={14} />
                 </button>
               )}
             </div>
@@ -628,95 +668,116 @@ export default function ProductsPage() {
             ))}
           </div>
 
-          {catalogStatus === 'loading' ? (
-            <p className="heading-note">Loading product catalog...</p>
+{catalogStatus === 'loading' ? (
+  <p className="heading-note">Loading product catalog...</p>
+) : null}
+
+{catalogStatus === 'error' ? (
+  <div className="projects-empty-results">
+    <p role="alert">{catalogError}</p>
+    <button
+      type="button"
+      className="button button-accent"
+      onClick={loadProducts}
+    >
+      Retry
+    </button>
+  </div>
+) : null}
+
+{catalogStatus === 'empty' ? (
+  <div className="projects-empty-results">
+    <p>No products are currently listed.</p>
+  </div>
+) : null}
+
+{/* Product Cards Grid */}
+{catalogStatus === 'ready' ? (
+  <div className="product-cards-grid">
+    {filteredProducts.map((prod) => (
+      <Reveal key={prod.id} className="product-item-card">
+        <div className="product-card-media">
+          {prod.image ? (
+            <img
+              src={prod.image}
+              alt={prod.name}
+              loading="lazy"
+            />
           ) : null}
 
-          {catalogStatus === 'error' ? (
-            <div className="projects-empty-results">
-              <p role="alert">{catalogError}</p>
-              <button
-                type="button"
-                className="button button-accent"
-                onClick={loadProducts}
-              >
-                Retry
-              </button>
+          {prod.badge ? (
+            <span className="product-card-badge">
+              {prod.badge}
+            </span>
+          ) : null}
+        </div>
+
+        <div className="product-card-body">
+          <div className="product-card-meta">
+            <span className="product-brand-tag">
+              {prod.brand}
+            </span>
+
+            <span className="product-cat-marker">
+              {prod.categoryLabel}
+            </span>
+          </div>
+
+          <h3>{prod.name}</h3>
+
+          <p className="product-summary-text">
+            {prod.summary}
+          </p>
+
+          {(prod.efficiency ||
+            prod.ratedOutput ||
+            prod.warranty) ? (
+            <div className="product-quick-specs">
+              {(prod.efficiency || prod.ratedOutput) ? (
+                <div>
+                  <strong>
+                    {prod.efficiency || prod.ratedOutput}
+                  </strong>
+                  <small>Rating / Output</small>
+                </div>
+              ) : null}
+
+              {prod.warranty ? (
+                <div>
+                  <strong>{prod.warranty}</strong>
+                  <small>Warranty</small>
+                </div>
+              ) : null}
             </div>
           ) : null}
 
-          {catalogStatus === 'empty' ? (
-            <div className="projects-empty-results">
-              <p>No products are currently listed.</p>
-            </div>
-          ) : null}
+          <div className="product-card-footer">
+            <button
+              type="button"
+              className="product-specs-btn"
+              onClick={() => setSelectedProduct(prod)}
+            >
+              Inspect Full Specs <Arrow />
+            </button>
 
-          {/* Product Cards Grid */}
-          {catalogStatus === 'ready' ? (
-            <div className="product-cards-grid">
-              {filteredProducts.map((prod) => (
-                <Reveal key={prod.id} className="product-item-card">
-                  <div className="product-card-media">
-                    {prod.image ? (
-                      <img src={prod.image} alt={prod.name} loading="lazy" />
-                    ) : null}
-                    {prod.badge ? (
-                      <span className="product-card-badge">{prod.badge}</span>
-                    ) : null}
-                  </div>
+            <a
+              href="/contact"
+              className="product-inquire-btn"
+              onClick={(e) => {
+                e.preventDefault()
+                navigate('/contact')
+              }}
+            >
+              Request Quote
+            </a>
+          </div>
+        </div>
+      </Reveal>
+    ))}
+  </div>
+) : null}
 
-                  <div className="product-card-body">
-                    <div className="product-card-meta">
-                      <span className="product-brand-tag">{prod.brand}</span>
-                      <span className="product-cat-marker">{prod.categoryLabel}</span>
-                    </div>
-
-                    <h3>{prod.name}</h3>
-                    <p className="product-summary-text">{prod.summary}</p>
-
-                    {(prod.efficiency || prod.ratedOutput || prod.warranty) ? (
-                      <div className="product-quick-specs">
-                        {(prod.efficiency || prod.ratedOutput) ? (
-                          <div>
-                            <strong>{prod.efficiency || prod.ratedOutput}</strong>
-                            <small>Rating / Output</small>
-                          </div>
-                        ) : null}
-                        {prod.warranty ? (
-                          <div>
-                            <strong>{prod.warranty}</strong>
-                            <small>Warranty</small>
-                          </div>
-                        ) : null}
-                      </div>
-                    ) : null}
-
-                    <div className="product-card-footer">
-                      <button
-                        type="button"
-                        className="product-specs-btn"
-                        onClick={() => setSelectedProduct(prod)}
-                      >
-                        Inspect Full Specs <Arrow />
-                      </button>
-                      <a
-                        href="/contact"
-                        className="product-inquire-btn"
-                        onClick={(e) => {
-                          e.preventDefault()
-                          navigate('/contact')
-                        }}
-                      >
-                        Request Quote
-                      </a>
-                    </div>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-          ) : null}
-
-          {catalogStatus === 'ready' && filteredProducts.length === 0 && (
+{catalogStatus === 'ready' && filteredProducts.length === 0 && (
             <div className="projects-empty-results">
               <p>No products match your current search query or filter.</p>
               <button 
@@ -809,30 +870,43 @@ export default function ProductsPage() {
                 onClick={() => setSelectedProduct(null)}
                 aria-label="Close modal"
               >
-                ✕
+                <FiX size={20} />
               </button>
 
               <div className="modal-header">
                 <div className="modal-header-meta">
                   <span className="badge-tag">{selectedProduct.categoryLabel}</span>
-                  {selectedProduct.badge ? (
-                    <span className="badge-capacity">{selectedProduct.badge}</span>
-                  ) : null}
-                  <span className="badge-status">{selectedProduct.brand}</span>
-                </div>
-                <h2>{selectedProduct.name}</h2>
-                {selectedProduct.certifications ? (
-                  <p className="modal-location">
-                    Certifications: <strong>{selectedProduct.certifications}</strong>
-                  </p>
-                ) : null}
-              </div>
+{selectedProduct.badge ? (
+  <span className="badge-capacity">
+    {selectedProduct.badge}
+  </span>
+) : null}
 
-              {selectedProduct.image ? (
-                <div className="modal-hero-image">
-                  <img src={selectedProduct.image} alt={selectedProduct.name} />
-                </div>
-              ) : null}
+{selectedProduct.brand ? (
+  <span className="badge-status">
+    {selectedProduct.brand}
+  </span>
+) : null}
+</div>
+
+<h2>{selectedProduct.name}</h2>
+
+{selectedProduct.certifications ? (
+  <p className="modal-location">
+    Certifications:{' '}
+    <strong>{selectedProduct.certifications}</strong>
+  </p>
+) : null}
+</div>
+
+{selectedProduct.image ? (
+  <div className="modal-hero-image">
+    <img
+      src={selectedProduct.image}
+      alt={selectedProduct.name}
+    />
+  </div>
+) : null}
 
               <div className="modal-body-content">
                 <div className="modal-overview-text">
@@ -840,30 +914,97 @@ export default function ProductsPage() {
                   <p>{selectedProduct.summary}</p>
                 </div>
 
-                {selectedProduct.specs && (
-                  <div className="modal-specs-section">
-                    <h3>Engineering Specifications & Ratings</h3>
-                    <div className="specs-table-grid">
-                      {Object.entries(selectedProduct.specs).map(([key, val]) => (
-                        <div key={key} className="spec-row">
-                          <strong>{key}:</strong>
-                          <span>{val}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                {selectedProduct.specs &&
+Object.keys(selectedProduct.specs).length > 0 ? (
+  <div className="product-telemetry-hud">
+    <div
+      className="cockpit-header-bar"
+      style={{ marginBottom: '16px' }}
+    >
+      <div className="cockpit-title-wrap">
+        <div className="cockpit-radar-icon">
+          <FiCpu size={14} />
+        </div>
 
-                {selectedProduct.features && (
-                  <div className="modal-highlights-section">
-                    <h3>Key Advantages & Engineering Features</h3>
-                    <ul>
-                      {selectedProduct.features.map((f, i) => (
-                        <li key={i}>{f}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+        <h3
+          style={{
+            fontSize: '15px',
+            color: '#ffffff'
+          }}
+        >
+          Hardware Engineering & Performance Telemetry
+        </h3>
+      </div>
+
+      <span className="cockpit-status-chip">
+        <span className="cockpit-pulse-dot" />
+        Verified Specification
+      </span>
+    </div>
+
+    <div className="hud-capsules-grid">
+      {Object.entries(selectedProduct.specs).map(
+        ([key, val], idx) => (
+          <div
+            key={key}
+            className="hud-spec-capsule"
+          >
+            <span className="spec-k">
+              PAR-
+              {idx + 1 < 10
+                ? `0${idx + 1}`
+                : idx + 1}{' '}
+              · {key}
+            </span>
+
+            <span className="spec-v">
+              {val}
+            </span>
+
+            <div className="spec-indicator-bar">
+              <div
+                className="spec-indicator-fill"
+                style={{
+                  width: `${85 + (idx % 3) * 5}%`
+                }}
+              />
+            </div>
+          </div>
+        )
+      )}
+    </div>
+  </div>
+) : null}
+
+                {Array.isArray(selectedProduct.features) &&
+selectedProduct.features.length > 0 ? (
+  <div className="modal-highlights-section">
+    <h3>Key Advantages & Engineering Benchmarks</h3>
+
+    <div className="engineering-log-stream">
+      {selectedProduct.features.map((f, i) => (
+        <div
+          key={i}
+          className="log-stream-entry"
+        >
+          <div className="log-stream-node">
+            <div className="log-stream-node-inner" />
+          </div>
+
+          <div className="log-stream-content">
+            <span className="log-stream-tag">
+              ✓ Certified Standard Advantage {i + 1}
+            </span>
+
+            <p className="log-stream-text">
+              {f}
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+) : null}
 
                 {selectedProduct.applications && (
                   <div className="modal-highlights-section" style={{ marginTop: '20px' }}>

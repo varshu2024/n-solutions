@@ -4081,3 +4081,786 @@ a:focus-visible,button:focus-visible { outline:2px solid var(--brand-primary-lig
     padding: 0 10px;
   }
 }
+
+/* ==========================================================================
+   BESPOKE NON-TABULAR CONTENT ARCHITECTURE & TELEMETRY HUDs
+   Unique, special formats for specs, workflows, hardware & careers
+   ========================================================================== */
+
+/* 1. Engineering Telemetry Cockpit (Modal Specs HUD) */
+.telemetry-cockpit {
+  background: linear-gradient(145deg, #061524 0%, #030d17 100%);
+  border: 1px solid rgba(118, 186, 217, 0.28);
+  border-radius: 14px;
+  padding: 24px;
+  margin-bottom: 28px;
+  box-shadow: 0 16px 40px rgba(2, 10, 18, 0.45);
+  position: relative;
+  overflow: hidden;
+}
+.telemetry-cockpit::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #f5a623, #00d2ff, #27ae60);
+}
+.cockpit-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 20px;
+}
+.cockpit-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.cockpit-radar-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(245, 166, 35, 0.15);
+  border: 1px solid rgba(245, 166, 35, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #f5a623;
+  animation: radarPulse 2s infinite ease-in-out;
+}
+@keyframes radarPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(245, 166, 35, 0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(245, 166, 35, 0); }
+}
+.cockpit-header-bar h3 {
+  font: 700 16px 'Manrope', sans-serif;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+.cockpit-status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: rgba(39, 174, 96, 0.15);
+  border: 1px solid rgba(39, 174, 96, 0.35);
+  font: 700 10px 'Manrope', sans-serif;
+  color: #4cd964;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.cockpit-pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #4cd964;
+  box-shadow: 0 0 6px #4cd964;
+}
+.cockpit-mode-toggle {
+  display: inline-flex;
+  background: rgba(0, 0, 0, 0.35);
+  padding: 3px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  gap: 4px;
+}
+.cockpit-mode-btn {
+  background: transparent;
+  border: none;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font: 700 11px 'Manrope', sans-serif;
+  color: rgba(255, 255, 255, 0.65);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.cockpit-mode-btn.is-active {
+  background: rgba(118, 186, 217, 0.25);
+  color: #ffffff;
+  border: 1px solid rgba(118, 186, 217, 0.4);
+}
+
+/* Telemetry Capsules Matrix (Bespoke Non-Tabular Layout) */
+.telemetry-matrix {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+}
+.telemetry-capsule {
+  background: rgba(11, 28, 44, 0.6);
+  border: 1px solid rgba(118, 186, 217, 0.18);
+  border-radius: 10px;
+  padding: 16px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.28s ease;
+}
+.telemetry-capsule:hover {
+  transform: translateY(-3px);
+  border-color: rgba(245, 166, 35, 0.45);
+  background: rgba(14, 34, 52, 0.85);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.3);
+}
+.capsule-meta-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.capsule-ch-id {
+  font: 700 9px 'Manrope', sans-serif;
+  letter-spacing: 0.12em;
+  color: #f5a623;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.capsule-badge-pill {
+  font: 600 9px 'Manrope', sans-serif;
+  padding: 2px 7px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 0.02em;
+}
+.capsule-label {
+  font: 700 11px 'Manrope', sans-serif;
+  color: #90a4ae;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 6px 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.capsule-value {
+  font: 600 13px 'Manrope', sans-serif;
+  color: #ffffff;
+  line-height: 1.5;
+  margin: 0 0 10px 0;
+}
+.capsule-meter-line {
+  height: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+}
+.capsule-meter-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #f5a623, #4cd964);
+  border-radius: 3px;
+  box-shadow: 0 0 8px rgba(76, 217, 100, 0.5);
+}
+
+/* Interactive Schematic Flow Mode (Replacing Tabular Data) */
+.schematic-flow-canvas {
+  padding: 18px 8px;
+}
+.schematic-busway {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  position: relative;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+}
+.schematic-node {
+  flex: 1;
+  min-width: 170px;
+  background: rgba(14, 34, 52, 0.7);
+  border: 1px solid rgba(118, 186, 217, 0.25);
+  border-radius: 10px;
+  padding: 16px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.schematic-node:hover, .schematic-node.is-active {
+  border-color: #f5a623;
+  background: rgba(20, 48, 72, 0.9);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+}
+.schematic-step-indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #f5a623;
+  color: #030d17;
+  font: 800 10px 'Manrope', sans-serif;
+  margin-bottom: 8px;
+}
+.schematic-node h4 {
+  font: 700 12px 'Manrope', sans-serif;
+  color: #ffffff;
+  margin: 0 0 4px 0;
+}
+.schematic-node p {
+  font-size: 11px;
+  color: #b0bec5;
+  margin: 0;
+  line-height: 1.4;
+}
+.schematic-wire-arrow {
+  display: flex;
+  align-items: center;
+  color: #f5a623;
+  font-size: 16px;
+  padding: 0 4px;
+}
+
+/* 2. Engineering Log Stream (Replacing Bullet Lists) */
+.engineering-log-stream {
+  position: relative;
+  padding-left: 28px;
+  margin: 16px 0 28px;
+}
+.engineering-log-stream::before {
+  content: '';
+  position: absolute;
+  left: 9px;
+  top: 6px;
+  bottom: 6px;
+  width: 2px;
+  background: linear-gradient(180deg, #f5a623 0%, rgba(118, 186, 217, 0.2) 100%);
+}
+.log-stream-entry {
+  position: relative;
+  margin-bottom: 16px;
+  padding-bottom: 4px;
+}
+.log-stream-node {
+  position: absolute;
+  left: -28px;
+  top: 4px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #061524;
+  border: 2px solid #f5a623;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 8px rgba(245, 166, 35, 0.5);
+}
+.log-stream-node-inner {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #f5a623;
+}
+.log-stream-content {
+  background: rgba(245, 248, 250, 0.85);
+  border: 1px solid rgba(200, 215, 225, 0.6);
+  border-radius: 8px;
+  padding: 12px 16px;
+  transition: all 0.2s ease;
+}
+.log-stream-content:hover {
+  background: #ffffff;
+  border-color: #f5a623;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+.log-stream-tag {
+  display: inline-block;
+  font: 700 9px 'Manrope', sans-serif;
+  letter-spacing: 0.08em;
+  color: #27ae60;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.log-stream-text {
+  font-size: 13px;
+  color: #334e68;
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* 3. Interactive Solar Circuit Pipeline (Replacing Generic 6-step lifecycle grid) */
+.circuit-stream-wrapper {
+  margin-top: 44px;
+}
+.circuit-timeline-track {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  position: relative;
+  margin-bottom: 28px;
+  overflow-x: auto;
+  padding: 10px 4px 18px;
+}
+.circuit-timeline-track::before {
+  content: '';
+  position: absolute;
+  top: 30px;
+  left: 20px;
+  right: 20px;
+  height: 2px;
+  background: rgba(118, 186, 217, 0.25);
+  z-index: 1;
+}
+.circuit-stage-node {
+  position: relative;
+  z-index: 2;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 110px;
+  transition: transform 0.2s ease;
+}
+.circuit-stage-node:hover {
+  transform: translateY(-2px);
+}
+.circuit-node-bubble {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #082136;
+  border: 2px solid rgba(118, 186, 217, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #76bad9;
+  font: 700 13px 'Manrope', sans-serif;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+.circuit-stage-node.is-active .circuit-node-bubble {
+  background: #f5a623;
+  color: #030d17;
+  border-color: #ffffff;
+  box-shadow: 0 0 16px rgba(245, 166, 35, 0.7);
+  transform: scale(1.12);
+}
+.circuit-node-label {
+  font: 700 11px 'Manrope', sans-serif;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  letter-spacing: 0.02em;
+  transition: color 0.25s ease;
+  max-width: 110px;
+}
+.circuit-stage-node.is-active .circuit-node-label {
+  color: #f5a623;
+  font-weight: 800;
+}
+
+/* Dynamic Phase Command Dossier */
+.circuit-dossier-card {
+  background: linear-gradient(135deg, rgba(8, 33, 54, 0.85) 0%, rgba(5, 20, 34, 0.95) 100%);
+  border: 1px solid rgba(118, 186, 217, 0.35);
+  border-radius: 16px;
+  padding: 36px;
+  color: #ffffff;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+  position: relative;
+  backdrop-filter: blur(12px);
+}
+.dossier-grid-layout {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 32px;
+  align-items: center;
+}
+@media (max-width: 860px) {
+  .dossier-grid-layout {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+.dossier-header-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  background: rgba(245, 166, 35, 0.15);
+  border: 1px solid rgba(245, 166, 35, 0.4);
+  color: #f5a623;
+  font: 700 11px 'Manrope', sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.dossier-title {
+  font: 700 24px 'Manrope', sans-serif;
+  color: #ffffff;
+  margin: 0 0 14px 0;
+  letter-spacing: -0.02em;
+}
+.dossier-desc {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.82);
+  line-height: 1.7;
+  margin: 0 0 20px 0;
+}
+.dossier-tools-box {
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 20px;
+}
+.dossier-tools-box h5 {
+  font: 700 11px 'Manrope', sans-serif;
+  color: #76bad9;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0 0 12px 0;
+}
+.dossier-checklist {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.dossier-checklist li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.45;
+}
+.dossier-checklist li svg {
+  color: #4cd964;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.dossier-nav-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+.dossier-nav-btn {
+  background: transparent;
+  border: 1px solid rgba(118, 186, 217, 0.3);
+  color: #ffffff;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font: 600 12px 'Manrope', sans-serif;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+.dossier-nav-btn:hover {
+  background: rgba(118, 186, 217, 0.2);
+  border-color: #f5a623;
+}
+
+/* 4. Interactive Hardware Anatomy (Replacing BOM 4-box card grid) */
+.hardware-anatomy-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 24px;
+  margin-top: 36px;
+  align-items: stretch;
+}
+@media (max-width: 860px) {
+  .hardware-anatomy-layout {
+    grid-template-columns: 1fr;
+  }
+}
+.hardware-tabs-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.hardware-tab-item {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 16px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.hardware-tab-item:hover, .hardware-tab-item.is-active {
+  border-color: var(--brand-primary);
+  background: #f0f7fb;
+  box-shadow: 0 6px 18px rgba(7, 39, 66, 0.08);
+}
+.hardware-tab-item.is-active {
+  border-left: 4px solid var(--brand-accent);
+}
+.hardware-tab-text strong {
+  display: block;
+  font: 700 13px 'Manrope', sans-serif;
+  color: var(--brand-primary-deep);
+  margin-bottom: 2px;
+}
+.hardware-tab-text small {
+  font-size: 11px;
+  color: var(--muted);
+}
+.hardware-detail-display {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 32px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.hardware-detail-badge {
+  display: inline-block;
+  font: 700 10px 'Manrope', sans-serif;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--brand-accent);
+  margin-bottom: 8px;
+}
+.hardware-detail-display h3 {
+  font: 700 22px 'Manrope', sans-serif;
+  color: var(--brand-primary-deep);
+  margin: 0 0 12px 0;
+  letter-spacing: -0.02em;
+}
+.hardware-detail-display p {
+  color: #4a5c68;
+  font-size: 14px;
+  line-height: 1.7;
+  margin: 0 0 24px 0;
+}
+.hardware-metric-capsules {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.hardware-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: #f7fafc;
+  border: 1px solid #e2e8f0;
+  font: 600 12px 'Manrope', sans-serif;
+  color: #2d3748;
+}
+.hardware-chip svg {
+  color: #27ae60;
+}
+
+/* 5. Product Telemetry Avionics HUD */
+.product-telemetry-hud {
+  background: linear-gradient(145deg, #07192a 0%, #030f1a 100%);
+  border: 1px solid rgba(118, 186, 217, 0.28);
+  border-radius: 14px;
+  padding: 24px;
+  margin-bottom: 28px;
+  box-shadow: 0 16px 40px rgba(2, 10, 18, 0.45);
+}
+.hud-capsules-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+.hud-spec-capsule {
+  background: rgba(14, 34, 52, 0.65);
+  border: 1px solid rgba(118, 186, 217, 0.2);
+  border-radius: 10px;
+  padding: 14px;
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+.hud-spec-capsule:hover {
+  background: rgba(20, 48, 72, 0.85);
+  border-color: #f5a623;
+  transform: translateY(-2px);
+}
+.hud-spec-capsule .spec-k {
+  font: 700 10px 'Manrope', sans-serif;
+  color: #76bad9;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  display: block;
+}
+.hud-spec-capsule .spec-v {
+  font: 600 13px 'Manrope', sans-serif;
+  color: #ffffff;
+  line-height: 1.45;
+  display: block;
+  margin-bottom: 8px;
+}
+.hud-spec-capsule .spec-indicator-bar {
+  height: 2px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.hud-spec-capsule .spec-indicator-fill {
+  height: 100%;
+  background: #f5a623;
+  border-radius: 2px;
+}
+
+/* 6. Careers Value Mosaic (Replacing 4-box Pillars Grid) */
+.careers-value-mosaic {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 24px;
+  margin-top: 40px;
+}
+@media (max-width: 860px) {
+  .careers-value-mosaic {
+    grid-template-columns: 1fr;
+  }
+}
+.mosaic-hero-card {
+  background: linear-gradient(145deg, #072742 0%, #041829 100%);
+  border: 1px solid rgba(118, 186, 217, 0.35);
+  border-radius: 16px;
+  padding: 40px;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 16px 40px rgba(7, 39, 66, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+.mosaic-hero-card::after {
+  content: '';
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(245, 166, 35, 0.25) 0%, transparent 70%);
+  pointer-events: none;
+}
+.mosaic-sub-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.mosaic-accent-card {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 24px;
+  transition: all 0.25s ease;
+  position: relative;
+  border-left: 4px solid var(--brand-primary);
+}
+.mosaic-accent-card:hover {
+  transform: translateX(4px);
+  box-shadow: 0 8px 24px rgba(7, 39, 66, 0.08);
+  border-left-color: var(--brand-accent);
+}
+.mosaic-accent-card h4 {
+  font: 700 16px 'Manrope', sans-serif;
+  color: var(--brand-primary-deep);
+  margin: 0 0 6px 0;
+}
+.mosaic-accent-card p {
+  font-size: 13px;
+  color: #4a5c68;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* 7. Candidate Orbit Stream (Replacing 4-box Hiring Process Grid) */
+.candidate-orbit-stream {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 40px;
+  position: relative;
+}
+.candidate-stage-capsule {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  background: rgba(7, 39, 66, 0.45);
+  border: 1px solid rgba(118, 186, 217, 0.22);
+  border-radius: 12px;
+  padding: 20px 28px;
+  transition: all 0.25s ease;
+  position: relative;
+}
+.candidate-stage-capsule:hover {
+  background: rgba(7, 39, 66, 0.7);
+  border-color: #f5a623;
+  transform: translateX(6px);
+}
+@media (max-width: 680px) {
+  .candidate-stage-capsule {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}
+.orbit-node-number {
+  font: 800 24px 'Manrope', sans-serif;
+  color: #f5a623;
+  min-width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(245, 166, 35, 0.15);
+  border: 1px solid rgba(245, 166, 35, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.orbit-stage-body {
+  flex: 1;
+}
+.orbit-stage-body h4 {
+  font: 700 16px 'Manrope', sans-serif;
+  color: #ffffff;
+  margin: 0 0 4px 0;
+}
+.orbit-stage-body p {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.55;
+  margin: 0;
+}
+.orbit-sla-pill {
+  font: 700 10px 'Manrope', sans-serif;
+  padding: 5px 12px;
+  border-radius: 20px;
+  background: rgba(118, 186, 217, 0.15);
+  border: 1px solid rgba(118, 186, 217, 0.3);
+  color: #76bad9;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
