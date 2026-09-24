@@ -184,7 +184,7 @@ export const productsCatalog = [
 
   // 3. SOLAR WATER PUMPS
   {
-    id: 'prod-solar-pump-75hp',
+    id: 'prod-solar-pump-products',
     name: '7.5 HP Solar Submersible Borewell Agri Pumping System',
     brand: 'PM-KUSUM Approved (Shakti / Jain)',
     category: 'pumps',

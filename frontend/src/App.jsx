@@ -7,6 +7,7 @@ import ContactPage from './pages/ContactPage'
 import AdminPortal from './admin/AdminPortal'
 import { navigate, SiteFooter } from './components/Shared'
 import { homeContent, aboutContent, servicesAndSolutionsContent } from './content/siteContent'
+import { apiGet } from './utils/api'
 import { 
   FiArrowUpRight, FiArrowDown, FiCheck, FiChevronRight,
   FiZap, FiSun, FiShield, FiTarget, FiTrendingUp, FiGlobe, 
@@ -259,29 +260,116 @@ function CertificationsShowcase({ theme = 'light' }) {
 }
 
 function TestimonialsShowcase({ theme = 'light' }) {
+  const [testimonials, setTestimonials] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    let isMounted = true
+
+    const fetchTestimonials = async () => {
+      try {
+        const result = await apiGet('/testimonials')
+
+        if (!isMounted) return
+
+        if (result.success) {
+          const items = Array.isArray(result.data)
+            ? result.data
+            : []
+
+          const mappedTestimonials = items.map((t, index) => ({
+            id: t._id || `testimonial-${index}`,
+            name: t.clientName || 'N Solutions Client',
+            role: t.location || 'Client',
+            company: t.company || 'N Solutions Client',
+            metric: '',
+            quote: t.description || '',
+            rating: 5
+          }))
+
+          setTestimonials(mappedTestimonials)
+        }
+      } catch (error) {
+        console.error('Failed to fetch testimonials:', error)
+      } finally {
+        if (isMounted) {
+          setLoading(false)
+        }
+      }
+    }
+
+    fetchTestimonials()
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
+  if (loading) {
+    return (
+      <div className={`testimonials-showcase-section theme-${theme}`}>
+        <div className="testimonials-grid-modern">
+          <div className="testimonial-loading">
+            Loading testimonials...
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (testimonials.length === 0) {
+    return null
+  }
+
   return (
     <div className={`testimonials-showcase-section theme-${theme}`}>
       <div className="testimonials-grid-modern">
-        {verifiedTestimonials.map((t) => {
+        {testimonials.map((t) => {
           return (
             <Reveal className="testimonial-card-modern" key={t.id}>
               <div className="testimonial-top-row">
-                <div className="testimonial-stars" aria-label={`${t.rating} out of 5 stars`}>
+                <div
+                  className="testimonial-stars"
+                  aria-label={`${t.rating} out of 5 stars`}
+                >
                   {[...Array(t.rating)].map((_, i) => (
-                    <FiStar key={i} style={{ fill: '#f5a623', color: '#f5a623', marginRight: '3px' }} />
+                    <FiStar
+                      key={i}
+                      style={{
+                        fill: '#f5a623',
+                        color: '#f5a623',
+                        marginRight: '3px'
+                      }}
+                    />
                   ))}
                 </div>
+
                 <span className="testimonial-verified-badge">
                   <FiCheck /> Verified Client Project
                 </span>
               </div>
-              <p className="testimonial-quote-text">“{t.quote}”</p>
+
+              <p className="testimonial-quote-text">
+                “{t.quote}”
+              </p>
+
               <div className="testimonial-author-row">
                 <div className="testimonial-author-info">
-                  <strong className="testimonial-author-name">{t.name}</strong>
-                  <span className="testimonial-author-role">{t.role} · {t.company}</span>
+                  <strong className="testimonial-author-name">
+                    {t.name}
+                  </strong>
+
+                  <span className="testimonial-author-role">
+                    {t.role}
+                    {t.company ? ` · ${t.company}` : ''}
+                  </span>
                 </div>
-                <span className="testimonial-metric-chip">{t.metric}</span>
+
+                {t.metric && (
+                  <span className="testimonial-metric-chip">
+                    {t.metric}
+                  </span>
+                )}
               </div>
             </Reveal>
           )
