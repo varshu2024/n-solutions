@@ -3,10 +3,12 @@ import { Testimonial } from '../models/Testimonial.js';
 
 const testimonialResponse = (testimonial) => ({
   id: testimonial._id.toString(),
-  description: testimonial.description,
-  clientName: testimonial.clientName,
+  name: testimonial.name,
+  role: testimonial.role,
   company: testimonial.company,
-  location: testimonial.location
+  metric: testimonial.metric,
+  quote: testimonial.quote,
+  rating: testimonial.rating
 });
 
 const invalidIdError = () => {
@@ -44,7 +46,7 @@ export const deleteTestimonial = async (id) => {
 
 export const listPublicTestimonials = async () => {
   const testimonials = await Testimonial.find({})
-    .select('description clientName company location')
+    .select('name role company metric quote rating')
     .sort({ createdAt: -1 })
     .lean();
 

@@ -253,7 +253,7 @@ GET {{baseUrl}}/api/public/projects/not-a-valid-id
 ### ---------------- ADMIN PRODUCT APIS ----------------
 
 ### Admin - Create Product (multipart/form-data)
-POST {{baseUrl}}/api/products
+POST {{baseUrl}}/api/
 Authorization: Bearer {{adminToken}}
 Content-Type: multipart/form-data; boundary=ProductBoundary
 

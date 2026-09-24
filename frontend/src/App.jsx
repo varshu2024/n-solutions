@@ -177,45 +177,6 @@ const verifiedCertifications = [
   }
 ]
 
-const verifiedTestimonials = [
-  {
-    id: 'coastal-corp',
-    name: 'V. R. Sharma',
-    role: 'VP Operations & Infrastructure',
-    company: 'Coastal Corporation Ltd',
-    metric: '3.6 MWp Captive Solar · Sompeta',
-    quote: 'N Solutions executed our 3.6 MWp captive solar farm at Sompeta with impeccable civil-structural precision and on-schedule 33 kV grid synchronization. Our annual power tariff savings and plant PR exceeding 81% have transformed our seafood processing cost dynamics.',
-    rating: 5
-  },
-  {
-    id: 'pokarna-stone',
-    name: 'K. R. V. Prasad',
-    role: 'Head of Engineering & Utilities',
-    company: 'Pokarna Engineered Stone Ltd',
-    metric: '2.0 MWp Industrial Rooftop · AP',
-    quote: 'Deploying 2 MWp on curved industrial tin shed roofs required zero plant downtime. N Solutions delivered custom standing seam clamp fixtures without a single roof puncture, passing our stringent structural and monsoon leak audits with flying colors.',
-    rating: 5
-  },
-  {
-    id: 'pm-surya-ghar',
-    name: 'P. Satyanarayana Murthy & Residents',
-    role: 'PM Surya Ghar Beneficiaries',
-    company: 'Vizianagaram Residential Cluster (500+ Homes)',
-    metric: '500+ Homes · ₹78k Subsidy Delivered',
-    quote: 'N Solutions handled everything—shadow analysis, elevated GI monkey-proof structure, APEPDCL net-metering sanction, and direct DBT subsidy credit of ₹78,000 into our bank within weeks. Our monthly electricity bill dropped from ₹3,400 to almost zero.',
-    rating: 5
-  },
-  {
-    id: 'dr-reddys',
-    name: 'S. N. Rao',
-    role: 'Plant Engineering Lead',
-    company: "Dr. Reddy's Laboratories (Srikakulam)",
-    metric: '520 kWp Solar Carport & Roof',
-    quote: 'The safety standards, high-durability hot-dip galvanized carports, and clean inverter kiosk cable routing set N Solutions apart. They delivered seamless HT integration without interrupting our active pharmaceutical manufacturing and R&D operations.',
-    rating: 5
-  }
-]
-
 function CertificationsShowcase({ theme = 'light' }) {
   return (
     <div className={`cert-showcase-section theme-${theme}`}>
@@ -277,17 +238,9 @@ function TestimonialsShowcase({ theme = 'light' }) {
             ? result.data
             : []
 
-          const mappedTestimonials = items.map((t, index) => ({
-            id: t._id || `testimonial-${index}`,
-            name: t.clientName || 'N Solutions Client',
-            role: t.location || 'Client',
-            company: t.company || 'N Solutions Client',
-            metric: '',
-            quote: t.description || '',
-            rating: 5
-          }))
-
-          setTestimonials(mappedTestimonials)
+          setTestimonials(items)
+        } else {
+          console.error('Failed to fetch testimonials:', result.message)
         }
       } catch (error) {
         console.error('Failed to fetch testimonials:', error)
@@ -305,34 +258,33 @@ function TestimonialsShowcase({ theme = 'light' }) {
     }
   }, [])
 
-  if (loading) {
-    return (
-      <div className={`testimonials-showcase-section theme-${theme}`}>
+  return (
+    <div className={`testimonials-showcase-section theme-${theme}`}>
+      {loading ? (
         <div className="testimonials-grid-modern">
           <div className="testimonial-loading">
             Loading testimonials...
           </div>
         </div>
-      </div>
-    )
-  }
-
-  if (testimonials.length === 0) {
-    return null
-  }
-
-  return (
-    <div className={`testimonials-showcase-section theme-${theme}`}>
-      <div className="testimonials-grid-modern">
-        {testimonials.map((t) => {
-          return (
-            <Reveal className="testimonial-card-modern" key={t.id}>
+      ) : testimonials.length === 0 ? (
+        <div className="testimonials-grid-modern">
+          <div className="testimonial-loading">
+            No testimonials available.
+          </div>
+        </div>
+      ) : (
+        <div className="testimonials-grid-modern">
+          {testimonials.map((t) => (
+            <Reveal
+              className="testimonial-card-modern"
+              key={t.id}
+            >
               <div className="testimonial-top-row">
                 <div
                   className="testimonial-stars"
                   aria-label={`${t.rating} out of 5 stars`}
                 >
-                  {[...Array(t.rating)].map((_, i) => (
+                  {[...Array(t.rating || 5)].map((_, i) => (
                     <FiStar
                       key={i}
                       style={{
@@ -360,8 +312,7 @@ function TestimonialsShowcase({ theme = 'light' }) {
                   </strong>
 
                   <span className="testimonial-author-role">
-                    {t.role}
-                    {t.company ? ` · ${t.company}` : ''}
+                    {t.role} · {t.company}
                   </span>
                 </div>
 
@@ -372,9 +323,9 @@ function TestimonialsShowcase({ theme = 'light' }) {
                 )}
               </div>
             </Reveal>
-          )
-        })}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
