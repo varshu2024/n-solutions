@@ -77,14 +77,18 @@ export const submit = async (request, response) => {
   }
 
   try {
-    await createJobApplication({ ...normalized, resume });
-  } catch (error) {
-    await cleanupResume(resume);
-    if (error.name === 'ValidationError') throw error;
-    const databaseError = new Error('Unable to submit application.');
-    databaseError.statusCode = 500;
-    throw databaseError;
-  }
+  await createJobApplication({ ...normalized, resume });
+} catch (error) {
+  console.error('Job application database error:', error);
+
+  await cleanupResume(resume);
+
+  if (error.name === 'ValidationError') throw error;
+
+  const databaseError = new Error('Unable to submit application.');
+  databaseError.statusCode = 500;
+  throw databaseError;
+}
 
   return sendSuccess(response, 201, 'Application submitted successfully.');
 };

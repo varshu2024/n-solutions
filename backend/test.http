@@ -573,7 +573,7 @@ Authorization: Bearer {{adminToken}}
 Content-Type: application/json
 
 {
-  "jobTitle": "Solar Design Engineer",
+  "jobTitle": "Design Engineer",
   "department": "Engineering",
   "location": "Visakhapatnam",
   "employmentType": "Full-time",
