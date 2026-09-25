@@ -162,29 +162,12 @@
 }
 
 /* ---------------------------------------------------------
-   4. Shimmering Solar Typography (h1 em, h2 em)
+   4. Typography Reset (No golden background highlighting)
    --------------------------------------------------------- */
 h1 em,
 h2 em {
-  background: linear-gradient(120deg, #76bad9 0%, #fcd34d 40%, #76bad9 80%, #38bdf8 100%);
-  background-size: 250% auto;
-  animation: solarTextShimmer 7s ease-in-out infinite;
-  display: inline-block;
-}
-
-@keyframes solarTextShimmer {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  0% {
-  }
-
-  50% {
-    background-position: 100% 50%;
-  }
-
-  100% {
-    background-position: 0% 50%;
-  }
+  background: none !important;
+  font-style: normal;
 }
 
 /* ---------------------------------------------------------
