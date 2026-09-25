@@ -633,47 +633,6 @@ export default function ProductsPage() {
           )}
         </section>
 
-        {/* QUALITY ASSURANCE & PROCUREMENT PROTOCOL */}
-        <section className="products-qa-section">
-          <div className="wrap">
-            <Reveal className="section-heading">
-              <div>
-                <p className="eyebrow light"><span /> Strict Quality Benchmarks</p>
-                <h2>Why our hardware standards<br /><em>guarantee lasting yield.</em></h2>
-              </div>
-              <p className="heading-note light">
-                Solar plants must endure 25+ years of intense tropical heat, coastal humidity, and severe monsoon storms. We strictly supply equipment meeting international certifications.
-              </p>
-            </Reveal>
-
-            <div className="qa-features-grid">
-              <Reveal className="qa-feature-card">
-                <div className="qa-icon">01</div>
-                <h4>100% ALMM & BIS Listed</h4>
-                <p>All supplied solar modules are verified on the Ministry of New and Renewable Energy (MNRE) Approved List of Models and Manufacturers (ALMM), ensuring full eligibility for government subsidies and net-metering.</p>
-              </Reveal>
-
-              <Reveal className="qa-feature-card">
-                <div className="qa-icon">02</div>
-                <h4>DISCOM Net-Meter Approved</h4>
-                <p>Every grid inverter supplied by N Solutions is pre-tested and certified by state power distribution utilities (APEPDCL, APCPDCL, TSSPDCL) for anti-islanding, harmonic mitigation, and bi-directional smart metering.</p>
-              </Reveal>
-
-              <Reveal className="qa-feature-card">
-                <div className="qa-icon">03</div>
-                <h4>Cyclone-Resilient Galvanization</h4>
-                <p>Mounting structures use JSW / Mangal steel with 80+ micron hot-dip galvanization designed specifically for heavy coastal winds up to 180 km/h, preventing corrosion for 25+ years.</p>
-              </Reveal>
-
-              <Reveal className="qa-feature-card">
-                <div className="qa-icon">04</div>
-                <h4>Factory Testing & Flash Reports</h4>
-                <p>Every batch of solar modules and inverters comes backed with factory laboratory flash reports, electroluminescence (EL) crack test verification, and manufacturer serial tracking.</p>
-              </Reveal>
-            </div>
-          </div>
-        </section>
-
         {/* HARDWARE CONSULTATION CTA */}
         <section className="projects-cta-section">
           <div className="wrap">

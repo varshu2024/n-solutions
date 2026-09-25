@@ -197,13 +197,84 @@ const INITIAL_DEMO_DATA = {
       status: 'pending',
       date: '2026-09-19'
     }
+  ],
+  media: [
+    {
+      id: 'med-501',
+      title: 'Vizianagaram 1.5 MW PM Surya Ghar Installation',
+      category: 'Residential',
+      imageUrl: 'https://images.unsplash.com/photo-1509391365360-2e959784a276?w=600&auto=format&fit=crop&q=80',
+      date: '2026-09-15',
+      featured: true
+    },
+    {
+      id: 'med-502',
+      title: 'Coastal Agro 850 kW Industrial Rooftop Commissioning',
+      category: 'Industrial',
+      imageUrl: 'https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?w=600&auto=format&fit=crop&q=80',
+      date: '2026-09-10',
+      featured: true
+    },
+    {
+      id: 'med-503',
+      title: 'Mono PERC Bifacial 550W Module Testing Lab',
+      category: 'Products',
+      imageUrl: 'https://images.unsplash.com/photo-1497440001374-f26997328c1b?w=600&auto=format&fit=crop&q=80',
+      date: '2026-08-28',
+      featured: false
+    },
+    {
+      id: 'med-504',
+      title: 'N Solutions Operations & Site Engineering Team',
+      category: 'Company',
+      imageUrl: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&auto=format&fit=crop&q=80',
+      date: '2026-08-14',
+      featured: false
+    }
+  ],
+  testimonials: [
+    {
+      id: 'test-601',
+      clientName: 'Dr. Ramesh Varma',
+      company: 'Varma Specialty Hospital',
+      location: 'Visakhapatnam, AP',
+      rating: 5,
+      comment: 'N Solutions delivered our 100kW hospital solar plant ahead of schedule with flawless net-metering synchronization. Power costs dropped by 45%.',
+      status: 'approved',
+      date: '2026-09-12'
+    },
+    {
+      id: 'test-602',
+      clientName: 'K. Srinivasa Rao',
+      company: 'Coastal Poly Plast Pvt Ltd',
+      location: 'Vizianagaram, AP',
+      rating: 5,
+      comment: 'Exceptional EPC engineering. Their Tier-1 Mono PERC panels and on-grid inverters have exceeded generation expectations consistently.',
+      status: 'approved',
+      date: '2026-09-08'
+    },
+    {
+      id: 'test-603',
+      clientName: 'M. Anand Sharma',
+      company: 'Greenfield Villa Residency',
+      location: 'Visakhapatnam, AP',
+      rating: 5,
+      comment: 'Seamless PM Surya Ghar subsidy processing and quick rooftop execution. The team handled all DISCOM approvals end-to-end.',
+      status: 'approved',
+      date: '2026-08-25'
+    }
   ]
 }
 
 export function getStoredData() {
   try {
     const raw = localStorage.getItem(DATA_STORAGE_KEY)
-    if (raw) return JSON.parse(raw)
+    if (raw) {
+      const parsed = JSON.parse(raw)
+      if (!parsed.media || parsed.media.length === 0) parsed.media = INITIAL_DEMO_DATA.media
+      if (!parsed.testimonials || parsed.testimonials.length === 0) parsed.testimonials = INITIAL_DEMO_DATA.testimonials
+      return parsed
+    }
   } catch (e) {
     console.error('Failed to parse admin data from storage', e)
   }
@@ -234,12 +305,14 @@ export function getAuthToken() {
   return localStorage.getItem(TOKEN_KEY)
 }
 
+export const API_BASE_URL = (import.meta.env?.VITE_API_URL || '/api').replace(/\/+$/, '')
+
 export async function adminLogin(email, password) {
   // Attempt backend API login if available
   try {
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), 3000)
-    const response = await fetch('/api/auth/login', {
+    const response = await fetch(`${API_BASE_URL}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
@@ -294,7 +367,7 @@ export async function adminLogin(email, password) {
 export function adminLogout() {
   const token = localStorage.getItem(TOKEN_KEY)
   if (token && !token.startsWith('nsolutions_demo_')) {
-    fetch('/api/auth/logout', {
+    fetch(`${API_BASE_URL}/auth/logout`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`

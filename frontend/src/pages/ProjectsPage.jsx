@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { SiteHeader, SiteFooter, Arrow, AnimatedMetric, Reveal, navigate } from '../components/Shared'
 import { 
-  FiMapPin, FiX, FiArrowDown, FiChevronRight, FiChevronLeft,
+  FiMapPin, FiX, FiArrowDown, FiChevronRight,
   FiSun, FiZap, FiTrendingUp, FiAward, FiShield, FiLayers, 
   FiCheck, FiActivity, FiCpu, FiCheckCircle
 } from 'react-icons/fi'
@@ -409,83 +409,7 @@ export default function ProjectsPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [cockpitMode, setCockpitMode] = useState('telemetry')
   const [activeSchematicNode, setActiveSchematicNode] = useState(0)
-  const [activeLifecycleStage, setActiveLifecycleStage] = useState(0)
   const [activeBomLayer, setActiveBomLayer] = useState(0)
-
-  const lifecycleStages = [
-    {
-      num: '01',
-      title: 'Feasibility & LIDAR Solar Irradiance Modeling',
-      short: 'Feasibility & 3D LIDAR',
-      objective: 'Comprehensive 3D topographical drone LIDAR mapping and PVSyst simulation to forecast generation yield with 99.4% accuracy.',
-      tools: 'DJI Enterprise LIDAR Drone, PVSyst Solar Yield Simulation, Meteonorm Climate Database',
-      checklist: [
-        '3D shadow loss trajectory modeled through 365 sun positions',
-        'Structural dead-weight and live-wind load calculations verified',
-        'Financial LCOE, payback schedule, and IRR feasibility analysis'
-      ]
-    },
-    {
-      num: '02',
-      title: 'DISCOM Approvals & High-Voltage Schematics',
-      short: 'DISCOM Net-Metering',
-      objective: 'Filing statutory net-metering feasibility with state DISCOMs and developing CEA-compliant single-line electrical schematics.',
-      tools: 'AutoCAD Electrical, DISCOM National Portal Integration, CEIG Statutory Audit System',
-      checklist: [
-        'DISCOM technical net-metering feasibility sanction obtained',
-        'Single-line diagram (SLD) and protection relay coordination approved',
-        'Structural engineering certification with PE stamp'
-      ]
-    },
-    {
-      num: '03',
-      title: 'Tier-1 ALMM Hardware Procurement & In-Factory QA',
-      short: 'Tier-1 Procurement',
-      objective: 'Procuring verified Grade-A N-Type TOPCon/Mono PERC modules directly from top tier-1 manufacturers with traceable serial numbers.',
-      tools: 'Factory Electroluminescence (EL) Defect Testing, Flash Report Telemetry, BIS/ALMM Verification',
-      checklist: [
-        'Every solar panel verified for zero micro-cracks via factory EL imaging',
-        'Class-1 ESE lightning arrestors and heavy-duty GI box pipes inspected',
-        'Dual-certified TUV solar cables with flame-retardant cross-linking'
-      ]
-    },
-    {
-      num: '04',
-      title: 'Precision Mechanical Erection & Electrical Safety',
-      short: 'Precision Erection',
-      objective: 'Deploying certified technicians for hot-dip galvanized mounting structure assembly, waterproof chemical anchoring, and DC string routing.',
-      tools: 'Calibrated Torque Wrenches, Hilti Chemical Anchor Systems, UV Conduit Trenching',
-      checklist: [
-        'Zero rooftop puncture guarantees with chemical anchor seals',
-        'Galvanized iron hardware torqued to exact engineering Nm tolerances',
-        'String voltages tested for open-circuit parity prior to inverter connection'
-      ]
-    },
-    {
-      num: '05',
-      title: 'Grid Net-Meter Synchronization & Megger Diagnostics',
-      short: 'Grid Net-Meter Sync',
-      objective: 'Executing multi-point insulation resistance tests, sub-1 Ohm earth pit audits, and DISCOM bidirectional meter commissioning.',
-      tools: 'Fluke 1507 5kV Megger Tester, Fluke 1625 Earth Ground Clamp, CEIG Official Commissioning Kit',
-      checklist: [
-        'Insulation resistance validated (>50 MegaOhms at 1000V DC)',
-        'Earth pit ground resistance audited to strictly sub-1 Ohm (<0.85 Ω)',
-        'Bi-directional 4-quadrant smart net-meter installed with real-time export'
-      ]
-    },
-    {
-      num: '06',
-      title: 'Cloud SCADA Telemetry & 25-Year Performance SLA',
-      short: 'Cloud SCADA & O&M',
-      objective: 'Connecting plant inverters to cloud SCADA servers for minute-by-minute generation logging, automated alert dispatch, and robotic wash support.',
-      tools: 'Industrial IoT Telemetry Gateways, FLIR Thermal Drone Thermography, Automated Module Washers',
-      checklist: [
-        'Minute-by-minute generation tracking via mobile & web monitoring portals',
-        'Thermographic drone scans detecting hot-spots and micro-soiling',
-        'Guaranteed 24-hour on-site engineering turnaround for any fault code'
-      ]
-    }
-  ]
 
   const bomLayers = [
     {
@@ -925,138 +849,7 @@ export default function ProjectsPage() {
           </div>
         </section>
 
-        {/* OFFICIAL STATUTORY EMPANELMENTS & CERTIFICATIONS */}
-        <section className="projects-empanelment-section">
-          <div className="wrap">
-            <Reveal className="section-heading">
-              <div>
-                <p className="eyebrow light"><span /> Government Empanelments & Credentials</p>
-                <h2>Statutory approvals &<br /><em>official vendor empanelments.</em></h2>
-              </div>
-              <p className="heading-note light">
-                Fully authorized and empaneled by state electricity distribution companies and renewable energy development nodal agencies across India.
-              </p>
-            </Reveal>
 
-            <div className="empanelment-grid">
-              <Reveal className="empanelment-card">
-                <div className="empanelment-doc-preview">
-                  <img 
-                    src="/projects/apepdcl-pm-suryaghar-empanelment-order.png" 
-                    alt="APEPDCL PM Surya Ghar Empanelment Order" 
-                  />
-                </div>
-                <div className="empanelment-info">
-                  <span className="badge-tag">APEPDCL Empaneled</span>
-                  <h3>PM Surya Ghar National Portal Vendor</h3>
-                  <p>
-                    Official vendor empanelment for residential solar rooftop installations under PM Surya Ghar Muft Bijli Yojana with verified State Bank of India bank guarantee.
-                  </p>
-                  <small>Order Ref: Lr.No.CGM/EC&Solar/EPDCL/GM/EE/Dy.EE/JE/EC&Solar/E-397417/D.No.1/570375/25</small>
-                </div>
-              </Reveal>
-
-              <Reveal className="empanelment-card">
-                <div className="empanelment-doc-preview">
-                  <img 
-                    src="/projects/nredcap-solar-rooftop-empanelment-order.jpg" 
-                    alt="NREDCAP Solar Rooftop Empanelment Order" 
-                  />
-                </div>
-                <div className="empanelment-info">
-                  <span className="badge-tag">NREDCAP Approved</span>
-                  <h3>Grid-Connected Solar Rooftop (1-100 KWp)</h3>
-                  <p>
-                    Approved supplier by New & Renewable Energy Development Corporation of Andhra Pradesh Ltd (NREDCAP) under CAPEX mode for 1 kWp to 100 kWp installations.
-                  </p>
-                  <small>Ref: NREDCAP/SE/SPV 1-500 KWp/42-316/2024-25</small>
-                </div>
-              </Reveal>
-            </div>
-          </div>
-        </section>
-
-        {/* 6-STEP EXECUTION LIFECYCLE */}
-        <section className="projects-lifecycle">
-          <div className="wrap">
-            <Reveal className="section-heading">
-              <div>
-                <p className="eyebrow light"><span /> Engineering Standard</p>
-                <h2>How we deliver every<br /><em>solar installation.</em></h2>
-              </div>
-              <p className="heading-note light">
-                A structured, disciplined engineering protocol applied uniformly from residential PM Surya Ghar roofs to MW-scale solar farms.
-              </p>
-            </Reveal>
-
-            <div className="circuit-stream-wrapper">
-              {/* Connected Pipeline Track */}
-              <div className="circuit-timeline-track">
-                {lifecycleStages.map((stage, sIdx) => (
-                  <button
-                    key={stage.num}
-                    type="button"
-                    className={`circuit-stage-node ${activeLifecycleStage === sIdx ? 'is-active' : ''}`}
-                    onClick={() => setActiveLifecycleStage(sIdx)}
-                  >
-                    <span className="circuit-node-bubble">{stage.num}</span>
-                    <span className="circuit-node-label">{stage.short}</span>
-                  </button>
-                ))}
-              </div>
-
-              {/* Active Stage Command Dossier */}
-              <div className="circuit-dossier-card">
-                <div className="dossier-grid-layout">
-                  <div>
-                    <div className="dossier-header-badge">
-                      <FiActivity /> Stage {lifecycleStages[activeLifecycleStage].num} · Engineering Protocol
-                    </div>
-                    <h3 className="dossier-title">{lifecycleStages[activeLifecycleStage].title}</h3>
-                    <p className="dossier-desc">{lifecycleStages[activeLifecycleStage].objective}</p>
-
-                    <div className="dossier-nav-controls">
-                      <button
-                        type="button"
-                        className="dossier-nav-btn"
-                        onClick={() => setActiveLifecycleStage(prev => (prev > 0 ? prev - 1 : lifecycleStages.length - 1))}
-                      >
-                        <FiChevronLeft /> Previous Stage
-                      </button>
-                      <span style={{ fontSize: '12px', color: '#76bad9', fontStyle: 'italic' }}>
-                        Step {activeLifecycleStage + 1} of {lifecycleStages.length}
-                      </span>
-                      <button
-                        type="button"
-                        className="dossier-nav-btn"
-                        onClick={() => setActiveLifecycleStage(prev => (prev < lifecycleStages.length - 1 ? prev + 1 : 0))}
-                      >
-                        Next Stage <FiChevronRight />
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="dossier-tools-box">
-                    <h5>Diagnostic Instrumentation & Tools</h5>
-                    <p style={{ fontSize: '13px', color: '#ffffff', marginBottom: '16px', fontWeight: '600' }}>
-                      {lifecycleStages[activeLifecycleStage].tools}
-                    </p>
-
-                    <h5>QA Sign-Off Checklist</h5>
-                    <ul className="dossier-checklist">
-                      {lifecycleStages[activeLifecycleStage].checklist.map((item, cIdx) => (
-                        <li key={cIdx}>
-                          <FiCheck />
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
 
         {/* CTA BANNER */}
         <section className="projects-cta-section">

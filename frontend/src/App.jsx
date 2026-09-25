@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import ProjectsPage from './pages/ProjectsPage'
+import ProjectsPage, { projectsData } from './pages/ProjectsPage'
 import ProductsPage from './pages/ProductsPage'
 import MediaPage from './pages/MediaPage'
 import CareersPage from './pages/CareersPage'
@@ -8,11 +8,12 @@ import AdminPortal from './admin/AdminPortal'
 import { navigate, SiteFooter } from './components/Shared'
 import { homeContent, aboutContent, servicesAndSolutionsContent } from './content/siteContent'
 import { 
-  FiArrowUpRight, FiArrowDown, FiCheck, FiChevronRight,
+  FiArrowUpRight, FiArrowDown, FiCheck, FiChevronRight, FiChevronLeft,
   FiZap, FiSun, FiShield, FiTarget, FiTrendingUp, FiGlobe, 
   FiCompass, FiCpu, FiAward, FiCheckCircle, FiRefreshCw, 
   FiBriefcase, FiHome, FiTool, FiActivity, FiSliders, 
-  FiUsers, FiClock, FiLayers, FiFileText, FiMapPin, FiStar
+  FiUsers, FiClock, FiLayers, FiFileText, FiMapPin, FiStar,
+  FiPause, FiPlay
 } from 'react-icons/fi'
 
 const services = homeContent.whatWeDo.services
@@ -69,6 +70,190 @@ function getStrengthIcon(num) {
     case '08': return <FiCheckCircle />
     default: return <FiZap />
   }
+}
+
+function StrengthsOrbitWheel({ items }) {
+  const [activeIdx, setActiveIdx] = useState(0)
+  const timerRef = useRef(null)
+  const current = items[activeIdx]
+  const N = items.length
+  const SIZE = 640, CX = 320, CY = 320, RADIUS = 236
+
+  const startTimer = () => {
+    clearInterval(timerRef.current)
+    timerRef.current = setInterval(() => {
+      setActiveIdx(prev => (prev + 1) % N)
+    }, 3200)
+  }
+
+  useEffect(() => {
+    startTimer()
+    return () => clearInterval(timerRef.current)
+  }, [N])
+
+  const handleClick = (idx) => {
+    setActiveIdx(idx)
+    startTimer()
+  }
+
+  const nodes = items.map((item, i) => {
+    const angle = (2 * Math.PI * i / N) - Math.PI / 2
+    return {
+      x: CX + RADIUS * Math.cos(angle),
+      y: CY + RADIUS * Math.sin(angle),
+      item,
+      idx: i
+    }
+  })
+
+  const activeNode = nodes[activeIdx]
+  const arcLen = 2 * Math.PI * RADIUS
+  const segLen = arcLen / N
+  const dashOffset = -(arcLen * activeIdx / N) + 0.01
+
+  return (
+    <div className="orbit-wheel-wrapper">
+      <div className="orbit-wheel-left">
+        <div className="orbit-stage-container" style={{ width: SIZE, height: SIZE }}>
+          {/* SVG Background Orbits and Laser Beam */}
+          <svg viewBox={`0 0 ${SIZE} ${SIZE}`} className="orbit-svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="orbitBeamGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#1565c0" stopOpacity="0.8" />
+                <stop offset="50%" stopColor="#0284c7" stopOpacity="0.9" />
+                <stop offset="100%" stopColor="#38bdf8" stopOpacity="1" />
+              </linearGradient>
+              <linearGradient id="orbitArcGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#1565c0" />
+                <stop offset="50%" stopColor="#0284c7" />
+                <stop offset="100%" stopColor="#f59e0b" />
+              </linearGradient>
+              <filter id="orbitGlow" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="8" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+
+            {/* Outer ambient decorative orbits */}
+            <circle cx={CX} cy={CY} r={RADIUS + 44} fill="none" stroke="rgba(21, 101, 192, 0.08)" strokeWidth="1" strokeDasharray="6 6" />
+            <circle cx={CX} cy={CY} r={RADIUS} fill="none" stroke="rgba(21, 101, 192, 0.16)" strokeWidth="2.5" strokeDasharray="8 6" />
+            <circle cx={CX} cy={CY} r={RADIUS - 58} fill="none" stroke="rgba(21, 101, 192, 0.06)" strokeWidth="1" />
+
+            {/* Glowing active arc segment along the orbit */}
+            <circle
+              cx={CX}
+              cy={CY}
+              r={RADIUS}
+              fill="none"
+              stroke="url(#orbitArcGrad)"
+              strokeWidth="5"
+              strokeLinecap="round"
+              strokeDasharray={`${segLen * 0.85} ${arcLen - segLen * 0.85}`}
+              strokeDashoffset={dashOffset}
+              filter="url(#orbitGlow)"
+              style={{
+                transform: 'rotate(-90deg)',
+                transformOrigin: `${CX}px ${CY}px`,
+                transition: 'stroke-dashoffset 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)'
+              }}
+            />
+
+            {/* Connector beam lines */}
+            {nodes.map(({ x, y, idx }) => {
+              const isActive = idx === activeIdx
+              return (
+                <line
+                  key={idx}
+                  x1={CX}
+                  y1={CY}
+                  x2={x}
+                  y2={y}
+                  stroke={isActive ? 'url(#orbitBeamGrad)' : 'rgba(21, 101, 192, 0.09)'}
+                  strokeWidth={isActive ? 3 : 1}
+                  strokeDasharray={isActive ? 'none' : '3 3'}
+                  style={{ transition: 'all 0.5s ease' }}
+                />
+              )
+            })}
+          </svg>
+
+          {/* Center Hub */}
+          <div className="orbit-center-hub" style={{ left: `${CX}px`, top: `${CY}px` }}>
+            <div className="orbit-center-radar" />
+            <div className="orbit-center-content">
+              <span className="orbit-center-icon">
+                {getStrengthIcon(current.number)}
+              </span>
+              <span className="orbit-center-badge">Strength {current.number}</span>
+              <strong className="orbit-center-stat">{current.stat}</strong>
+            </div>
+          </div>
+
+          {/* 8 Outer Nodes with React Icons */}
+          <div className="orbit-nodes-layer">
+            {nodes.map(({ x, y, item, idx }) => {
+              const isActive = idx === activeIdx
+              return (
+                <div
+                  key={item.number}
+                  className={`orbit-node-wrapper ${isActive ? 'is-active' : ''}`}
+                  style={{
+                    left: `${x}px`,
+                    top: `${y}px`,
+                  }}
+                >
+                  <button
+                    type="button"
+                    className="orbit-node-btn"
+                    onClick={() => handleClick(idx)}
+                    aria-label={`${item.number} ${item.title}`}
+                    title={item.title}
+                  >
+                    <span className="orbit-node-num-pill">{item.number}</span>
+                    <span className="orbit-node-react-icon">
+                      {getStrengthIcon(item.number)}
+                    </span>
+                  </button>
+                  <span className="orbit-node-label">{item.stat}</span>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* Right Column: Information */}
+      <div className="orbit-wheel-right">
+        <p className="eyebrow"><span /> {homeContent.whyChooseUs.eyebrow}</p>
+        <h2 className="orbit-right-h2">
+          {homeContent.whyChooseUs.title}<br />
+          <em>{homeContent.whyChooseUs.subtitle}</em>
+        </h2>
+        <p className="orbit-right-note">{homeContent.whyChooseUs.note}</p>
+
+        {/* Executive Active Card */}
+        <div className="orbit-active-card" key={current.number}>
+          <div className="orbit-active-top">
+            <div className="orbit-active-icon-badge">
+              {getStrengthIcon(current.number)}
+            </div>
+            <div className="orbit-active-meta">
+              <span className="orbit-active-step-chip">Pillar {current.number} of {N}</span>
+              <span className="orbit-active-stat-chip">{current.stat}</span>
+            </div>
+          </div>
+          <h3 className="orbit-active-title">{current.title}</h3>
+          <p className="orbit-active-desc">{current.description}</p>
+          <div className="orbit-active-progress-bar">
+            <div className="orbit-active-progress-fill is-playing" />
+          </div>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 function getServiceIcon(num) {
@@ -129,134 +314,27 @@ function EmptyState({ label, text }) {
   return <div className="empty-state"><span className="empty-icon">+</span><strong>{label}</strong><p>{text}</p></div>
 }
 
-const verifiedCertifications = [
-  {
-    id: 'apepdcl',
-    title: 'APEPDCL — PM Surya Ghar: Muft Bijli Yojana',
-    authority: 'Eastern Power Distribution Company of AP Ltd.',
-    refNumber: 'Ref: CGM/EC, Comm/GM(Solar)/F-PM Surya Ghar/Vendor Empanelment',
-    description: 'Officially empanelled turnkey EPC vendor for grid-connected rooftop solar installations with direct consumer DBT subsidy disbursal and bi-directional net-metering synchronization.',
-    docImage: '/projects/apepdcl-pm-suryaghar-empanelment-order.png',
-    badge: 'DISCOM Empanelment Order',
-    status: 'Active Empanelled Vendor',
-    year: '2024 – Present'
-  },
-  {
-    id: 'nredcap',
-    title: 'NREDCAP — 1 kWp to 500 kWp Rooftop Grid-Tied',
-    authority: 'New & Renewable Energy Dev. Corp. of Andhra Pradesh',
-    refNumber: 'Ref: NREDCAP/SE-Solar/1-500KWp/2023-24/Rooftop-Empanelment',
-    description: 'Authorized system integrator and engineering vendor for residential, institutional, and commercial solar projects with verified technical benchmark compliance.',
-    docImage: '/projects/nredcap-solar-rooftop-empanelment-order.jpg',
-    badge: 'State Nodal Order',
-    status: 'Authorized EPC Installer',
-    year: '2023 – Present'
-  },
-  {
-    id: 'iso',
-    title: 'ISO 9001:2015 & ISO 14001:2015 Certified',
-    authority: 'International Organization for Standardization',
-    refNumber: 'Audit Scope: Solar Photovoltaic EPC, Grid Synchronization & O&M',
-    description: 'Certified civil-structural engineering, electrical design compliance, environmental safety, and asset lifecycle management adhering strictly to international standards.',
-    icon: <FiAward />,
-    badge: 'ISO Quality Accredited',
-    status: 'ISO 9001 / 14001',
-    year: 'Certified Standard'
-  },
-  {
-    id: 'ceig',
-    title: 'CEA & CEIG Statutory Electrical Approvals',
-    authority: 'Central Electricity Authority / State Electrical Inspectorate',
-    refNumber: 'Compliance: IEC 61215 / IEC 61730 & CEA Grid Interconnection Code',
-    description: 'End-to-end statutory CEIG drawing approvals, HT transformer charging, relay testing, fault protections, and synchronized grid commissioning up to 33 kV substations.',
-    icon: <FiShield />,
-    badge: 'Statutory Clearance',
-    status: 'CEIG Compliant',
-    year: 'Statutory Norms'
-  }
-]
 
 const verifiedTestimonials = [
   {
-    id: 'coastal-corp',
-    name: 'V. R. Sharma',
-    role: 'VP Operations & Infrastructure',
-    company: 'Coastal Corporation Ltd',
-    metric: '3.6 MWp Captive Solar · Sompeta',
-    quote: 'N Solutions executed our 3.6 MWp captive solar farm at Sompeta with impeccable civil-structural precision and on-schedule 33 kV grid synchronization. Our annual power tariff savings and plant PR exceeding 81% have transformed our seafood processing cost dynamics.',
-    rating: 5
+    id: 1, rating: 5,
+    quote: "N Solutions delivered our 50 kWp rooftop plant on time with exceptional build quality. The net-metering approval was handled end-to-end by their team — zero hassle for us.",
+    name: "Ramesh Babu", role: "Plant Head", company: "Sri Sai Industries, Vizag",
+    metric: "₹4.2L annual savings"
   },
   {
-    id: 'pokarna-stone',
-    name: 'K. R. V. Prasad',
-    role: 'Head of Engineering & Utilities',
-    company: 'Pokarna Engineered Stone Ltd',
-    metric: '2.0 MWp Industrial Rooftop · AP',
-    quote: 'Deploying 2 MWp on curved industrial tin shed roofs required zero plant downtime. N Solutions delivered custom standing seam clamp fixtures without a single roof puncture, passing our stringent structural and monsoon leak audits with flying colors.',
-    rating: 5
+    id: 2, rating: 5,
+    quote: "Professional EPC execution. Our 25 kWp system has been producing above PVSyst estimates for 18 months straight. The O&M support is prompt and reliable.",
+    name: "Priya Nair", role: "Facility Manager", company: "GreenLeaf Exports, Tirupati",
+    metric: "103% generation yield"
   },
   {
-    id: 'pm-surya-ghar',
-    name: 'P. Satyanarayana Murthy & Residents',
-    role: 'PM Surya Ghar Beneficiaries',
-    company: 'Vizianagaram Residential Cluster (500+ Homes)',
-    metric: '500+ Homes · ₹78k Subsidy Delivered',
-    quote: 'N Solutions handled everything—shadow analysis, elevated GI monkey-proof structure, APEPDCL net-metering sanction, and direct DBT subsidy credit of ₹78,000 into our bank within weeks. Our monthly electricity bill dropped from ₹3,400 to almost zero.',
-    rating: 5
+    id: 3, rating: 5,
+    quote: "We availed the PM Surya Ghar subsidy through N Solutions. The documentation and portal registration was seamless. Highly recommend for residential solar.",
+    name: "K. Venkata Rao", role: "Homeowner", company: "Kakinada",
+    metric: "Subsidy processed in 12 days"
   },
-  {
-    id: 'dr-reddys',
-    name: 'S. N. Rao',
-    role: 'Plant Engineering Lead',
-    company: "Dr. Reddy's Laboratories (Srikakulam)",
-    metric: '520 kWp Solar Carport & Roof',
-    quote: 'The safety standards, high-durability hot-dip galvanized carports, and clean inverter kiosk cable routing set N Solutions apart. They delivered seamless HT integration without interrupting our active pharmaceutical manufacturing and R&D operations.',
-    rating: 5
-  }
 ]
-
-function CertificationsShowcase({ theme = 'light' }) {
-  return (
-    <div className={`cert-showcase-section theme-${theme}`}>
-      <div className="cert-grid-modern">
-        {verifiedCertifications.map((cert) => {
-          return (
-            <Reveal className="cert-card-modern" key={cert.id}>
-              {cert.docImage ? (
-                <div className="cert-doc-preview-wrap">
-                  <img src={cert.docImage} alt={cert.title} loading="lazy" />
-                  <div className="cert-doc-overlay">
-                    <span className="cert-doc-badge">{cert.badge}</span>
-                  </div>
-                </div>
-              ) : (
-                <div className="cert-card-icon-header">
-                  <div className="cert-header-icon">{cert.icon}</div>
-                  <span className="cert-doc-badge">{cert.badge}</span>
-                </div>
-              )}
-              <div className="cert-card-body">
-                <span className="cert-auth-tag">{cert.authority}</span>
-                <h3 className="cert-card-title">{cert.title}</h3>
-                <p className="cert-card-desc">{cert.description}</p>
-                <div className="cert-ref-chip">
-                  <FiFileText style={{ marginRight: '6px', verticalAlign: 'middle' }} />
-                  {cert.refNumber}
-                </div>
-                <div className="cert-footer-row">
-                  <span className="cert-status-pill">
-                    <FiCheckCircle /> {cert.status}
-                  </span>
-                  <span>{cert.year}</span>
-                </div>
-              </div>
-            </Reveal>
-          )
-        })}
-      </div>
-    </div>
-  )
-}
 
 function TestimonialsShowcase({ theme = 'light' }) {
   return (
@@ -400,152 +478,293 @@ const pipelinePhases = [
   }
 ]
 
-function getPipelineIcon(num) {
-  switch (num) {
-    case '01': return <FiSliders />
-    case '02': return <FiCompass />
-    case '03': return <FiCpu />
-    case '04': return <FiLayers />
-    case '05': return <FiTool />
-    case '06': return <FiShield />
-    default: return <FiCheckCircle />
+function PhaseEngineeringIllustration({ phaseNumber }) {
+  switch (phaseNumber) {
+    case '01':
+      return (
+        <div className="phase-svg-graphic phase-svg-meter" aria-hidden="true">
+          <svg viewBox="0 0 240 120" className="phase-illustration-svg">
+            <rect x="10" y="10" width="220" height="100" rx="14" fill="#f8fafc" stroke="#cbd5e1" strokeWidth="1.5" />
+            <rect x="22" y="22" width="196" height="42" rx="8" fill="#0f172a" />
+            <text x="34" y="50" fill="#38bdf8" fontFamily="monospace" fontSize="20" fontWeight="800">42.8 kW</text>
+            <text x="145" y="48" fill="#f59e0b" fontFamily="sans-serif" fontSize="11" fontWeight="700">● PEAK LOAD</text>
+            {/* Waveform / Load profile */}
+            <path d="M 24 95 Q 50 70 80 85 T 140 75 T 190 90 T 216 80" fill="none" stroke="#1565c0" strokeWidth="2.5" strokeLinecap="round" />
+            <circle cx="140" cy="75" r="4" fill="#0284c7" />
+            <text x="24" y="108" fill="#64748b" fontSize="8.5" fontFamily="sans-serif">415V 3-PHASE · DISCOM TARIFF SYNC</text>
+          </svg>
+        </div>
+      )
+    case '02':
+      return (
+        <div className="phase-svg-graphic phase-svg-survey" aria-hidden="true">
+          <svg viewBox="0 0 240 120" className="phase-illustration-svg">
+            <rect x="10" y="10" width="220" height="100" rx="14" fill="#f8fafc" stroke="#cbd5e1" strokeWidth="1.5" />
+            {/* Sun angle & roof survey plane */}
+            <circle cx="48" cy="38" r="14" fill="#fef3c7" stroke="#f59e0b" strokeWidth="2" />
+            <line x1="48" y1="18" x2="48" y2="12" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
+            <line x1="48" y1="58" x2="48" y2="64" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
+            <line x1="28" y1="38" x2="22" y2="38" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
+            <line x1="68" y1="38" x2="74" y2="38" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
+            {/* Roof plane polygon */}
+            <polygon points="90,88 150,52 215,62 155,98" fill="#e0f2fe" stroke="#0284c7" strokeWidth="1.8" />
+            {/* LiDAR grid lines */}
+            <line x1="110" y1="76" x2="175" y2="86" stroke="#38bdf8" strokeWidth="1" strokeDasharray="3 3" />
+            <line x1="130" y1="64" x2="195" y2="74" stroke="#38bdf8" strokeWidth="1" strokeDasharray="3 3" />
+            {/* Ray trace */}
+            <line x1="60" y1="46" x2="120" y2="70" stroke="#f59e0b" strokeWidth="1.5" strokeDasharray="2 2" />
+            <text x="92" y="32" fill="#0f172a" fontSize="10" fontWeight="700">AZIMUTH 180° · 28.4° TILT</text>
+            <text x="24" y="108" fill="#64748b" fontSize="8.5" fontFamily="sans-serif">3D SHADOW LOSS MARGIN &lt; 1.5%</text>
+          </svg>
+        </div>
+      )
+    case '03':
+      return (
+        <div className="phase-svg-graphic phase-svg-design" aria-hidden="true">
+          <svg viewBox="0 0 240 120" className="phase-illustration-svg">
+            <rect x="10" y="10" width="220" height="100" rx="14" fill="#f8fafc" stroke="#cbd5e1" strokeWidth="1.5" />
+            {/* Solar module array matrix */}
+            <rect x="25" y="26" width="34" height="48" rx="3" fill="#1565c0" stroke="#93c5fd" strokeWidth="1" />
+            <rect x="65" y="26" width="34" height="48" rx="3" fill="#1565c0" stroke="#93c5fd" strokeWidth="1" />
+            <rect x="105" y="26" width="34" height="48" rx="3" fill="#1565c0" stroke="#93c5fd" strokeWidth="1" />
+            <rect x="145" y="26" width="34" height="48" rx="3" fill="#1565c0" stroke="#93c5fd" strokeWidth="1" />
+            {/* String wiring to inverter */}
+            <path d="M 42 74 L 42 86 L 162 86 L 162 74" fill="none" stroke="#f59e0b" strokeWidth="2" />
+            <line x1="102" y1="86" x2="102" y2="98" stroke="#f59e0b" strokeWidth="2" />
+            <rect x="188" y="34" width="32" height="40" rx="4" fill="#0f172a" stroke="#38bdf8" strokeWidth="1" />
+            <text x="194" y="58" fill="#38bdf8" fontSize="9" fontWeight="800">INV</text>
+            <text x="24" y="108" fill="#64748b" fontSize="8.5" fontFamily="sans-serif">PVSYST SIMULATION · PR TARGET 82%+</text>
+          </svg>
+        </div>
+      )
+    case '04':
+      return (
+        <div className="phase-svg-graphic phase-svg-procurement" aria-hidden="true">
+          <svg viewBox="0 0 240 120" className="phase-illustration-svg">
+            <rect x="10" y="10" width="220" height="100" rx="14" fill="#f8fafc" stroke="#cbd5e1" strokeWidth="1.5" />
+            <circle cx="56" cy="54" r="28" fill="#e0f2fe" stroke="#1565c0" strokeWidth="2" strokeDasharray="5 3" />
+            <text x="42" y="58" fill="#1565c0" fontSize="12" fontWeight="800">ALMM</text>
+            <rect x="102" y="28" width="114" height="24" rx="6" fill="#0f172a" />
+            <text x="112" y="44" fill="#4ade80" fontSize="10" fontWeight="700">✓ TIER-1 PASS FAT</text>
+            <rect x="102" y="58" width="114" height="24" rx="6" fill="#f1f5f9" stroke="#cbd5e1" strokeWidth="1" />
+            <text x="112" y="74" fill="#0369a1" fontSize="9.5" fontWeight="700">80μ+ HDG STRUCTURE</text>
+            <text x="24" y="108" fill="#64748b" fontSize="8.5" fontFamily="sans-serif">APPROVED MODULES & IP68 ENCLOSURES</text>
+          </svg>
+        </div>
+      )
+    case '05':
+      return (
+        <div className="phase-svg-graphic phase-svg-install" aria-hidden="true">
+          <svg viewBox="0 0 240 120" className="phase-illustration-svg">
+            <rect x="10" y="10" width="220" height="100" rx="14" fill="#f8fafc" stroke="#cbd5e1" strokeWidth="1.5" />
+            {/* Grounding and structure sync */}
+            <line x1="30" y1="78" x2="130" y2="78" stroke="#334155" strokeWidth="3" />
+            <polygon points="40,78 60,38 120,38 100,78" fill="#0284c7" stroke="#38bdf8" strokeWidth="1.5" />
+            {/* Earth spike */}
+            <line x1="80" y1="78" x2="80" y2="98" stroke="#10b981" strokeWidth="2" />
+            <line x1="72" y1="90" x2="88" y2="90" stroke="#10b981" strokeWidth="2" />
+            <line x1="75" y1="94" x2="85" y2="94" stroke="#10b981" strokeWidth="1.5" />
+            <circle cx="178" cy="54" r="24" fill="#0f172a" stroke="#22c55e" strokeWidth="2" />
+            <text x="162" y="52" fill="#22c55e" fontSize="9" fontWeight="800">NET-MTR</text>
+            <text x="164" y="66" fill="#ffffff" fontSize="11" fontWeight="700">SYNC</text>
+            <text x="24" y="108" fill="#64748b" fontSize="8.5" fontFamily="sans-serif">SUB-1.0 Ω CHEMICAL EARTHING VERIFIED</text>
+          </svg>
+        </div>
+      )
+    case '06':
+    default:
+      return (
+        <div className="phase-svg-graphic phase-svg-om" aria-hidden="true">
+          <svg viewBox="0 0 240 120" className="phase-illustration-svg">
+            <rect x="10" y="10" width="220" height="100" rx="14" fill="#f8fafc" stroke="#cbd5e1" strokeWidth="1.5" />
+            <rect x="24" y="24" width="94" height="48" rx="8" fill="#0f172a" />
+            <text x="34" y="44" fill="#94a3b8" fontSize="8.5" fontWeight="700">GENERATION</text>
+            <text x="34" y="63" fill="#38bdf8" fontSize="14" fontWeight="800">128.4 MWh</text>
+            <rect x="126" y="24" width="90" height="48" rx="8" fill="#ecfdf5" stroke="#a7f3d0" strokeWidth="1" />
+            <text x="136" y="44" fill="#047857" fontSize="8.5" fontWeight="700">PR YIELD</text>
+            <text x="136" y="63" fill="#059669" fontSize="14" fontWeight="800">↗ +18.4%</text>
+            <text x="24" y="96" fill="#0f172a" fontSize="10" fontWeight="700">99.2% UPTIME SLA GUARANTEE</text>
+            <text x="24" y="108" fill="#64748b" fontSize="8.5" fontFamily="sans-serif">24/7 IOT SCADA TELEMETRY MONITORING</text>
+          </svg>
+        </div>
+      )
   }
 }
 
-function ProcessPipelineCockpit({ theme = 'dark', eyebrow, title, subtitle, intro, flow, ctaText = 'Start your project' }) {
+function ProcessPipelineCockpit({ eyebrow, title, subtitle, intro, ctaText = 'Start your project' }) {
   const [activeStep, setActiveStep] = useState(0)
   const current = pipelinePhases[activeStep]
+  const total = pipelinePhases.length
 
   return (
-    <section className={`pipeline-cockpit-section theme-${theme}`} id="how-we-work">
-      <div className="wrap">
-        <Reveal className="pipeline-header-block">
-          <p className="eyebrow"><span /> {eyebrow || '03 — How we work'}</p>
-          <h2>{title || 'From planning'}<br /><em>{subtitle || 'to performance.'}</em></h2>
-          <p className="pipeline-intro-p">
-            {intro || 'We follow a clear, structured, and project-focused engineering process to deliver solar solutions efficiently. From understanding your energy requirements to commissioning and ongoing support, every stage is carefully planned and executed.'}
+    <section className="workflow-section workflow-light-blueprint" id="how-we-work">
+      {/* Background picture only (grid completely removed) */}
+      <div className="workflow-photo-bg" aria-hidden="true" />
+
+      <div className="orbit-full-wrap">
+        <Reveal className="workflow-header">
+          <p className="eyebrow"><span /> {eyebrow || '03 — HOW WE WORK'}</p>
+          <h2 className="workflow-main-h2">
+            {title ? title.toUpperCase() : 'FROM PLANNING'}<br />
+            <em>{subtitle ? subtitle.toUpperCase() : 'TO PERFORMANCE.'}</em>
+          </h2>
+          <p className="workflow-intro-p">
+            {intro || 'A six-stage engineering process designed to take your solar project from feasibility to long-term performance.'}
           </p>
-          {flow && <p className="process-flow" style={{ margin: '0 0 20px 0' }}>{flow}</p>}
         </Reveal>
 
-        {/* Interactive Stepper Rail */}
-        <div className="pipeline-stepper-rail-wrap">
-          <div className="pipeline-stepper-rail" role="tablist" aria-label="Project execution milestones">
-            {pipelinePhases.map((phase, idx) => (
-              <button
-                key={phase.number}
-                type="button"
-                role="tab"
-                aria-selected={activeStep === idx}
-                className={`pipeline-rail-btn ${activeStep === idx ? 'is-active' : ''}`}
-                onClick={() => setActiveStep(idx)}
-              >
-                <div className="rail-btn-icon-wrap" aria-hidden="true">
-                  {getPipelineIcon(phase.number)}
-                </div>
-                <div className="rail-btn-text-wrap">
-                  <span className="rail-btn-num">Phase {phase.number}</span>
-                  <span className="rail-btn-label">{phase.shortLabel}</span>
-                </div>
-              </button>
-            ))}
+        {/* 1. Continuous Electrical Energy Trace Path */}
+        <div className="energy-trace-nav-container">
+          <div className="energy-trace-track">
+            <div
+              className="energy-trace-fill"
+              style={{ width: `${(activeStep / (total - 1)) * 100}%` }}
+            />
+            <div
+              className="energy-trace-pulse-head"
+              style={{ left: `${(activeStep / (total - 1)) * 100}%` }}
+            />
+          </div>
+
+          <div className="energy-trace-nodes">
+            {pipelinePhases.map((phase, idx) => {
+              const isPassed = idx <= activeStep
+              const isActive = idx === activeStep
+              return (
+                <button
+                  key={phase.number}
+                  type="button"
+                  className={`energy-trace-node ${isActive ? 'is-active' : ''} ${isPassed ? 'is-passed' : ''}`}
+                  onClick={() => setActiveStep(idx)}
+                  aria-label={`Phase ${phase.number}: ${phase.shortLabel}`}
+                >
+                  <span className="trace-node-circle">
+                    <span className="trace-node-dot" />
+                  </span>
+                  <span className="trace-node-number">{phase.number}</span>
+                  <span className="trace-node-label">{phase.shortLabel.toUpperCase()}</span>
+                  {isActive && <span className="trace-node-active-pill">ACTIVE</span>}
+                </button>
+              )
+            })}
           </div>
         </div>
 
-        {/* Dynamic HUD Stage Canvas */}
-        <Reveal className="pipeline-console-stage">
-          <span className="pipeline-watermark-number" aria-hidden="true">{current.number}</span>
+        {/* 2 & 3. Asymmetric Canvas with Giant Watermark Number */}
+        <Reveal className="energy-phase-canvas">
+          {/* Giant Phase Number Watermark behind content */}
+          <div className="giant-phase-watermark" aria-hidden="true">
+            {current.number}
+          </div>
 
-          <div className="pipeline-content-col">
-            <div className="pipeline-meta-row">
-              <span className="pipeline-phase-badge">
-                <span className="pipeline-pulse-dot" aria-hidden="true" />
-                {current.tag}
-              </span>
-              <span className="pipeline-step-tracker">MILESTONE {current.number} / 06</span>
+          {/* Left Column: Asymmetric Narrative & SVG Illustration */}
+          <div className="energy-phase-main-col">
+            <div className="energy-phase-eyebrow-row">
+              <span className="energy-phase-fraction">{current.number} / 06</span>
+              <span className="energy-phase-tag">{current.tag}</span>
             </div>
 
-            <h3 className="pipeline-phase-title">{current.title}</h3>
-            <p className="pipeline-phase-desc">{current.text}</p>
+            <h3 className="energy-phase-title">{current.title}</h3>
+            <p className="energy-phase-text">{current.text}</p>
 
-            <div className="pipeline-deliverables-box">
-              <span className="pipeline-box-heading">Key Engineering Deliverables</span>
-              <div className="pipeline-deliverables-grid">
+            {/* 4. Small Animated Solar Engineering Illustration */}
+            <div className="energy-phase-illustration-wrap">
+              <PhaseEngineeringIllustration phaseNumber={current.number} />
+            </div>
+
+            {/* Key Deliverables */}
+            <div className="energy-deliverables-box">
+              <h4 className="deliverables-title">Key Engineering Deliverables</h4>
+              <div className="deliverables-grid">
                 {current.deliverables.map((deliv) => (
-                  <div className="pipeline-deliv-item" key={deliv}>
-                    <FiCheckCircle aria-hidden="true" />
+                  <div key={deliv} className="deliverable-chip">
+                    <FiCheckCircle className="chip-check-icon" aria-hidden="true" />
                     <span>{deliv}</span>
                   </div>
                 ))}
               </div>
             </div>
-
-            <div className="pipeline-controls-row">
-              <button
-                type="button"
-                className="pipeline-nav-btn"
-                disabled={activeStep === 0}
-                onClick={() => setActiveStep((prev) => Math.max(0, prev - 1))}
-              >
-                ← Prev
-              </button>
-
-              <div className="pipeline-dots-indicator" aria-hidden="true">
-                {pipelinePhases.map((_, i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    className={`pipeline-dot ${activeStep === i ? 'is-active' : ''}`}
-                    onClick={() => setActiveStep(i)}
-                    aria-label={`Go to step ${i + 1}`}
-                  />
-                ))}
-              </div>
-
-              <button
-                type="button"
-                className="pipeline-nav-btn"
-                disabled={activeStep === pipelinePhases.length - 1}
-                onClick={() => setActiveStep((prev) => Math.min(pipelinePhases.length - 1, prev + 1))}
-              >
-                Next →
-              </button>
-
-              <a
-                href="/contact"
-                onClick={(e) => { e.preventDefault(); navigate('/contact') }}
-                className="pipeline-stage-cta"
-              >
-                {ctaText} <Arrow />
-              </a>
-            </div>
           </div>
 
-          <div className="pipeline-telemetry-col">
-            <div className="telemetry-cockpit-panel">
-              <div className="telemetry-panel-top">
-                <span>Field Telemetry & Standards</span>
-                <span className="telemetry-live-pill">Active Phase SLA</span>
+          {/* Right Column: 5. Live Project Parameters Engineering Readout */}
+          <div className="energy-phase-readout-col">
+            <div className="live-readout-card">
+              <div className="live-readout-header">
+                <div>
+                  <span className="live-readout-pretitle">LIVE PROJECT PARAMETERS</span>
+                  <h4 className="live-readout-title">Phase {current.number} Verification</h4>
+                </div>
+                <span className="live-readout-status-chip">
+                  <span className="live-status-dot" /> LIVE AUDIT
+                </span>
               </div>
 
-              <div className="telemetry-metrics-stack">
-                {current.metrics.map((m) => (
-                  <div className="telemetry-stat-card" key={m.label}>
-                    <div className="telemetry-label-col">
-                      <small>{m.label}</small>
+              <div className="live-metrics-list">
+                {current.metrics.map((m, mIdx) => (
+                  <div key={m.label} className="live-metric-row">
+                    <div className="metric-row-top">
+                      <span className="metric-label">{m.label.toUpperCase()}</span>
+                      <strong className="metric-value">{m.value}</strong>
                     </div>
-                    <strong className="telemetry-val-pill">{m.value}</strong>
+                    <div className="metric-progress-line">
+                      <div
+                        className="metric-progress-bar"
+                        style={{ width: mIdx === 0 ? '100%' : mIdx === 1 ? '94%' : '88%' }}
+                      />
+                    </div>
                   </div>
                 ))}
               </div>
 
-              <div className="telemetry-panel-bottom">
-                <FiCheckCircle aria-hidden="true" />
-                <span>Certified Execution · IEC 62446 & CEA Compliant</span>
+              <div className="live-readout-compliance">
+                <FiCheckCircle className="compliance-icon" aria-hidden="true" />
+                <div>
+                  <strong>IEC 62446 · CEA COMPLIANT</strong>
+                  <small>National DISCOM Synchronization Standard</small>
+                </div>
               </div>
             </div>
           </div>
         </Reveal>
+
+        {/* 8. Integrated Journey Navigation & Next Step CTA */}
+        <div className="energy-journey-cta-bar">
+          <div className="energy-nav-controls">
+            <button
+              type="button"
+              className="energy-step-nav-btn"
+              disabled={activeStep === 0}
+              onClick={() => setActiveStep((prev) => Math.max(0, prev - 1))}
+            >
+              ← Previous Stage
+            </button>
+            <span className="energy-step-counter">
+              Stage {current.number} of 06
+            </span>
+            <button
+              type="button"
+              className="energy-step-nav-btn"
+              disabled={activeStep === total - 1}
+              onClick={() => setActiveStep((prev) => Math.min(total - 1, prev + 1))}
+            >
+              Next Stage →
+            </button>
+          </div>
+
+          <div className="energy-cta-callout">
+            <div className="cta-callout-text">
+              <strong>READY TO BEGIN?</strong>
+              <p>Let's turn your energy requirements into a measurable solar system.</p>
+            </div>
+            <a
+              href="/contact"
+              onClick={(e) => { e.preventDefault(); navigate('/contact') }}
+              className="button button-accent energy-cta-btn"
+            >
+              {ctaText} <Arrow />
+            </a>
+          </div>
+        </div>
       </div>
     </section>
   )
@@ -670,7 +889,7 @@ function SiteHeader({ activePath = '' }) {
   }
   const items = ['Home', 'About', 'Services', 'Projects', 'Products', 'Media', 'Careers', 'Contact']
   return <header className={`site-header ${scrolled ? 'is-scrolled' : ''} ${activePath ? 'site-header-page' : ''}`}>
-    <a className="brand" href="/" onClick={(e) => handleNav(e, '/')} aria-label="N Solutions home"><span className="brand-logo">N Solutions</span></a>
+    <a className="brand" href="/" onClick={(e) => handleNav(e, '/')} aria-label="N Solutions home"><img className="brand-logo" src="/logo.png" alt="N Solutions" /></a>
     <button className="menu-toggle" aria-label="Toggle navigation" aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}><span /><span /></button>
     <nav className={menuOpen ? 'nav-links is-open' : 'nav-links'}>
       {items.map((item) => { 
@@ -689,8 +908,20 @@ function AboutPage() {
   const { companyOverview, chairmanMessage, visionAndMission, journey, whatWeDo, howWeWork } = aboutContent
 
   return <div className="about-page"><SiteHeader activePath="/about" /><main>
+
     <section className="about-hero">
-      <div className="about-hero-image" />
+      {/* Solar energy background video — download from pixabay.com/videos/solar-panels-solar-power-plant-177600/ and place in public/media/solar-hero.mp4 */}
+      <video
+        className="about-hero-video"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
+        aria-hidden="true"
+      >
+        <source src="/media/solar-hero.mp4" type="video/mp4" />
+      </video>
       <div className="about-hero-shade" />
       <div className="wrap about-hero-content">
         <p className="eyebrow light"><span /> {companyOverview.eyebrow}</p>
@@ -698,6 +929,8 @@ function AboutPage() {
         <p>{companyOverview.lead}</p>
       </div>
     </section>
+
+
 
     <section className="about-overview" aria-labelledby="company-overview-title">
       <div className="wrap">
@@ -819,7 +1052,7 @@ function AboutPage() {
       <div className="wrap">
         <Reveal className="section-heading">
           <div>
-            <p className="eyebrow light"><span /> {visionAndMission.eyebrow}</p>
+            <p className="eyebrow"><span /> {visionAndMission.eyebrow}</p>
             <h2>{visionAndMission.title}<br /><em>{visionAndMission.subtitle}</em></h2>
           </div>
           <p className="heading-note">{visionAndMission.intro}</p>
@@ -886,7 +1119,7 @@ function AboutPage() {
                       {getMissionIcon(num)}
                     </div>
                     <div className="vector-content">
-                      <span className="vector-meta-tag" style={{ color: '#00d2ff' }}>Execution Directive · {num}</span>
+                      <span className="vector-meta-tag">Execution Directive · {num}</span>
                       <h4>{t}</h4>
                       <p>{d}</p>
                     </div>
@@ -985,27 +1218,16 @@ function AboutPage() {
       ctaText="Discuss Project Execution"
     />
 
-    {/* Credentials & Verified Testimonials */}
+    {/* Verified Testimonials */}
     <section className="about-credentials wrap">
       <Reveal className="section-heading">
         <div>
-          <p className="eyebrow"><span /> 07 — Credentials & recognitions</p>
-          <h2>Recognition, when<br /><em>verified.</em></h2>
+          <p className="eyebrow"><span /> 07 — Client Trust & Performance</p>
+          <h2>Proven delivery,<br /><em>direct feedback.</em></h2>
         </div>
-        <p className="heading-note">Relevant government registrations, nodal empanelments, and statutory standards for solar EPC projects.</p>
+        <p className="heading-note">Authentic testimonials from industrial leaders, institutions, and residential clusters.</p>
       </Reveal>
-      <CertificationsShowcase theme="light" />
-
-      <div style={{ marginTop: '64px' }}>
-        <Reveal className="section-heading">
-          <div>
-            <p className="eyebrow"><span /> Client Trust & Performance</p>
-            <h2>Proven delivery,<br /><em>direct feedback.</em></h2>
-          </div>
-          <p className="heading-note">Authentic testimonials from industrial leaders, institutions, and residential clusters.</p>
-        </Reveal>
-        <TestimonialsShowcase theme="light" />
-      </div>
+      <TestimonialsShowcase theme="light" />
     </section>
 
     {/* CTA */}
@@ -1291,12 +1513,10 @@ function App() {
 
       {/* How We Work - Interactive Process Pipeline Cockpit */}
       <ProcessPipelineCockpit
-        theme="dark"
-        eyebrow={homeContent.howWeWork.eyebrow}
-        title={homeContent.howWeWork.title}
-        subtitle={homeContent.howWeWork.subtitle}
-        intro={homeContent.howWeWork.description}
-        flow={homeContent.howWeWork.flow}
+        eyebrow="03 — HOW WE WORK"
+        title="From planning"
+        subtitle="to performance."
+        intro="A six-stage engineering process designed to take your solar project from feasibility to long-term performance."
         ctaText="Start your project"
       />
 
@@ -1321,46 +1541,73 @@ function App() {
         </Reveal>
       </section>
 
-      <section className="why">
-        <div className="wrap">
-          <Reveal className="section-heading">
-            <div>
-              <p className="eyebrow light"><span /> {homeContent.whyChooseUs.eyebrow}</p>
-              <h2>{homeContent.whyChooseUs.title}<br /><em>{homeContent.whyChooseUs.subtitle}</em></h2>
-            </div>
-            <p className="heading-note">{homeContent.whyChooseUs.note}</p>
-          </Reveal>
-          <div className="bento-strength-grid">
-            {strengths.map((item, idx) => {
-              const num = item.number || item[0]
-              const title = item.title || item[1]
-              const desc = item.description || item[2]
-              const stat = item.stat || (idx === 0 ? '16+ Yrs' : idx === 1 ? '9 States' : idx === 2 ? '360° EPC' : 'Solar')
-              const icon = getStrengthIcon(num)
-              return (
-                <Reveal className="bento-strength-card" key={num}>
-                  <div className="bento-card-top">
-                    <div className="bento-stat-chip">
-                      <span className="bento-stat-icon">{icon}</span>
-                      <strong className="bento-stat-val">{stat}</strong>
-                    </div>
-                    <span className="bento-num-tag">{num}</span>
-                  </div>
-                  <div className="bento-card-body">
-                    <h3>{title}</h3>
-                    <p>{desc}</p>
-                  </div>
-                  <div className="bento-card-footer">
-                    <span className="bento-arrow-btn" aria-hidden="true"><FiArrowUpRight /></span>
-                  </div>
-                </Reveal>
-              )
-            })}
-          </div>
+      <section className="why why-orbit">
+        <div className="orbit-full-wrap">
+          <StrengthsOrbitWheel items={strengths} />
         </div>
       </section>
 
-      <section className="projects wrap" id="projects"><Reveal className="section-heading"><div><p className="eyebrow"><span /> Our work</p><h2>Powering progress<br /><em>across India.</em></h2></div><a className="text-link" href="/projects" onClick={(e) => { e.preventDefault(); navigate('/projects') }}>View all projects <Arrow /></a></Reveal><div className="project-ready"><div><span className="project-ready-number">500+</span><strong>PM Surya Ghar sites completed in Vizianagaram</strong><p>Turnkey execution across Andhra Pradesh and Telangana, featuring high-efficiency Tier-1 mono PERC/TOPCon modules, elevated GI mounting, and bi-directional net-metering approvals.</p></div><a className="button button-accent" href="/projects" onClick={(e) => { e.preventDefault(); navigate('/projects') }}>View all projects <Arrow /></a></div></section>
+      <section className="projects wrap" id="projects">
+        <Reveal className="section-heading">
+          <div>
+            <p className="eyebrow"><span /> Flagship EPC Portfolio</p>
+            <h2>Powering progress<br /><em>across India.</em></h2>
+          </div>
+          <a className="text-link" href="/projects" onClick={(e) => { e.preventDefault(); navigate('/projects') }}>
+            View all projects <Arrow />
+          </a>
+        </Reveal>
+
+        <div className="home-projects-showcase">
+          <div className="home-projects-grid">
+            {projectsData.slice(0, 3).map((proj) => (
+              <Reveal key={proj.id} className="home-project-card" onClick={() => navigate('/projects')}>
+                <div className="home-project-media">
+                  <img src={proj.image} alt={proj.title} loading="lazy" />
+                  <span className="home-project-capacity-pill">{proj.capacity}</span>
+                  <span className="home-project-category-pill">{proj.categoryLabel}</span>
+                </div>
+                <div className="home-project-body">
+                  <div className="home-project-location">
+                    <FiMapPin aria-hidden="true" />
+                    <span>{proj.location.split(',')[0]} · {proj.location.split(',').slice(-1)[0].trim()}</span>
+                  </div>
+                  <h3 className="home-project-title">{proj.client}</h3>
+                  <p className="home-project-desc">{proj.headline}</p>
+                  <div className="home-project-footer">
+                    <span>Explore Project Case Study</span>
+                    <FiChevronRight aria-hidden="true" />
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+
+          <Reveal className="home-residential-highlight">
+            <div className="highlight-stat-box">
+              <span className="highlight-stat-num">500+</span>
+              <span className="highlight-stat-label">Rooftop Sites</span>
+            </div>
+            <div className="highlight-content-box">
+              <div className="highlight-badge-row">
+                <span className="highlight-pill-mission">PM Surya Ghar: Muft Bijli Yojana</span>
+              </div>
+              <h3>High-Density Residential Cluster Installations</h3>
+              <p>Turnkey execution across Andhra Pradesh & Telangana featuring high-efficiency Tier-1 mono PERC/TOPCon modules, elevated monkey-proof GI structures, and bi-directional net-metering approvals.</p>
+              <div className="highlight-metrics-row">
+                <span className="highlight-chip">₹78,000 Direct Subsidy DBT</span>
+                <span className="highlight-chip">Sub-1.0 Ω Chemical Earthing</span>
+                <span className="highlight-chip">APEPDCL Net-Meter Synchronized</span>
+              </div>
+            </div>
+            <div className="highlight-action-box">
+              <a className="button button-accent" href="/projects" onClick={(e) => { e.preventDefault(); navigate('/projects') }}>
+                View All Projects <Arrow />
+              </a>
+            </div>
+          </Reveal>
+        </div>
+      </section>
 
       <section className="trust wrap">
         <Reveal className="section-heading">
@@ -1373,16 +1620,7 @@ function App() {
         
         <TestimonialsShowcase theme="light" />
 
-        <div style={{ marginTop: '64px' }}>
-          <Reveal className="section-heading">
-            <div>
-              <p className="eyebrow"><span /> Government approvals & empanelments</p>
-              <h2>Certified engineering<br /><em>standards.</em></h2>
-            </div>
-            <p className="heading-note">Official DISCOM and state nodal agency vendor orders validating our engineering credentials.</p>
-          </Reveal>
-          <CertificationsShowcase theme="light" />
-        </div>
+
       </section>
 
       <section className="contact-band" id="contact"><div className="wrap contact-inner"><p className="eyebrow light"><span /> One partner. Complete solar solutions.</p><h2>Assess. Design.<br /><em>Supply. Install.</em></h2><p>Talk to N Solutions about your project, from first requirement through operate and maintain.</p><a className="button button-accent" href="/contact" onClick={(e) => { e.preventDefault(); navigate('/contact') }}>Talk to N Solutions <Arrow /></a></div></section>

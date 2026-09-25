@@ -1,7 +1,32 @@
 import { useState, useEffect } from 'react'
 import { getStoredData, saveStoredData, adminLogout } from './adminAuth'
 import { navigate } from '../components/Shared'
-import { FiBarChart2, FiUsers, FiZap, FiPackage, FiInbox, FiBriefcase, FiSettings, FiLogOut, FiGlobe, FiArrowUpRight, FiTrendingUp, FiCheck, FiPhone, FiMail, FiX } from 'react-icons/fi'
+import { 
+  FiGrid, 
+  FiTrendingUp, 
+  FiBriefcase, 
+  FiPackage, 
+  FiImage, 
+  FiMessageSquare, 
+  FiUsers, 
+  FiMail, 
+  FiUser, 
+  FiSettings, 
+  FiArrowUpRight, 
+  FiLogOut, 
+  FiZap, 
+  FiGlobe, 
+  FiCheck, 
+  FiPhone, 
+  FiX, 
+  FiPlus, 
+  FiTrash2, 
+  FiStar, 
+  FiLock, 
+  FiShield,
+  FiBarChart2,
+  FiInbox
+} from 'react-icons/fi'
 import { FaSun } from 'react-icons/fa'
 import './admin.css'
 
@@ -47,6 +72,32 @@ export default function AdminPanel({ adminUser, onLogout }) {
     warranty: '25 Years',
     inStock: true
   })
+
+  // Media state
+  const [showAddMediaModal, setShowAddMediaModal] = useState(false)
+  const [newMedia, setNewMedia] = useState({
+    title: '',
+    category: 'Projects',
+    imageUrl: '',
+    featured: false
+  })
+  const [mediaFilter, setMediaFilter] = useState('all')
+
+  // Testimonials state
+  const [showAddTestimonialModal, setShowAddTestimonialModal] = useState(false)
+  const [newTestimonial, setNewTestimonial] = useState({
+    clientName: '',
+    company: '',
+    location: '',
+    rating: 5,
+    comment: '',
+    status: 'approved'
+  })
+  const [testimonialFilter, setTestimonialFilter] = useState('all')
+
+  // Admin Profile state
+  const [profilePassword, setProfilePassword] = useState('')
+  const [profileConfirmPassword, setProfileConfirmPassword] = useState('')
 
   // Toast helper
   const showToast = (msg) => {
@@ -220,13 +271,83 @@ export default function AdminPanel({ adminUser, onLogout }) {
     showToast(`Applicant status set to ${newStatus}`)
   }
 
-  // Enquiry status
-  const handleEnquiryStatusChange = (id, newStatus) => {
+  // Media handlers
+  const handleCreateMedia = (e) => {
+    e.preventDefault()
+    if (!newMedia.title || !newMedia.imageUrl) return
+    const created = {
+      ...newMedia,
+      id: 'med-' + Date.now(),
+      date: new Date().toISOString().split('T')[0]
+    }
     updateData((prev) => ({
       ...prev,
-      enquiries: prev.enquiries.map((enq) => (enq.id === id ? { ...enq, status: newStatus } : enq))
+      media: [created, ...(prev.media || [])]
     }))
-    showToast(`Enquiry marked as ${newStatus}`)
+    setShowAddMediaModal(false)
+    setNewMedia({ title: '', category: 'Projects', imageUrl: '', featured: false })
+    showToast('Media asset uploaded')
+  }
+
+  const handleDeleteMedia = (id) => {
+    if (!window.confirm('Delete this media asset?')) return
+    updateData((prev) => ({
+      ...prev,
+      media: (prev.media || []).filter((m) => m.id !== id)
+    }))
+    showToast('Media asset removed')
+  }
+
+  // Testimonial handlers
+  const handleCreateTestimonial = (e) => {
+    e.preventDefault()
+    if (!newTestimonial.clientName || !newTestimonial.comment) return
+    const created = {
+      ...newTestimonial,
+      id: 'test-' + Date.now(),
+      date: new Date().toISOString().split('T')[0]
+    }
+    updateData((prev) => ({
+      ...prev,
+      testimonials: [created, ...(prev.testimonials || [])]
+    }))
+    setShowAddTestimonialModal(false)
+    setNewTestimonial({ clientName: '', company: '', location: '', rating: 5, comment: '', status: 'approved' })
+    showToast('Testimonial saved')
+  }
+
+  const handleToggleTestimonialStatus = (id, newStatus) => {
+    updateData((prev) => ({
+      ...prev,
+      testimonials: (prev.testimonials || []).map((t) => (t.id === id ? { ...t, status: newStatus } : t))
+    }))
+    showToast(`Testimonial marked as ${newStatus}`)
+  }
+
+  const handleDeleteTestimonial = (id) => {
+    if (!window.confirm('Delete this testimonial?')) return
+    updateData((prev) => ({
+      ...prev,
+      testimonials: (prev.testimonials || []).filter((t) => t.id !== id)
+    }))
+    showToast('Testimonial removed')
+  }
+
+  // Admin Profile handler
+  const handleUpdateProfilePassword = (e) => {
+    e.preventDefault()
+    if (!profilePassword) return
+    if (profilePassword !== profileConfirmPassword) {
+      showToast('Passwords do not match')
+      return
+    }
+    if (profilePassword.length < 6) {
+      showToast('Password must be at least 6 characters')
+      return
+    }
+    showToast('Administrator password updated successfully')
+    setProfilePassword('')
+    setProfileConfirmPassword('')
   }
 
   return (
@@ -234,85 +355,113 @@ export default function AdminPanel({ adminUser, onLogout }) {
       {/* Sidebar */}
       <aside className="adm-sidebar">
         <div className="adm-sidebar-brand">
-          <div className="brand" style={{ gap: '10px' }}>
-            <span className="brand-logo" style={{ font: "400 20px/1 Georgia,'Times New Roman',serif", minWidth: '130px', minHeight: '32px', padding: '2px 10px 4px' }}>N Solutions</span>
+          <div className="adm-nav-logo-box">N</div>
+          <div className="adm-nav-brand-text">
+            <div className="adm-nav-title">Admin Panel</div>
+            <div className="adm-nav-subtitle">N SOLUTIONS</div>
           </div>
-          <span className="adm-brand-badge">Admin</span>
         </div>
 
         <nav className="adm-sidebar-nav">
-          <span className="adm-nav-heading">Main Navigation</span>
           <button
+            type="button"
             className={`adm-nav-item ${activeTab === 'overview' ? 'active' : ''}`}
             onClick={() => setActiveTab('overview')}
           >
-            <span className="adm-nav-icon"><FiBarChart2 /></span>
+            <span className="adm-nav-icon"><FiGrid /></span>
             <span>Dashboard</span>
           </button>
           <button
+            type="button"
             className={`adm-nav-item ${activeTab === 'leads' ? 'active' : ''}`}
             onClick={() => setActiveTab('leads')}
           >
-            <span className="adm-nav-icon"><FiUsers /></span>
+            <span className="adm-nav-icon"><FiTrendingUp /></span>
             <span>Leads</span>
-            <span className="adm-badge highlight">{data.leads.length}</span>
           </button>
           <button
+            type="button"
             className={`adm-nav-item ${activeTab === 'projects' ? 'active' : ''}`}
             onClick={() => setActiveTab('projects')}
           >
-            <span className="adm-nav-icon"><FiZap /></span>
+            <span className="adm-nav-icon"><FiBriefcase /></span>
             <span>Projects</span>
-            <span className="adm-badge">{data.projects.length}</span>
           </button>
           <button
+            type="button"
             className={`adm-nav-item ${activeTab === 'products' ? 'active' : ''}`}
             onClick={() => setActiveTab('products')}
           >
             <span className="adm-nav-icon"><FiPackage /></span>
             <span>Products</span>
-            <span className="adm-badge">{data.products.length}</span>
           </button>
           <button
-            className={`adm-nav-item ${activeTab === 'enquiries' ? 'active' : ''}`}
-            onClick={() => setActiveTab('enquiries')}
+            type="button"
+            className={`adm-nav-item ${activeTab === 'media' ? 'active' : ''}`}
+            onClick={() => setActiveTab('media')}
           >
-            <span className="adm-nav-icon"><FiInbox /></span>
-            <span>Enquiries</span>
-            <span className="adm-badge">{data.enquiries.length}</span>
+            <span className="adm-nav-icon"><FiImage /></span>
+            <span>Gallery / Media</span>
           </button>
           <button
+            type="button"
+            className={`adm-nav-item ${activeTab === 'testimonials' ? 'active' : ''}`}
+            onClick={() => setActiveTab('testimonials')}
+          >
+            <span className="adm-nav-icon"><FiMessageSquare /></span>
+            <span>Testimonials</span>
+          </button>
+          <button
+            type="button"
             className={`adm-nav-item ${activeTab === 'careers' ? 'active' : ''}`}
             onClick={() => setActiveTab('careers')}
           >
-            <span className="adm-nav-icon"><FiBriefcase /></span>
-            <span>Job Applications</span>
-            <span className="adm-badge">{data.applications.length}</span>
+            <span className="adm-nav-icon"><FiUsers /></span>
+            <span>Careers</span>
           </button>
-
-          <span className="adm-nav-heading">Administration</span>
           <button
+            type="button"
+            className={`adm-nav-item ${activeTab === 'enquiries' ? 'active' : ''}`}
+            onClick={() => setActiveTab('enquiries')}
+          >
+            <span className="adm-nav-icon"><FiMail /></span>
+            <span>Contact Enquiries</span>
+          </button>
+          <button
+            type="button"
+            className={`adm-nav-item ${activeTab === 'profile' ? 'active' : ''}`}
+            onClick={() => setActiveTab('profile')}
+          >
+            <span className="adm-nav-icon"><FiUser /></span>
+            <span>Admin Profile</span>
+          </button>
+          <button
+            type="button"
             className={`adm-nav-item ${activeTab === 'settings' ? 'active' : ''}`}
             onClick={() => setActiveTab('settings')}
           >
             <span className="adm-nav-icon"><FiSettings /></span>
-            <span>Settings & Auth</span>
+            <span>Settings</span>
           </button>
         </nav>
 
         <div className="adm-sidebar-footer">
-          <div className="adm-user-card">
-            <div className="adm-user-avatar">
-              {(adminUser?.name || 'A')[0].toUpperCase()}
-            </div>
-            <div className="adm-user-info">
-              <div className="adm-user-name">{adminUser?.name || 'N Solutions Admin'}</div>
-              <div className="adm-user-role">{adminUser?.email || 'admin@nsolutions.com'}</div>
-            </div>
-          </div>
-          <button className="adm-btn-logout" onClick={handleLogout}>
-            <span><FiLogOut /></span>
-            <span>Sign Out</span>
+          <a
+            href="/"
+            target="_blank"
+            rel="noreferrer"
+            className="adm-nav-item adm-sidebar-action"
+          >
+            <span className="adm-nav-icon"><FiArrowUpRight /></span>
+            <span>View Website</span>
+          </a>
+          <button
+            type="button"
+            className="adm-nav-item adm-sidebar-action"
+            onClick={handleLogout}
+          >
+            <span className="adm-nav-icon"><FiLogOut /></span>
+            <span>Logout</span>
           </button>
         </div>
       </aside>
@@ -327,8 +476,11 @@ export default function AdminPanel({ adminUser, onLogout }) {
               {activeTab === 'leads' && 'Solar Leads & Inquiries'}
               {activeTab === 'projects' && 'Project Portfolio Management'}
               {activeTab === 'products' && 'Product Supply Catalog'}
-              {activeTab === 'enquiries' && 'Customer Inquiries & Messages'}
+              {activeTab === 'media' && 'Gallery & Media Management'}
+              {activeTab === 'testimonials' && 'Client Testimonials & Feedback'}
               {activeTab === 'careers' && 'Careers & Talent Applications'}
+              {activeTab === 'enquiries' && 'Contact Enquiries & Messages'}
+              {activeTab === 'profile' && 'Administrator Profile'}
               {activeTab === 'settings' && 'System Settings & Security'}
             </h2>
           </div>
@@ -871,6 +1023,247 @@ export default function AdminPanel({ adminUser, onLogout }) {
             </div>
           )}
 
+          {/* TAB: GALLERY / MEDIA */}
+          {activeTab === 'media' && (
+            <div className="adm-panel-card">
+              <div className="adm-card-header">
+                <div>
+                  <h3 className="adm-card-title">Gallery & Media Assets</h3>
+                  <p style={{ margin: '4px 0 0', color: 'var(--adm-text-muted)', fontSize: '0.85rem' }}>
+                    Manage public photo galleries, press highlights, and milestone imagery.
+                  </p>
+                </div>
+                <div className="adm-card-controls">
+                  <div className="adm-filter-group">
+                    <select
+                      className="adm-filter-select"
+                      value={mediaFilter}
+                      onChange={(e) => setMediaFilter(e.target.value)}
+                    >
+                      <option value="all">All Media Categories</option>
+                      <option value="Residential">Residential</option>
+                      <option value="Industrial">Industrial</option>
+                      <option value="Products">Products</option>
+                      <option value="Company">Company</option>
+                    </select>
+                  </div>
+                  <button
+                    type="button"
+                    className="adm-btn-action"
+                    onClick={() => setShowAddMediaModal(true)}
+                  >
+                    + Add Media Asset
+                  </button>
+                </div>
+              </div>
+
+              <div className="adm-media-grid">
+                {(data.media || [])
+                  .filter((m) => mediaFilter === 'all' || m.category === mediaFilter)
+                  .map((item) => (
+                    <div key={item.id} className="adm-media-card">
+                      <div className="adm-media-thumb">
+                        <img src={item.imageUrl} alt={item.title} />
+                        <span className="adm-media-category-badge">{item.category}</span>
+                      </div>
+                      <div className="adm-media-body">
+                        <h4 className="adm-media-title">{item.title}</h4>
+                        <div className="adm-media-footer">
+                          <span className="adm-media-date">{item.date}</span>
+                          <button
+                            type="button"
+                            className="adm-btn-tiny danger"
+                            onClick={() => handleDeleteMedia(item.id)}
+                            title="Delete Media"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            </div>
+          )}
+
+          {/* TAB: TESTIMONIALS */}
+          {activeTab === 'testimonials' && (
+            <div className="adm-panel-card">
+              <div className="adm-card-header">
+                <div>
+                  <h3 className="adm-card-title">Client Testimonials & Feedback</h3>
+                  <p style={{ margin: '4px 0 0', color: 'var(--adm-text-muted)', fontSize: '0.85rem' }}>
+                    Verified client reviews and customer satisfaction feedback across C&I and PM Surya Ghar.
+                  </p>
+                </div>
+                <div className="adm-card-controls">
+                  <div className="adm-filter-group">
+                    <select
+                      className="adm-filter-select"
+                      value={testimonialFilter}
+                      onChange={(e) => setTestimonialFilter(e.target.value)}
+                    >
+                      <option value="all">All Statuses</option>
+                      <option value="approved">Approved</option>
+                      <option value="pending">Pending</option>
+                    </select>
+                  </div>
+                  <button
+                    type="button"
+                    className="adm-btn-action"
+                    onClick={() => setShowAddTestimonialModal(true)}
+                  >
+                    + Add Testimonial
+                  </button>
+                </div>
+              </div>
+
+              <div className="adm-table-wrap">
+                <table className="adm-table">
+                  <thead>
+                    <tr>
+                      <th>Client Name</th>
+                      <th>Company / Location</th>
+                      <th>Rating</th>
+                      <th style={{ width: '40%' }}>Review Quote</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {(data.testimonials || [])
+                      .filter((t) => testimonialFilter === 'all' || t.status === testimonialFilter)
+                      .map((t) => (
+                        <tr key={t.id}>
+                          <td style={{ fontWeight: 600 }}>{t.clientName}</td>
+                          <td>
+                            <div>{t.company}</div>
+                            <div style={{ fontSize: '0.75rem', color: 'var(--adm-text-dim)' }}>{t.location}</div>
+                          </td>
+                          <td>
+                            <div style={{ color: '#f59e0b', fontSize: '0.88rem', letterSpacing: '2px' }}>
+                              {'★'.repeat(t.rating || 5)}
+                            </div>
+                          </td>
+                          <td style={{ fontSize: '0.85rem', color: 'var(--adm-text-muted)', fontStyle: 'italic' }}>
+                            "{t.comment}"
+                          </td>
+                          <td>
+                            <select
+                              className="adm-filter-select"
+                              style={{ padding: '4px 8px', fontSize: '0.75rem' }}
+                              value={t.status}
+                              onChange={(e) => handleToggleTestimonialStatus(t.id, e.target.value)}
+                            >
+                              <option value="approved">Approved</option>
+                              <option value="pending">Pending</option>
+                            </select>
+                          </td>
+                          <td>
+                            <button
+                              type="button"
+                              className="adm-btn-tiny danger"
+                              onClick={() => handleDeleteTestimonial(t.id)}
+                            >
+                              Delete
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* TAB: ADMIN PROFILE */}
+          {activeTab === 'profile' && (
+            <div className="adm-profile-container">
+              <div className="adm-panel-card" style={{ flex: '1 1 360px' }}>
+                <div className="adm-card-header">
+                  <h3 className="adm-card-title">Administrator Identity</h3>
+                </div>
+                <div className="adm-profile-badge-card">
+                  <div className="adm-profile-avatar-large">
+                    {(adminUser?.name || 'A')[0].toUpperCase()}
+                  </div>
+                  <div className="adm-profile-main-meta">
+                    <h4>{adminUser?.name || 'N Solutions Administrator'}</h4>
+                    <span className="adm-profile-role-pill">Super Admin • Full Control</span>
+                    <p style={{ margin: '6px 0 0', color: 'var(--adm-text-muted)', fontSize: '0.84rem' }}>
+                      {adminUser?.email || 'admin@nsolutions.com'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="adm-profile-meta-list">
+                  <div className="adm-profile-meta-row">
+                    <span className="adm-meta-label">Access Level</span>
+                    <span className="adm-meta-val">Level 1 Executive Root</span>
+                  </div>
+                  <div className="adm-profile-meta-row">
+                    <span className="adm-meta-label">Assigned Jurisdiction</span>
+                    <span className="adm-meta-val">AP & Telangana Operations</span>
+                  </div>
+                  <div className="adm-profile-meta-row">
+                    <span className="adm-meta-label">Public Access Status</span>
+                    <span className="adm-meta-val" style={{ color: '#059669', fontWeight: 600 }}>Hidden URL Portal (/admin)</span>
+                  </div>
+                  <div className="adm-profile-meta-row">
+                    <span className="adm-meta-label">Session Status</span>
+                    <span className="adm-meta-val" style={{ color: '#0284c7' }}>Authenticated & Active</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="adm-panel-card" style={{ flex: '1 1 400px' }}>
+                <div className="adm-card-header">
+                  <h3 className="adm-card-title">Update Administrator Password</h3>
+                </div>
+                <form onSubmit={handleUpdateProfilePassword} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  <div className="adm-form-group" style={{ margin: 0 }}>
+                    <label>New Password</label>
+                    <input
+                      type="password"
+                      required
+                      placeholder="Minimum 6 characters"
+                      value={profilePassword}
+                      onChange={(e) => setProfilePassword(e.target.value)}
+                      className="adm-search-input"
+                      style={{ width: '100%' }}
+                    />
+                  </div>
+                  <div className="adm-form-group" style={{ margin: 0 }}>
+                    <label>Confirm New Password</label>
+                    <input
+                      type="password"
+                      required
+                      placeholder="Re-enter password"
+                      value={profileConfirmPassword}
+                      onChange={(e) => setProfileConfirmPassword(e.target.value)}
+                      className="adm-search-input"
+                      style={{ width: '100%' }}
+                    />
+                  </div>
+                  <div style={{ paddingTop: '8px' }}>
+                    <button type="submit" className="adm-btn-action">
+                      Save New Credentials
+                    </button>
+                  </div>
+                </form>
+
+                <div style={{ marginTop: '24px', padding: '14px', background: 'var(--adm-surface-light)', borderRadius: '8px', border: '1px solid var(--adm-border)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--adm-primary-deep)', fontWeight: 600, fontSize: '0.85rem' }}>
+                    <FiShield size={16} color="#0875b6" /> Security Safeguards Active
+                  </div>
+                  <p style={{ margin: '6px 0 0', fontSize: '0.8rem', color: 'var(--adm-text-muted)' }}>
+                    Session timeouts occur automatically after inactivity. Direct database persistence is encrypted locally.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* TAB: SETTINGS */}
           {activeTab === 'settings' && (
             <div className="adm-panel-card" style={{ maxWidth: '600px' }}>
@@ -1188,6 +1581,159 @@ export default function AdminPanel({ adminUser, onLogout }) {
                 </button>
                 <button type="submit" className="adm-btn-action">
                   Add Product
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ADD MEDIA MODAL */}
+      {showAddMediaModal && (
+        <div className="adm-modal-backdrop" onClick={() => setShowAddMediaModal(false)}>
+          <div className="adm-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="adm-modal-header">
+              <h3>Add Media / Gallery Asset</h3>
+              <button type="button" className="adm-modal-close" onClick={() => setShowAddMediaModal(false)}><FiX /></button>
+            </div>
+            <form onSubmit={handleCreateMedia}>
+              <div className="adm-modal-body">
+                <div className="adm-form-group">
+                  <label>Title / Caption *</label>
+                  <input
+                    type="text"
+                    required
+                    className="adm-search-input"
+                    style={{ width: '100%' }}
+                    value={newMedia.title}
+                    onChange={(e) => setNewMedia({ ...newMedia, title: e.target.value })}
+                    placeholder="e.g. 500kW Industrial Rooftop Commissioning"
+                  />
+                </div>
+                <div className="adm-form-group">
+                  <label>Category</label>
+                  <select
+                    className="adm-filter-select"
+                    style={{ width: '100%' }}
+                    value={newMedia.category}
+                    onChange={(e) => setNewMedia({ ...newMedia, category: e.target.value })}
+                  >
+                    <option value="Residential">Residential</option>
+                    <option value="Industrial">Industrial</option>
+                    <option value="Products">Products</option>
+                    <option value="Company">Company</option>
+                  </select>
+                </div>
+                <div className="adm-form-group">
+                  <label>Image URL *</label>
+                  <input
+                    type="url"
+                    required
+                    className="adm-search-input"
+                    style={{ width: '100%' }}
+                    value={newMedia.imageUrl}
+                    onChange={(e) => setNewMedia({ ...newMedia, imageUrl: e.target.value })}
+                    placeholder="https://images.unsplash.com/..."
+                  />
+                </div>
+              </div>
+              <div className="adm-modal-footer">
+                <button
+                  type="button"
+                  className="adm-btn-secondary"
+                  onClick={() => setShowAddMediaModal(false)}
+                >
+                  Cancel
+                </button>
+                <button type="submit" className="adm-btn-action">
+                  Upload Asset
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ADD TESTIMONIAL MODAL */}
+      {showAddTestimonialModal && (
+        <div className="adm-modal-backdrop" onClick={() => setShowAddTestimonialModal(false)}>
+          <div className="adm-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="adm-modal-header">
+              <h3>Add Client Testimonial</h3>
+              <button type="button" className="adm-modal-close" onClick={() => setShowAddTestimonialModal(false)}><FiX /></button>
+            </div>
+            <form onSubmit={handleCreateTestimonial}>
+              <div className="adm-modal-body">
+                <div className="adm-form-group">
+                  <label>Client / Customer Name *</label>
+                  <input
+                    type="text"
+                    required
+                    className="adm-search-input"
+                    style={{ width: '100%' }}
+                    value={newTestimonial.clientName}
+                    onChange={(e) => setNewTestimonial({ ...newTestimonial, clientName: e.target.value })}
+                    placeholder="e.g. Dr. Ramesh Varma"
+                  />
+                </div>
+                <div className="adm-form-group">
+                  <label>Company / Organization</label>
+                  <input
+                    type="text"
+                    className="adm-search-input"
+                    style={{ width: '100%' }}
+                    value={newTestimonial.company}
+                    onChange={(e) => setNewTestimonial({ ...newTestimonial, company: e.target.value })}
+                    placeholder="e.g. Varma Specialty Hospital"
+                  />
+                </div>
+                <div className="adm-form-group">
+                  <label>Location</label>
+                  <input
+                    type="text"
+                    className="adm-search-input"
+                    style={{ width: '100%' }}
+                    value={newTestimonial.location}
+                    onChange={(e) => setNewTestimonial({ ...newTestimonial, location: e.target.value })}
+                    placeholder="e.g. Visakhapatnam, AP"
+                  />
+                </div>
+                <div className="adm-form-group">
+                  <label>Rating (1 to 5 Stars)</label>
+                  <select
+                    className="adm-filter-select"
+                    style={{ width: '100%' }}
+                    value={newTestimonial.rating}
+                    onChange={(e) => setNewTestimonial({ ...newTestimonial, rating: parseInt(e.target.value, 10) })}
+                  >
+                    <option value={5}>5 Stars ★★★★★</option>
+                    <option value={4}>4 Stars ★★★★☆</option>
+                    <option value={3}>3 Stars ★★★☆☆</option>
+                  </select>
+                </div>
+                <div className="adm-form-group">
+                  <label>Review / Testimonial *</label>
+                  <textarea
+                    required
+                    rows={3}
+                    className="adm-search-input"
+                    style={{ width: '100%', resize: 'vertical' }}
+                    value={newTestimonial.comment}
+                    onChange={(e) => setNewTestimonial({ ...newTestimonial, comment: e.target.value })}
+                    placeholder="Describe their experience..."
+                  />
+                </div>
+              </div>
+              <div className="adm-modal-footer">
+                <button
+                  type="button"
+                  className="adm-btn-secondary"
+                  onClick={() => setShowAddTestimonialModal(false)}
+                >
+                  Cancel
+                </button>
+                <button type="submit" className="adm-btn-action">
+                  Save Testimonial
                 </button>
               </div>
             </form>

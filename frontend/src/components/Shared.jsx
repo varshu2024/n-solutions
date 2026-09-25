@@ -77,7 +77,7 @@ export function SiteHeader({ activePath = '' }) {
   return (
     <header className={`site-header ${scrolled ? 'is-scrolled' : ''} ${activePath ? 'site-header-page' : ''}`}>
       <a className="brand" href="/" onClick={(e) => handleNav(e, '/')} aria-label="N Solutions home">
-        <span className="brand-logo">N Solutions</span>
+        <img className="brand-logo" src="/logo.png" alt="N Solutions" />
       </a>
       <button className="menu-toggle" aria-label="Toggle navigation" aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>
         <span /><span />
@@ -389,7 +389,7 @@ export function SiteFooter() {
         <div className="wrap footer-top">
           <div className="footer-brand-col">
             <a className="brand" href="/" onClick={(e) => handleNav(e, '/')}>
-              <span className="brand-logo">N Solutions</span>
+              <img className="brand-logo" src="/logo.png" alt="N Solutions" />
             </a>
             <p className="footer-tagline">
               Engineering, Procurement and Construction (EPC) Solar Company with 16+ years of proven experience across 9 states in India.
