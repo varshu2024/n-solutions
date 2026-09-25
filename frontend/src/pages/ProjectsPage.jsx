@@ -752,7 +752,7 @@ const filteredProjects = projects.filter((project) => {
           <div className="projects-hero-shade" />
 
           <div className="wrap projects-hero-content">
-            <p className="eyebrow light">
+            <p className="eyebrow">
               <span /> 16+ Years · 9 States · MW-Scale to Rooftop
             </p>
             <h1>
