@@ -1,7 +1,10 @@
 @baseUrl = http://localhost:5000
-@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWE1NWY1NjM0N2NhYTExNWFkNGZlM2UiLCJlbWFpbCI6ImFkbWluQG5zb2x1dGlvbnMuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzg5MjIyNzY4LCJleHAiOjE3ODk4Mjc1Njh9.cO96OfFZWi3eJLA52XU1qxemwXjs5Llmy_9Q-BSObok
-@projectImage = C:/Users/USER/OneDrive/Pictures/Krishna.jpeg
-@resumeFile = C:/Users/USER/OneDrive/Documents/resume.pdf
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWE1NWY1NjM0N2NhYTExNWFkNGZlM2UiLCJlbWFpbCI6ImFkbWluQG5zb2x1dGlvbnMuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzkwMTQxODI0LCJleHAiOjE3OTA3NDY2MjR9.9pZaio3jdcqmWrsRRt-OSuGXg7pFD8pgEwO0Rau3JKQ
+@projectImage = C:/Users/USER/Downloads/solar.jpg
+
+@productImage = C:/Users/USER/Downloads/solar2.jpg
+
+@resumeFile = C:\Users\USER\Downloads\Company Profile (1) (1).docx
 @jobId = 6aa17768268f6f5c8193e983
 
 ### =========================================================
@@ -229,7 +232,7 @@ Content-Type: application/json
 }
 
 ### Admin - Delete Project
-DELETE {{baseUrl}}/api/projects/6a9ed3f87aa1d5f60a8c71c6
+DELETE {{baseUrl}}/api/projects/6ab3a1cf4f5165336b6d1051
 Authorization: Bearer {{adminToken}}
 
 ### ---------------- PUBLIC PROJECT APIS ----------------
@@ -250,7 +253,7 @@ GET {{baseUrl}}/api/public/projects/not-a-valid-id
 ### ---------------- ADMIN PRODUCT APIS ----------------
 
 ### Admin - Create Product (multipart/form-data)
-POST {{baseUrl}}/api/products
+POST {{baseUrl}}/api/
 Authorization: Bearer {{adminToken}}
 Content-Type: multipart/form-data; boundary=ProductBoundary
 
@@ -278,7 +281,7 @@ Content-Disposition: form-data; name="applications"
 Content-Disposition: form-data; name="image"; filename="product-image.jpg"
 Content-Type: image/jpeg
 
-< {{projectImage}}
+< {{productImage}}
 --ProductBoundary--
 
 ### Admin - Get All Products
@@ -290,7 +293,7 @@ GET {{baseUrl}}/api/products/6aa563e0347caa115ad4fe9b
 Authorization: Bearer {{adminToken}}
 
 ### Admin - Delete Product
-DELETE {{baseUrl}}/api/products/6aa563e0347caa115ad4fe9b
+DELETE {{baseUrl}}/api/products/6ab3a1cf4f5165336b6d1051
 Authorization: Bearer {{adminToken}}
 
 ### ---------------- PUBLIC PRODUCT APIS ----------------
@@ -366,7 +369,7 @@ Content-Type: image/jpeg
 --NewsImageBoundary--
 
 ### Admin - Delete News Publication
-DELETE {{baseUrl}}/api/news/6aa56449347caa115ad4fea7
+DELETE {{baseUrl}}/api/news/6ab398e950beee36c3527902
 Authorization: Bearer {{adminToken}}
 
 ### Project Milestones
@@ -407,11 +410,11 @@ Authorization: Bearer {{adminToken}}
 ### Image Gallery
 
 ### Admin - Get All Gallery Items
-GET {{baseUrl}}/api/gallery/admin
+GET {{baseUrl}}/api/gallery/
 Authorization: Bearer {{adminToken}}
 
 ### Admin - Get Gallery Item
-GET {{baseUrl}}/api/gallery/6aa566eb347caa115ad4fec6
+GET {{baseUrl}}/api/gallery/6ab3ab1d88fbb178e7a6d912
 Authorization: Bearer {{adminToken}}
 
 ### Admin - Create Gallery Item (multipart/form-data)
@@ -435,7 +438,7 @@ Content-Type: image/jpeg
 --GalleryBoundary--
 
 ### Admin - Update Gallery Item
-PATCH {{baseUrl}}/api/gallery/6aa566eb347caa115ad4fec6
+PATCH {{baseUrl}}/api/gallery/6ab3ab1d88fbb178e7a6d912
 Authorization: Bearer {{adminToken}}
 Content-Type: application/json
 
@@ -445,7 +448,7 @@ Content-Type: application/json
 }
 
 ### Admin - Replace Gallery Image (multipart/form-data)
-PATCH {{baseUrl}}/api/gallery/6aa2ec7440d4ac23b354d835
+PATCH {{baseUrl}}/api/gallery/6ab3ab1d88fbb178e7a6d912
 Authorization: Bearer {{adminToken}}
 Content-Type: multipart/form-data; boundary=GalleryImageBoundary
 
@@ -457,7 +460,7 @@ Content-Type: image/jpeg
 --GalleryImageBoundary--
 
 ### Admin - Delete Gallery Item
-DELETE {{baseUrl}}/api/gallery/6aa566eb347caa115ad4fec6
+DELETE {{baseUrl}}/api/gallery/6ab3a98c8a624b4b01d505b5
 Authorization: Bearer {{adminToken}}
 
 ### Videos
@@ -520,7 +523,7 @@ Content-Type: image/jpeg
 --VideoThumbnailBoundary--
 
 ### Admin - Delete Video
-DELETE {{baseUrl}}/api/videos/6aa56733347caa115ad4fecf
+DELETE {{baseUrl}}/api/videos/6ab39c9650beee36c352792c
 Authorization: Bearer {{adminToken}}
 
 ### Media Retrieval
@@ -570,7 +573,7 @@ Authorization: Bearer {{adminToken}}
 Content-Type: application/json
 
 {
-  "jobTitle": "Solar Design Engineer",
+  "jobTitle": "Design Engineer",
   "department": "Engineering",
   "location": "Visakhapatnam",
   "employmentType": "Full-time",
@@ -675,6 +678,9 @@ Content-Disposition: form-data; name="phoneNumber"
 
 9876543210
 --MissingResumeBoundary--
+
+< {{resumeFile}}
+--JobBoundary--
 
 ### Public - Submit Job Application With Invalid Job ID (expected 400)
 POST {{baseUrl}}/api/job-applications

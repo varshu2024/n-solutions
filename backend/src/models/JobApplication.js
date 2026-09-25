@@ -67,4 +67,9 @@ const jobApplicationSchema = new mongoose.Schema(
 
 jobApplicationSchema.index({ jobId: 1, appliedDate: -1 });
 
+jobApplicationSchema.index(
+  { jobId: 1, email: 1 },
+  { unique: true }
+);
+
 export const JobApplication = mongoose.model('JobApplication', jobApplicationSchema);

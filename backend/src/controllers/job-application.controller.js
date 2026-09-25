@@ -2,6 +2,7 @@ import { deleteResume, uploadResume } from '../config/cloudinary.js';
 import { createJobApplication, findJobForApplication, listJobApplications } from '../services/job-application.service.js';
 import { sendSuccess } from '../utils/response.js';
 import { isValidEmail } from '../utils/validation.js';
+import { JobApplication } from '../models/JobApplication.js';
 
 const validationError = (details) => {
   const error = new Error('Request validation failed.');
@@ -54,6 +55,17 @@ export const submit = async (request, response) => {
   };
   if (input.yearsOfExperience !== undefined && input.yearsOfExperience !== '') normalized.yearsOfExperience = Number(input.yearsOfExperience);
 
+  const existingApplication = await JobApplication.findOne({
+    jobId: normalized.jobId,
+    email: normalized.email
+  });
+
+  if (existingApplication) {
+    const error = new Error('You have already applied for this position.');
+    error.statusCode = 409;
+    throw error;
+  }
+
   let resume;
   try {
     resume = await uploadResume(request.file.buffer);
@@ -65,14 +77,18 @@ export const submit = async (request, response) => {
   }
 
   try {
-    await createJobApplication({ ...normalized, resume });
-  } catch (error) {
-    await cleanupResume(resume);
-    if (error.name === 'ValidationError') throw error;
-    const databaseError = new Error('Unable to submit application.');
-    databaseError.statusCode = 500;
-    throw databaseError;
-  }
+  await createJobApplication({ ...normalized, resume });
+} catch (error) {
+  console.error('Job application database error:', error);
+
+  await cleanupResume(resume);
+
+  if (error.name === 'ValidationError') throw error;
+
+  const databaseError = new Error('Unable to submit application.');
+  databaseError.statusCode = 500;
+  throw databaseError;
+}
 
   return sendSuccess(response, 201, 'Application submitted successfully.');
 };

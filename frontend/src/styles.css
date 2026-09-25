@@ -610,6 +610,16 @@ a:focus-visible,button:focus-visible { outline:2px solid var(--brand-primary-lig
 @media (max-width:900px) { .about-page .about-overview,.about-page .message-grid,.about-page .vision-mission { grid-template-columns:1fr!important; }.about-page .capability-grid { grid-template-columns:1fr 1fr!important; }.about-page .credential-grid { grid-template-columns:1fr!important; } }
 @media (max-width:560px) { .about-page .about-overview,.about-page .message-grid,.about-page .vision-mission,.about-page .capability-grid,.about-page .credential-grid { grid-template-columns:1fr!important; }.about-page .principle-grid { grid-template-columns:1fr!important; }.about-page .principle:nth-child(even) { padding-left:0; border-left:0; }.about-page .capability,.about-page .capability:nth-child(odd),.about-page .capability:nth-child(4n+2),.about-page .capability:nth-child(4n+3),.about-page .capability:nth-child(4n+4) { min-height:0; padding:20px 0; border-right:0; }.about-page .vision-block,.about-page .mission-block { min-width:0; }.about-page .about-process-row { grid-template-columns:42px 1fr; }.about-page .about-process-row p { grid-column:2; } }
 
+.application-error-view {
+  margin-top: 16px;
+  padding: 12px 16px;
+  border: 1px solid rgba(180, 50, 50, 0.25);
+  border-radius: 8px;
+  background: rgba(180, 50, 50, 0.06);
+  color: #a83232;
+  font-size: 14px;
+  line-height: 1.5;
+}
 /* =========================================================
    COMPANY OVERVIEW
 ========================================================= */

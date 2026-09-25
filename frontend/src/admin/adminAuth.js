@@ -308,59 +308,69 @@ export function getAuthToken() {
 export const API_BASE_URL = (import.meta.env?.VITE_API_URL || '/api').replace(/\/+$/, '')
 
 export async function adminLogin(email, password) {
-  // Attempt backend API login if available
   try {
     const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), 3000)
+    const timeoutId = setTimeout(() => {
+      controller.abort()
+    }, 8000)
     const response = await fetch(`${API_BASE_URL}/auth/login`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email: email.trim(),
+        password
+      }),
       signal: controller.signal
     })
+
     clearTimeout(timeoutId)
 
-    if (response.ok) {
-      const result = await response.json()
-      if (result.success && result.data) {
-        const token = result.data.token
-        const admin = result.data.admin || { name: 'Admin', email }
-        localStorage.setItem(TOKEN_KEY, token)
-        localStorage.setItem(USER_KEY, JSON.stringify(admin))
-        return { success: true, user: admin, mode: 'api' }
-      }
-    } else {
-      const errorJson = await response.json().catch(() => ({}))
-      if (response.status === 400 || response.status === 401) {
-        return { success: false, message: errorJson.message || 'Invalid email or password.' }
+    const result = await response.json().catch(() => ({}))
+
+    if (!response.ok) {
+      return {
+        success: false,
+        message:
+          result.message ||
+          'Login failed. Please check your email and password.'
       }
     }
-  } catch (err) {
-    // API server is offline or unreachable - fallback to local credentials
-  }
 
-  // Fallback demo/local authentication
-  const cleanEmail = (email || '').trim().toLowerCase()
-  if (
-    (cleanEmail === 'admin@nsolutions.com' && password === 'Admin@123') ||
-    (cleanEmail === 'admin@nsolar.com' && password === 'Admin@123') ||
-    (cleanEmail === 'admin' && password === 'admin')
-  ) {
-    const fallbackAdmin = {
-      name: 'N Solutions Admin',
-      email: cleanEmail.includes('@') ? cleanEmail : 'admin@nsolutions.com',
-      role: 'admin',
-      lastLogin: new Date().toISOString()
+    if (!result.success || !result.data?.token) {
+      return {
+        success: false,
+        message: result.message || 'Invalid login response from server.'
+      }
     }
-    const mockToken = 'nsolutions_demo_jwt_' + Math.random().toString(36).substring(2)
-    localStorage.setItem(TOKEN_KEY, mockToken)
-    localStorage.setItem(USER_KEY, JSON.stringify(fallbackAdmin))
-    return { success: true, user: fallbackAdmin, mode: 'demo' }
-  }
 
-  return {
-    success: false,
-    message: 'Invalid credentials. Please use admin@nsolutions.com / Admin@123'
+    const token = result.data.token
+
+    const admin = result.data.admin || {
+      name: 'Admin',
+      email: email.trim().toLowerCase(),
+      role: 'admin'
+    }
+
+    localStorage.setItem(TOKEN_KEY, token)
+    localStorage.setItem(USER_KEY, JSON.stringify(admin))
+
+    return {
+      success: true,
+      user: admin,
+      mode: 'api'
+    }
+  } catch (error) {
+    console.error('Admin login request failed:', error)
+
+    return {
+      success: false,
+      message:
+        error.name === 'AbortError'
+          ? 'Login request timed out. Please try again.'
+          : 'Unable to connect to the authentication server.'
+    }
   }
 }
 

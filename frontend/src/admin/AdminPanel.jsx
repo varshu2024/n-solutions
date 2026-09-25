@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { getStoredData, saveStoredData, adminLogout } from './adminAuth'
 import { navigate } from '../components/Shared'
+import { apiGet, apiPost, apiPatch, apiDelete } from '../utils/api'
 import { 
   FiGrid, 
   FiTrendingUp, 
@@ -30,15 +31,20 @@ import {
 import { FaSun } from 'react-icons/fa'
 import './admin.css'
 
+
 export default function AdminPanel({ adminUser, onLogout }) {
+  
+
   const [activeTab, setActiveTab] = useState('overview')
   const [data, setData] = useState(() => getStoredData())
   const [toastMessage, setToastMessage] = useState('')
-
+  const [projects, setProjects] = useState([])
+  const [projectsLoading, setProjectsLoading] = useState(false)
   // Search and filter states
   const [leadSearch, setLeadSearch] = useState('')
   const [leadFilter, setLeadFilter] = useState('all')
-
+  const [products, setProducts] = useState([])
+const [productsLoading, setProductsLoading] = useState(false)
   // Modals
   const [showAddLeadModal, setShowAddLeadModal] = useState(false)
   const [newLead, setNewLead] = useState({
@@ -51,27 +57,40 @@ export default function AdminPanel({ adminUser, onLogout }) {
     capacity: '',
     status: 'new'
   })
-
+  const [enquiries, setEnquiries] = useState([])
+const [enquiriesLoading, setEnquiriesLoading] = useState(false)
   const [showAddProjectModal, setShowAddProjectModal] = useState(false)
   const [newProject, setNewProject] = useState({
-    title: '',
-    category: 'commercial',
-    location: '',
-    capacity: '',
-    client: '',
-    year: '2026',
-    status: 'in_progress'
-  })
+  title: '',
+  category: 'commercial',
+  location: '',
+  description: '',
+  services: '',
+  status: 'in_progress',
+  image: null
+})
 
   const [showAddProductModal, setShowAddProductModal] = useState(false)
   const [newProduct, setNewProduct] = useState({
-    name: '',
-    category: 'Solar Panels',
-    model: '',
-    efficiency: '',
-    warranty: '25 Years',
-    inStock: true
-  })
+  name: '',
+  category: 'Solar Panels',
+  brand: '',
+  description: '',
+  applications: '',
+  image: null
+})
+
+  useEffect(() => {
+  if (activeTab === 'projects') {
+    fetchProjects()
+  }
+  if (activeTab === 'products') {
+    fetchProducts()
+  }
+  if (activeTab === 'enquiries') {
+    loadEnquiries()
+  }
+}, [activeTab])
 
   // Media state
   const [showAddMediaModal, setShowAddMediaModal] = useState(false)
@@ -118,6 +137,94 @@ export default function AdminPanel({ adminUser, onLogout }) {
     adminLogout()
     if (onLogout) onLogout()
   }
+  const fetchProjects = async () => {
+  setProjectsLoading(true)
+
+  try {
+    const result = await apiGet('/projects')
+
+    if (result.success) {
+      const items = Array.isArray(result.data)
+        ? result.data
+        : []
+
+      setProjects(items)
+    } else {
+      console.error('Failed to fetch projects:', result.message)
+      showToast(result.message || 'Failed to load projects')
+    }
+  } catch (error) {
+    console.error('Failed to fetch projects:', error)
+    showToast('Failed to load projects')
+  } finally {
+    setProjectsLoading(false)
+  }
+}
+
+const fetchProducts = async () => {
+  setProductsLoading(true)
+
+  try {
+    const result = await apiGet('/products')
+
+    if (!result.success) {
+      showToast(result.message || 'Failed to fetch products')
+      return
+    }
+
+    setProducts(result.data || [])
+  } catch (error) {
+    console.error('Failed to fetch products:', error)
+    showToast('Failed to fetch products')
+  } finally {
+    setProductsLoading(false)
+  }
+}
+
+const loadEnquiries = async () => {
+  setEnquiriesLoading(true)
+
+  try {
+    const listResponse = await apiGet('/enquiries')
+
+    if (!listResponse.success) {
+      showToast(listResponse.message || 'Failed to load enquiries.', 'error')
+      return
+    }
+
+    const enquiryList = Array.isArray(listResponse.data)
+      ? listResponse.data
+      : []
+
+    // The list endpoint intentionally returns summary fields only.
+    // Fetch each enquiry's full details without changing the backend API.
+    const detailedEnquiries = await Promise.all(
+      enquiryList.map(async (enquiry) => {
+        const detailResponse = await apiGet(`/enquiries/${enquiry.id}`)
+
+        if (!detailResponse.success) {
+          return {
+            ...enquiry,
+            phoneNumber: '',
+            projectLocation: '',
+            projectType: '',
+            monthlyElectricityBill: null,
+            message: ''
+          }
+        }
+
+        return detailResponse.data
+      })
+    )
+
+    setEnquiries(detailedEnquiries)
+  } catch (error) {
+    console.error('Failed to load enquiries:', error)
+    showToast('Failed to load enquiries.', 'error')
+  } finally {
+    setEnquiriesLoading(false)
+  }
+}
 
   // Filtered leads
   const filteredLeads = data.leads.filter((lead) => {
@@ -128,7 +235,6 @@ export default function AdminPanel({ adminUser, onLogout }) {
     const matchesStatus = leadFilter === 'all' || lead.status === leadFilter
     return matchesSearch && matchesStatus
   })
-
   // Lead status updater
   const handleLeadStatusChange = (id, newStatus) => {
     updateData((prev) => ({
@@ -178,89 +284,257 @@ export default function AdminPanel({ adminUser, onLogout }) {
   }
 
   // Project status toggle
-  const handleToggleProjectStatus = (id) => {
-    updateData((prev) => ({
-      ...prev,
-      projects: prev.projects.map((p) =>
+  const handleToggleProjectStatus = async (id) => {
+  const project = projects.find((p) => p.id === id)
+
+  if (!project) return
+
+  const newStatus =
+    project.status === 'completed'
+      ? 'in_progress'
+      : 'completed'
+
+  try {
+    const result = await apiPatch(
+      `/projects/${id}/status`,
+      { status: newStatus }
+    )
+
+    if (!result.success) {
+      showToast(
+        result.message || 'Failed to update project status'
+      )
+      return
+    }
+
+    setProjects((prev) =>
+      prev.map((p) =>
         p.id === id
-          ? { ...p, status: p.status === 'completed' ? 'in_progress' : 'completed' }
+          ? {
+              ...p,
+              status: newStatus
+            }
           : p
       )
-    }))
+    )
+
     showToast('Project status updated')
+  } catch (error) {
+    console.error('Failed to update project status:', error)
+    showToast('Failed to update project status')
   }
+}
 
   // Delete project
-  const handleDeleteProject = (id) => {
-    if (!window.confirm('Delete this project record?')) return
-    updateData((prev) => ({
-      ...prev,
-      projects: prev.projects.filter((p) => p.id !== id)
-    }))
-    showToast('Project removed')
+ const handleDeleteProject = async (id) => {
+  if (!window.confirm('Delete this project? This action cannot be undone.')) {
+    return
   }
 
-  // Add Project
-  const handleCreateProject = (e) => {
-    e.preventDefault()
-    if (!newProject.title) return
-    const created = {
-      ...newProject,
-      id: 'proj-' + Date.now()
+  try {
+    const result = await apiDelete(`/projects/${id}`)
+
+    if (!result.success) {
+      showToast(result.message || 'Failed to delete project')
+      return
     }
-    updateData((prev) => ({
-      ...prev,
-      projects: [created, ...prev.projects],
-      stats: { ...prev.stats, activeProjects: prev.stats.activeProjects + 1 }
-    }))
+
+    setProjects((prev) =>
+      prev.filter((project) => project.id !== id)
+    )
+
+    showToast('Project deleted successfully')
+  } catch (error) {
+    console.error('Failed to delete project:', error)
+    showToast('Failed to delete project')
+  }
+}
+  // Add Project
+  const handleCreateProject = async (e) => {
+  e.preventDefault()
+
+  if (!newProject.title.trim()) {
+    showToast('Project title is required')
+    return
+  }
+
+  if (!newProject.location.trim()) {
+    showToast('Project location is required')
+    return
+  }
+
+  if (!newProject.description.trim()) {
+    showToast('Project description is required')
+    return
+  }
+
+  if (!newProject.services.trim()) {
+    showToast('At least one service is required')
+    return
+  }
+
+  if (!newProject.image) {
+    showToast('Project image is required')
+    return
+  }
+
+  try {
+    const formData = new FormData()
+
+    formData.append('title', newProject.title.trim())
+    formData.append('category', newProject.category)
+    formData.append('location', newProject.location.trim())
+    formData.append('description', newProject.description.trim())
+    formData.append('services', JSON.stringify(
+      newProject.services
+        .split(',')
+        .map((service) => service.trim())
+        .filter(Boolean)
+    ))
+    formData.append('status', newProject.status)
+    formData.append('image', newProject.image)
+
+    const result = await apiPost('/projects', formData)
+
+    if (!result.success) {
+      showToast(result.message || 'Failed to create project')
+      return
+    }
+
+    const createdProject = result.data
+
+    setProjects((prev) => [
+      createdProject,
+      ...prev
+    ])
+
     setShowAddProjectModal(false)
+
     setNewProject({
       title: '',
       category: 'commercial',
       location: '',
-      capacity: '',
-      client: '',
-      year: '2026',
-      status: 'in_progress'
+      description: '',
+      services: '',
+      status: 'in_progress',
+      image: null
     })
-    showToast('New project registered')
+
+    showToast('Project registered successfully')
+  } catch (error) {
+    console.error('Failed to create project:', error)
+    showToast('Failed to create project')
   }
+}
 
   // Delete product
-  const handleDeleteProduct = (id) => {
-    if (!window.confirm('Delete this product?')) return
-    updateData((prev) => ({
-      ...prev,
-      products: prev.products.filter((p) => p.id !== id),
-      stats: { ...prev.stats, productsListed: Math.max(0, prev.stats.productsListed - 1) }
-    }))
-    showToast('Product deleted')
+const handleDeleteProduct = async (id) => {
+  if (!window.confirm('Delete this product? This action cannot be undone.')) {
+    return
   }
 
-  // Add Product
-  const handleCreateProduct = (e) => {
-    e.preventDefault()
-    if (!newProduct.name) return
-    const created = {
-      ...newProduct,
-      id: 'prod-' + Date.now()
+  try {
+    const result = await apiDelete(`/products/${id}`)
+
+    if (!result.success) {
+      showToast(result.message || 'Failed to delete product')
+      return
     }
-    updateData((prev) => ({
-      ...prev,
-      products: [created, ...prev.products],
-      stats: { ...prev.stats, productsListed: prev.stats.productsListed + 1 }
-    }))
+
+    setProducts((prev) =>
+      prev.filter((product) => product.id !== id)
+    )
+
+    showToast('Product deleted successfully')
+  } catch (error) {
+    console.error('Failed to delete product:', error)
+    showToast('Failed to delete product')
+  }
+}
+
+  // Add Product
+  const handleCreateProduct = async (e) => {
+  e.preventDefault()
+
+  if (!newProduct.name.trim()) {
+    showToast('Product name is required')
+    return
+  }
+
+  if (!newProduct.brand.trim()) {
+    showToast('Brand is required')
+    return
+  }
+
+  if (!newProduct.description.trim()) {
+    showToast('Product description is required')
+    return
+  }
+
+  if (!newProduct.applications.trim()) {
+    showToast('At least one application is required')
+    return
+  }
+
+  if (!newProduct.image) {
+    showToast('Product image is required')
+    return
+  }
+
+  try {
+    const formData = new FormData()
+
+    formData.append('name', newProduct.name.trim())
+    formData.append('category', newProduct.category)
+    formData.append('brand', newProduct.brand.trim())
+    formData.append(
+      'description',
+      newProduct.description.trim()
+    )
+
+    formData.append(
+      'applications',
+      JSON.stringify(
+        newProduct.applications
+          .split(',')
+          .map((application) => application.trim())
+          .filter(Boolean)
+      )
+    )
+
+    formData.append('image', newProduct.image)
+
+    const result = await apiPost('/products', formData)
+
+    if (!result.success) {
+      showToast(result.message || 'Failed to create product')
+      return
+    }
+
+    const createdProduct = result.data
+
+    setProducts((prev) => [
+      createdProduct,
+      ...prev
+    ])
+
     setShowAddProductModal(false)
+
     setNewProduct({
       name: '',
       category: 'Solar Panels',
-      model: '',
-      efficiency: '',
-      warranty: '25 Years',
-      inStock: true
+      brand: '',
+      description: '',
+      applications: '',
+      image: null
     })
-    showToast('Product added to catalog')
+
+    showToast('Product added successfully')
+  } catch (error) {
+    console.error('Failed to create product:', error)
+    showToast('Failed to create product')
   }
+}
 
   // Application status
   const handleAppStatusChange = (id, newStatus) => {
@@ -350,6 +624,34 @@ export default function AdminPanel({ adminUser, onLogout }) {
     setProfileConfirmPassword('')
   }
 
+  // Enquiry status
+  const handleEnquiryStatusChange = async (enquiryId, status) => {
+    const response = await apiPatch(
+      `/enquiries/${enquiryId}/status`,
+      { status }
+    )
+
+    if (!response.success) {
+      showToast(
+        response.message || 'Failed to update enquiry status.',
+        'error'
+      )
+      return
+  }
+
+  setEnquiries((prev) =>
+    prev.map((enquiry) =>
+      enquiry.id === enquiryId
+        ? {
+            ...enquiry,
+            status: response.data?.status || status
+          }
+        : enquiry
+    )
+  )
+
+  showToast(`Enquiry marked as ${status}.`)
+}
   return (
     <div className="adm-layout">
       {/* Sidebar */}
@@ -419,6 +721,8 @@ export default function AdminPanel({ adminUser, onLogout }) {
             <span className="adm-nav-icon"><FiUsers /></span>
             <span>Careers</span>
           </button>
+          
+          <span className="adm-nav-heading">Administration</span>
           <button
             type="button"
             className={`adm-nav-item ${activeTab === 'enquiries' ? 'active' : ''}`}
@@ -772,200 +1076,508 @@ export default function AdminPanel({ adminUser, onLogout }) {
             </div>
           )}
 
-          {/* TAB: PROJECTS */}
-          {activeTab === 'projects' && (
-            <div className="adm-panel-card">
-              <div className="adm-card-header">
-                <h3 className="adm-card-title">
-                  <span>Solar Project Portfolio</span>
-                </h3>
-                <div className="adm-card-controls">
-                  <button
-                    className="adm-btn-action"
-                    onClick={() => setShowAddProjectModal(true)}
-                  >
-                    + Register New Project
-                  </button>
-                </div>
-              </div>
-
-              <div className="adm-table-wrap">
-                <table className="adm-table">
-                  <thead>
-                    <tr>
-                      <th>Project Title</th>
-                      <th>Category</th>
-                      <th>Capacity</th>
-                      <th>Location</th>
-                      <th>Client</th>
-                      <th>Status</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {data.projects.map((proj) => (
-                      <tr key={proj.id}>
-                        <td>
-                          <strong>{proj.title}</strong>
-                          <div style={{ color: 'var(--adm-text-dim)', fontSize: '0.75rem' }}>
-                            Year: {proj.year}
-                          </div>
-                        </td>
-                        <td>
-                          <span className="adm-type-badge">{proj.category}</span>
-                        </td>
-                        <td>
-                          <strong>{proj.capacity}</strong>
-                        </td>
-                        <td>{proj.location}</td>
-                        <td style={{ color: 'var(--adm-text-muted)' }}>{proj.client}</td>
-                        <td>
-                          <button
-                            className={`adm-status-tag ${proj.status}`}
-                            style={{ cursor: 'pointer', border: 'none' }}
-                            onClick={() => handleToggleProjectStatus(proj.id)}
-                            title="Click to toggle status"
-                          >
-                            {proj.status === 'completed' ? <><FiCheck size={13} style={{ verticalAlign: 'middle', marginRight: 2 }} /> Completed</> : <><FiSettings size={13} style={{ verticalAlign: 'middle', marginRight: 2 }} /> In Progress</>}
-                          </button>
-                        </td>
-                        <td>
-                          <button
-                            className="adm-btn-tiny danger"
-                            onClick={() => handleDeleteProject(proj.id)}
-                          >
-                            Delete
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
 
           {/* TAB: PRODUCTS */}
-          {activeTab === 'products' && (
-            <div className="adm-panel-card">
-              <div className="adm-card-header">
-                <h3 className="adm-card-title">
-                  <span>Product Supply & Inventory</span>
-                </h3>
-                <div className="adm-card-controls">
-                  <button
-                    className="adm-btn-action"
-                    onClick={() => setShowAddProductModal(true)}
+          {activeTab === 'projects' && (
+  <div className="adm-panel-card">
+    <div className="adm-card-header">
+      <h3 className="adm-card-title">
+        <span>Solar Project Portfolio</span>
+      </h3>
+
+      <div className="adm-card-controls">
+        <button
+          className="adm-btn-action"
+          onClick={() => setShowAddProjectModal(true)}
+        >
+          + Register New Project
+        </button>
+      </div>
+    </div>
+
+    <div className="adm-table-wrap">
+      <table className="adm-table">
+        <thead>
+          <tr>
+            <th>Project Title</th>
+            <th>Category</th>
+            <th>Services</th>
+            <th>Location</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {projectsLoading ? (
+            <tr>
+              <td
+                colSpan="7"
+                style={{
+                  textAlign: 'center',
+                  padding: '40px'
+                }}
+              >
+                Loading projects...
+              </td>
+            </tr>
+          ) : projects.length === 0 ? (
+            <tr>
+              <td
+                colSpan="7"
+                style={{
+                  textAlign: 'center',
+                  padding: '40px'
+                }}
+              >
+                No projects found.
+              </td>
+            </tr>
+          ) : (
+            projects.map((proj) => (
+              <tr key={proj.id}>
+                {/* Project Title */}
+                <td>
+                  <strong>{proj.title}</strong>
+
+                  <div
+                    style={{
+                      color: 'var(--adm-text-dim)',
+                      fontSize: '0.75rem'
+                    }}
                   >
-                    + Add Product
+                    Added:{' '}
+                    {proj.createdAt
+                      ? new Date(proj.createdAt).toLocaleDateString()
+                      : '—'}
+                  </div>
+                </td>
+
+                {/* Category */}
+                <td>
+                  <span className="adm-type-badge">
+                    {proj.category}
+                  </span>
+                </td>
+
+                {/* Services */}
+                <td>
+                  {Array.isArray(proj.services) &&
+                  proj.services.length > 0 ? (
+                    <span>
+                      {proj.services.length}{' '}
+                      {proj.services.length === 1
+                        ? 'Service'
+                        : 'Services'}
+                    </span>
+                  ) : (
+                    '—'
+                  )}
+                </td>
+
+                {/* Location */}
+                <td>
+                  {proj.location || '—'}
+                </td>
+
+                {/* Description */}
+                <td
+                  style={{
+                    color: 'var(--adm-text-muted)',
+                    maxWidth: '280px'
+                  }}
+                >
+                  {proj.description
+                    ? proj.description.length > 70
+                      ? `${proj.description.slice(0, 70)}...`
+                      : proj.description
+                    : '—'}
+                </td>
+
+                {/* Status */}
+                <td>
+                  <button
+                    className={`adm-status-tag ${proj.status}`}
+                    style={{
+                      cursor: 'pointer',
+                      border: 'none'
+                    }}
+                    onClick={() =>
+                      handleToggleProjectStatus(proj.id)
+                    }
+                    title="Click to toggle status"
+                  >
+                    {proj.status === 'completed' ? (
+                      <>
+                        <FiCheck
+                          size={13}
+                          style={{
+                            verticalAlign: 'middle',
+                            marginRight: 2
+                          }}
+                        />
+                        Completed
+                      </>
+                    ) : (
+                      <>
+                        <FiSettings
+                          size={13}
+                          style={{
+                            verticalAlign: 'middle',
+                            marginRight: 2
+                          }}
+                        />
+                        In Progress
+                      </>
+                    )}
                   </button>
-                </div>
-              </div>
+                </td>
 
-              <div className="adm-table-wrap">
-                <table className="adm-table">
-                  <thead>
-                    <tr>
-                      <th>Product Name</th>
-                      <th>Category</th>
-                      <th>Model Number</th>
-                      <th>Efficiency / Specs</th>
-                      <th>Warranty</th>
-                      <th>Stock</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {data.products.map((prod) => (
-                      <tr key={prod.id}>
-                        <td>
-                          <strong>{prod.name}</strong>
-                        </td>
-                        <td>
-                          <span className="adm-type-badge">{prod.category}</span>
-                        </td>
-                        <td style={{ fontFamily: 'monospace' }}>{prod.model || '—'}</td>
-                        <td>{prod.efficiency || '—'}</td>
-                        <td style={{ color: 'var(--adm-text-muted)' }}>{prod.warranty}</td>
-                        <td>
-                          <span className="adm-status-tag completed">In Stock</span>
-                        </td>
-                        <td>
-                          <button
-                            className="adm-btn-tiny danger"
-                            onClick={() => handleDeleteProduct(prod.id)}
-                          >
-                            Delete
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+                {/* Actions */}
+                <td>
+                  <button
+                    className="adm-btn-tiny danger"
+                    onClick={() =>
+                      handleDeleteProject(proj.id)
+                    }
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))
           )}
+        </tbody>
+      </table>
+    </div>
+  </div>
+)}
+          {activeTab === 'products' && (
+  <div className="adm-panel-card">
+    <div className="adm-card-header">
+      <h3 className="adm-card-title">
+        <span>Product Supply & Inventory</span>
+      </h3>
 
+      <div className="adm-card-controls">
+        <button
+          className="adm-btn-action"
+          onClick={() => setShowAddProductModal(true)}
+        >
+          + Add Product
+        </button>
+      </div>
+    </div>
+
+    <div className="adm-table-wrap">
+      <table className="adm-table">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Category</th>
+            <th>Brand</th>
+            <th>Description</th>
+            <th>Applications</th>
+            <th>Image</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {productsLoading ? (
+            <tr>
+              <td
+                colSpan="7"
+                style={{
+                  textAlign: 'center',
+                  padding: '2rem'
+                }}
+              >
+                Loading products...
+              </td>
+            </tr>
+          ) : products.length === 0 ? (
+            <tr>
+              <td
+                colSpan="7"
+                style={{
+                  textAlign: 'center',
+                  padding: '2rem',
+                  color: 'var(--adm-text-muted)'
+                }}
+              >
+                No products found.
+              </td>
+            </tr>
+          ) : (
+            products.map((prod) => (
+              <tr key={prod.id}>
+
+                {/* Product */}
+                <td>
+                  <strong>{prod.name}</strong>
+                </td>
+
+                {/* Category */}
+                <td>
+                  <span className="adm-type-badge">
+                    {prod.category}
+                  </span>
+                </td>
+
+                {/* Brand */}
+                <td>
+                  {prod.brand || '—'}
+                </td>
+
+                {/* Description */}
+                <td
+                  style={{
+                    maxWidth: '260px',
+                    whiteSpace: 'normal',
+                    lineHeight: '1.4'
+                  }}
+                >
+                  {prod.description || '—'}
+                </td>
+
+                {/* Applications */}
+                <td
+                  style={{
+                    maxWidth: '220px',
+                    whiteSpace: 'normal'
+                  }}
+                >
+                  {Array.isArray(prod.applications)
+                    ? prod.applications.join(', ')
+                    : prod.applications || '—'}
+                </td>
+
+                {/* Image */}
+                <td>
+                  {prod.image?.url ? (
+                    <img
+                      src={prod.image.url}
+                      alt={prod.name}
+                      style={{
+                        width: '55px',
+                        height: '55px',
+                        objectFit: 'cover',
+                        borderRadius: '6px'
+                      }}
+                    />
+                  ) : (
+                    '—'
+                  )}
+                </td>
+
+                {/* Delete */}
+                <td>
+                  <button
+                    className="adm-btn-tiny danger"
+                    onClick={() => handleDeleteProduct(prod.id)}
+                  >
+                    Delete
+                  </button>
+                </td>
+
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
+    </div>
+  </div>
+)}
           {/* TAB: ENQUIRIES */}
-          {activeTab === 'enquiries' && (
-            <div className="adm-panel-card">
-              <div className="adm-card-header">
-                <h3 className="adm-card-title">
-                  <span>Customer Messages & Consultation Inquiries</span>
-                </h3>
-              </div>
+         {activeTab === 'enquiries' && (
+  <div className="adm-panel-card">
+    <div className="adm-card-header">
+      <h3 className="adm-card-title">
+        <span>Customer Messages & Consultation Inquiries</span>
+      </h3>
+    </div>
 
-              <div className="adm-table-wrap">
-                <table className="adm-table">
-                  <thead>
-                    <tr>
-                      <th>Customer Details</th>
-                      <th>Area / Service</th>
-                      <th>Inquiry Message</th>
-                      <th>Received</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {data.enquiries.map((enq) => (
-                      <tr key={enq.id}>
-                        <td>
-                          <strong>{enq.name}</strong>
-                            <div style={{ color: 'var(--adm-text-muted)', fontSize: '0.75rem' }}>
-                            <FiPhone size={11} style={{ verticalAlign: 'middle', marginRight: 3 }} />{enq.phone}
-                           </div>
-                            <div style={{ color: 'var(--adm-text-dim)', fontSize: '0.72rem' }}>
-                            <FiMail size={11} style={{ verticalAlign: 'middle', marginRight: 3 }} />{enq.email}
-                           </div>
-                        </td>
-                        <td>
-                          <span className="adm-type-badge">{enq.service}</span>
-                        </td>
-                        <td style={{ maxWidth: '400px' }}>
-                          <div style={{ fontSize: '0.84rem', color: 'var(--adm-text)', background: 'rgba(255,255,255,0.03)', padding: '10px', borderRadius: '6px' }}>
-                            {enq.message}
-                          </div>
-                        </td>
-                        <td style={{ color: 'var(--adm-text-dim)', fontSize: '0.75rem' }}>
-                          {enq.date}
-                        </td>
-                        <td>
-                          <select
-                            className="adm-filter-select"
-                            value={enq.status}
-                            onChange={(e) => handleEnquiryStatusChange(enq.id, e.target.value)}
-                          >
-                            <option value="new">New</option>
-                            <option value="responded">Responded</option>
-                          </select>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
+    <div className="adm-table-wrap">
+      {enquiriesLoading ? (
+        <div
+          style={{
+            padding: '40px',
+            textAlign: 'center',
+            color: 'var(--adm-text-muted)'
+          }}
+        >
+          Loading enquiries...
+        </div>
+      ) : enquiries.length === 0 ? (
+        <div
+          style={{
+            padding: '40px',
+            textAlign: 'center',
+            color: 'var(--adm-text-muted)'
+          }}
+        >
+          No customer enquiries found.
+        </div>
+      ) : (
+        <table className="adm-table">
+          <thead>
+            <tr>
+              <th>Customer Details</th>
+              <th>Area / Service</th>
+              <th>Inquiry Message</th>
+              <th>Received</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {enquiries.map((enq) => (
+              <tr key={enq.id}>
+                {/* CUSTOMER DETAILS */}
+                <td>
+                  <strong>{enq.fullName}</strong>
+
+                  {enq.companyName && (
+                    <div
+                      style={{
+                        color: 'var(--adm-text-muted)',
+                        fontSize: '0.75rem',
+                        marginTop: '3px'
+                      }}
+                    >
+                      {enq.companyName}
+                    </div>
+                  )}
+
+                  <div
+                    style={{
+                      color: 'var(--adm-text-muted)',
+                      fontSize: '0.75rem',
+                      marginTop: '3px'
+                    }}
+                  >
+                    <FiPhone
+                      size={11}
+                      style={{
+                        verticalAlign: 'middle',
+                        marginRight: 3
+                      }}
+                    />
+                    {enq.phoneNumber || '—'}
+                  </div>
+
+                  <div
+                    style={{
+                      color: 'var(--adm-text-dim)',
+                      fontSize: '0.72rem',
+                      marginTop: '3px'
+                    }}
+                  >
+                    <FiMail
+                      size={11}
+                      style={{
+                        verticalAlign: 'middle',
+                        marginRight: 3
+                      }}
+                    />
+                    {enq.emailAddress}
+                  </div>
+                </td>
+
+                {/* AREA / SERVICE */}
+                <td>
+                  <span className="adm-type-badge">
+                    {enq.projectType || '—'}
+                  </span>
+
+                  {enq.projectLocation && (
+                    <div
+                      style={{
+                        marginTop: '6px',
+                        color: 'var(--adm-text-dim)',
+                        fontSize: '0.72rem'
+                      }}
+                    >
+                      {enq.projectLocation}
+                    </div>
+                  )}
+                </td>
+
+                {/* MESSAGE */}
+                <td style={{ maxWidth: '400px' }}>
+                  <div
+                    style={{
+                      fontSize: '0.84rem',
+                      color: 'var(--adm-text)',
+                      background: 'rgba(255,255,255,0.03)',
+                      padding: '10px',
+                      borderRadius: '6px'
+                    }}
+                  >
+                    {enq.message || 'No message provided.'}
+                  </div>
+
+                  {enq.monthlyElectricityBill !== null &&
+                    enq.monthlyElectricityBill !== undefined && (
+                      <div
+                        style={{
+                          marginTop: '6px',
+                          color: 'var(--adm-text-dim)',
+                          fontSize: '0.72rem'
+                        }}
+                      >
+                        Monthly electricity bill:{' '}
+                        ₹{Number(enq.monthlyElectricityBill).toLocaleString('en-IN')}
+                      </div>
+                    )}
+                </td>
+
+                {/* RECEIVED */}
+                <td
+                  style={{
+                    color: 'var(--adm-text-dim)',
+                    fontSize: '0.75rem'
+                  }}
+                >
+                  {enq.createdAt
+                    ? new Date(enq.createdAt).toLocaleString('en-IN', {
+                        day: '2-digit',
+                        month: 'short',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })
+                    : '—'}
+                </td>
+
+                {/* STATUS */}
+                <td>
+                  <select
+                    className="adm-filter-select"
+                    value={enq.status}
+                    onChange={(e) =>
+                      handleEnquiryStatusChange(
+                        enq.id,
+                        e.target.value
+                      )
+                    }
+                    disabled={enq.status === 'Resolved'}
+                  >
+                    <option value="Unread">Unread</option>
+                    <option value="Read">Read</option>
+                    <option value="Resolved">Resolved</option>
+                  </select>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  </div>
+)}
 
           {/* TAB: CAREERS */}
           {activeTab === 'careers' && (
@@ -1427,166 +2039,455 @@ export default function AdminPanel({ adminUser, onLogout }) {
 
       {/* ADD PROJECT MODAL */}
       {showAddProjectModal && (
-        <div className="adm-modal-backdrop" onClick={() => setShowAddProjectModal(false)}>
-          <div className="adm-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="adm-modal-header">
-              <h3>Register New Solar Project</h3>
-              <button className="adm-modal-close" onClick={() => setShowAddProjectModal(false)}><FiX /></button>
-            </div>
-            <form onSubmit={handleCreateProject}>
-              <div className="adm-modal-body">
-                <div className="adm-form-group">
-                  <label>Project Title *</label>
-                  <input
-                    type="text"
-                    required
-                    className="adm-search-input"
-                    style={{ width: '100%' }}
-                    value={newProject.title}
-                    onChange={(e) => setNewProject({ ...newProject, title: e.target.value })}
-                    placeholder="e.g. Vizianagaram Industrial Solar Facility"
-                  />
-                </div>
-                <div className="adm-form-group">
-                  <label>Category</label>
-                  <select
-                    className="adm-filter-select"
-                    style={{ width: '100%' }}
-                    value={newProject.category}
-                    onChange={(e) => setNewProject({ ...newProject, category: e.target.value })}
-                  >
-                    <option value="commercial">Commercial</option>
-                    <option value="industrial">Industrial</option>
-                    <option value="residential">Residential</option>
-                  </select>
-                </div>
-                <div className="adm-form-group">
-                  <label>Installed Capacity</label>
-                  <input
-                    type="text"
-                    className="adm-search-input"
-                    style={{ width: '100%' }}
-                    value={newProject.capacity}
-                    onChange={(e) => setNewProject({ ...newProject, capacity: e.target.value })}
-                    placeholder="e.g. 500 kW Ground Mount"
-                  />
-                </div>
-                <div className="adm-form-group">
-                  <label>Location</label>
-                  <input
-                    type="text"
-                    className="adm-search-input"
-                    style={{ width: '100%' }}
-                    value={newProject.location}
-                    onChange={(e) => setNewProject({ ...newProject, location: e.target.value })}
-                    placeholder="e.g. Parawada, Visakhapatnam"
-                  />
-                </div>
-                <div className="adm-form-group">
-                  <label>Client Organization</label>
-                  <input
-                    type="text"
-                    className="adm-search-input"
-                    style={{ width: '100%' }}
-                    value={newProject.client}
-                    onChange={(e) => setNewProject({ ...newProject, client: e.target.value })}
-                    placeholder="e.g. Apex Steel Industries"
-                  />
-                </div>
-              </div>
-              <div className="adm-modal-footer">
-                <button
-                  type="button"
-                  className="adm-btn-secondary"
-                  onClick={() => setShowAddProjectModal(false)}
-                >
-                  Cancel
-                </button>
-                <button type="submit" className="adm-btn-action">
-                  Register Project
-                </button>
-              </div>
-            </form>
+  <div
+    className="adm-modal-backdrop"
+    onClick={() => setShowAddProjectModal(false)}
+  >
+    <div
+      className="adm-modal"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <div className="adm-modal-header">
+        <h3>Register New Solar Project</h3>
+
+        <button
+          type="button"
+          className="adm-modal-close"
+          onClick={() => setShowAddProjectModal(false)}
+        >
+          <FiX />
+        </button>
+      </div>
+
+      <form onSubmit={handleCreateProject}>
+        <div className="adm-modal-body">
+
+          {/* Project Title */}
+          <div className="adm-form-group">
+            <label>Project Title *</label>
+
+            <input
+              type="text"
+              required
+              className="adm-search-input"
+              style={{ width: '100%' }}
+              value={newProject.title}
+              onChange={(e) =>
+                setNewProject({
+                  ...newProject,
+                  title: e.target.value
+                })
+              }
+              placeholder="e.g. Vizianagaram Industrial Solar Facility"
+            />
           </div>
+
+          {/* Category */}
+          <div className="adm-form-group">
+            <label>Category *</label>
+
+            <select
+  required
+  className="adm-filter-select"
+  style={{ width: '100%' }}
+  value={newProject.category}
+  onChange={(e) =>
+    setNewProject({
+      ...newProject,
+      category: e.target.value
+    })
+  }
+>
+  <option value="commercial">Commercial</option>
+  <option value="industrial">Industrial</option>
+  <option value="residential">Residential</option>
+  <option value="government">Government</option>
+</select>
+          </div>
+
+          {/* Location */}
+          <div className="adm-form-group">
+            <label>Location *</label>
+
+            <input
+              type="text"
+              required
+              className="adm-search-input"
+              style={{ width: '100%' }}
+              value={newProject.location}
+              onChange={(e) =>
+                setNewProject({
+                  ...newProject,
+                  location: e.target.value
+                })
+              }
+              placeholder="e.g. Parawada, Visakhapatnam"
+            />
+          </div>
+
+          {/* Description */}
+          <div className="adm-form-group">
+            <label>Project Description *</label>
+
+            <textarea
+              required
+              className="adm-search-input"
+              style={{
+                width: '100%',
+                minHeight: '110px',
+                resize: 'vertical'
+              }}
+              value={newProject.description}
+              onChange={(e) =>
+                setNewProject({
+                  ...newProject,
+                  description: e.target.value
+                })
+              }
+              placeholder="Describe the project, installation, capacity, scope, or other important details..."
+            />
+          </div>
+
+          {/* Services */}
+          <div className="adm-form-group">
+            <label>Services *</label>
+
+            <input
+              type="text"
+              required
+              className="adm-search-input"
+              style={{ width: '100%' }}
+              value={newProject.services}
+              onChange={(e) =>
+                setNewProject({
+                  ...newProject,
+                  services: e.target.value
+                })
+              }
+              placeholder="e.g. EPC, Installation, O&M"
+            />
+
+            <small
+              style={{
+                display: 'block',
+                marginTop: '6px',
+                color: 'var(--adm-text-dim)'
+              }}
+            >
+              Separate multiple services with commas.
+            </small>
+          </div>
+
+          {/* Status */}
+          <div className="adm-form-group">
+            <label>Status</label>
+
+            <select
+              className="adm-filter-select"
+              style={{ width: '100%' }}
+              value={newProject.status}
+              onChange={(e) =>
+                setNewProject({
+                  ...newProject,
+                  status: e.target.value
+                })
+              }
+            >
+              <option value="in_progress">In Progress</option>
+              <option value="completed">Completed</option>
+            </select>
+          </div>
+
+          {/* Project Image */}
+          <div className="adm-form-group">
+            <label>Project Image *</label>
+
+            <input
+              type="file"
+              required
+              accept="image/*"
+              className="adm-search-input"
+              style={{ width: '100%' }}
+              onChange={(e) =>
+                setNewProject({
+                  ...newProject,
+                  image: e.target.files?.[0] || null
+                })
+              }
+            />
+
+            <small
+              style={{
+                display: 'block',
+                marginTop: '6px',
+                color: 'var(--adm-text-dim)'
+              }}
+            >
+              Upload the main image for this project.
+            </small>
+
+            {newProject.image && (
+              <div
+                style={{
+                  marginTop: '10px',
+                  fontSize: '0.85rem',
+                  color: 'var(--adm-text-muted)'
+                }}
+              >
+                Selected: {newProject.image.name}
+              </div>
+            )}
+          </div>
+
         </div>
-      )}
+
+        <div className="adm-modal-footer">
+          <button
+            type="button"
+            className="adm-btn-secondary"
+            onClick={() => setShowAddProjectModal(false)}
+          >
+            Cancel
+          </button>
+
+          <button
+            type="submit"
+            className="adm-btn-action"
+          >
+            Register Project
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+)}
 
       {/* ADD PRODUCT MODAL */}
       {showAddProductModal && (
-        <div className="adm-modal-backdrop" onClick={() => setShowAddProductModal(false)}>
-          <div className="adm-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="adm-modal-header">
-              <h3>Add Product to Catalog</h3>
-              <button className="adm-modal-close" onClick={() => setShowAddProductModal(false)}><FiX /></button>
-            </div>
-            <form onSubmit={handleCreateProduct}>
-              <div className="adm-modal-body">
-                <div className="adm-form-group">
-                  <label>Product Name *</label>
-                  <input
-                    type="text"
-                    required
-                    className="adm-search-input"
-                    style={{ width: '100%' }}
-                    value={newProduct.name}
-                    onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
-                    placeholder="e.g. Mono PERC Bifacial 550W Module"
-                  />
-                </div>
-                <div className="adm-form-group">
-                  <label>Category</label>
-                  <select
-                    className="adm-filter-select"
-                    style={{ width: '100%' }}
-                    value={newProduct.category}
-                    onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })}
-                  >
-                    <option value="Solar Panels">Solar Panels</option>
-                    <option value="Inverters">Inverters</option>
-                    <option value="Solar Pumps">Solar Pumps</option>
-                    <option value="Batteries">Batteries & Storage</option>
-                    <option value="Accessories">Accessories & Balance of System</option>
-                  </select>
-                </div>
-                <div className="adm-form-group">
-                  <label>Model Number</label>
-                  <input
-                    type="text"
-                    className="adm-search-input"
-                    style={{ width: '100%' }}
-                    value={newProduct.model}
-                    onChange={(e) => setNewProduct({ ...newProduct, model: e.target.value })}
-                    placeholder="e.g. NS-MB-550"
-                  />
-                </div>
-                <div className="adm-form-group">
-                  <label>Efficiency / Performance Specification</label>
-                  <input
-                    type="text"
-                    className="adm-search-input"
-                    style={{ width: '100%' }}
-                    value={newProduct.efficiency}
-                    onChange={(e) => setNewProduct({ ...newProduct, efficiency: e.target.value })}
-                    placeholder="e.g. 21.8% Efficiency"
-                  />
-                </div>
-              </div>
-              <div className="adm-modal-footer">
-                <button
-                  type="button"
-                  className="adm-btn-secondary"
-                  onClick={() => setShowAddProductModal(false)}
-                >
-                  Cancel
-                </button>
-                <button type="submit" className="adm-btn-action">
-                  Add Product
-                </button>
-              </div>
-            </form>
+  <div
+    className="adm-modal-backdrop"
+    onClick={() => setShowAddProductModal(false)}
+  >
+    <div
+      className="adm-modal"
+      onClick={(e) => e.stopPropagation()}
+    >
+
+      <div className="adm-modal-header">
+        <h3>Add New Product</h3>
+
+        <button
+          type="button"
+          className="adm-modal-close"
+          onClick={() => setShowAddProductModal(false)}
+        >
+          <FiX />
+        </button>
+      </div>
+
+      <form onSubmit={handleCreateProduct}>
+
+        <div className="adm-modal-body">
+
+          {/* Product Name */}
+          <div className="adm-form-group">
+            <label>Product Name *</label>
+
+            <input
+              type="text"
+              required
+              className="adm-search-input"
+              style={{ width: '100%' }}
+              value={newProduct.name}
+              onChange={(e) =>
+                setNewProduct({
+                  ...newProduct,
+                  name: e.target.value
+                })
+              }
+              placeholder="e.g. 550W Mono PERC Solar Panel"
+            />
           </div>
+
+          {/* Category */}
+          <div className="adm-form-group">
+            <label>Category *</label>
+
+            <select
+              required
+              className="adm-filter-select"
+              style={{ width: '100%' }}
+              value={newProduct.category}
+              onChange={(e) =>
+                setNewProduct({
+                  ...newProduct,
+                  category: e.target.value
+                })
+              }
+            >
+              <option value="Solar Panels">
+                Solar Panels
+              </option>
+
+              <option value="Solar Inverters">
+                Solar Inverters
+              </option>
+
+              <option value="Mounting Structures">
+                Mounting Structures
+              </option>
+
+              <option value="Solar Cables">
+                Solar Cables
+              </option>
+
+              <option value="Earth Pits & Arrestors">
+                Earth Pits & Arrestors
+              </option>
+
+              <option value="Solar Pumps">
+                Solar Pumps
+              </option>
+
+              <option value="Electrical Accessories">
+                Electrical Accessories
+              </option>
+
+              <option value="Other Components">
+                Other Components
+              </option>
+            </select>
+          </div>
+
+          {/* Brand */}
+          <div className="adm-form-group">
+            <label>Brand *</label>
+
+            <input
+              type="text"
+              required
+              className="adm-search-input"
+              style={{ width: '100%' }}
+              value={newProduct.brand}
+              onChange={(e) =>
+                setNewProduct({
+                  ...newProduct,
+                  brand: e.target.value
+                })
+              }
+              placeholder="e.g. Tata Power Solar"
+            />
+          </div>
+
+          {/* Description */}
+          <div className="adm-form-group">
+            <label>Product Description *</label>
+
+            <textarea
+              required
+              className="adm-search-input"
+              style={{
+                width: '100%',
+                minHeight: '110px',
+                resize: 'vertical'
+              }}
+              value={newProduct.description}
+              onChange={(e) =>
+                setNewProduct({
+                  ...newProduct,
+                  description: e.target.value
+                })
+              }
+              placeholder="Describe the product, specifications, features, etc."
+            />
+          </div>
+
+          {/* Applications */}
+          <div className="adm-form-group">
+            <label>Applications *</label>
+
+            <input
+              type="text"
+              required
+              className="adm-search-input"
+              style={{ width: '100%' }}
+              value={newProduct.applications}
+              onChange={(e) =>
+                setNewProduct({
+                  ...newProduct,
+                  applications: e.target.value
+                })
+              }
+              placeholder="e.g. Rooftop Solar, Industrial, Commercial"
+            />
+
+            <small
+              style={{
+                display: 'block',
+                marginTop: '6px',
+                color: 'var(--adm-text-dim)'
+              }}
+            >
+              Separate multiple applications with commas.
+            </small>
+          </div>
+
+          {/* Image */}
+          <div className="adm-form-group">
+            <label>Product Image *</label>
+
+            <input
+              type="file"
+              required
+              accept="image/*"
+              className="adm-search-input"
+              style={{ width: '100%' }}
+              onChange={(e) =>
+                setNewProduct({
+                  ...newProduct,
+                  image: e.target.files?.[0] || null
+                })
+              }
+            />
+
+            {newProduct.image && (
+              <div
+                style={{
+                  marginTop: '8px',
+                  fontSize: '0.85rem',
+                  color: 'var(--adm-text-muted)'
+                }}
+              >
+                Selected: {newProduct.image.name}
+              </div>
+            )}
+          </div>
+
         </div>
-      )}
+
+        <div className="adm-modal-footer">
+
+          <button
+            type="button"
+            className="adm-btn-secondary"
+            onClick={() => setShowAddProductModal(false)}
+          >
+            Cancel
+          </button>
+
+          <button
+            type="submit"
+            className="adm-btn-action"
+          >
+            Add Product
+          </button>
+
+        </div>
+
+      </form>
+    </div>
+  </div>
+)}
 
       {/* ADD MEDIA MODAL */}
       {showAddMediaModal && (

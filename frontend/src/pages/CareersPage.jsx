@@ -1,6 +1,17 @@
 import { useState, useEffect } from 'react'
 import { SiteHeader, SiteFooter, Arrow, Reveal, navigate } from '../components/Shared'
-import { FiMapPin, FiClock, FiUsers, FiFileText, FiPaperclip, FiX, FiCheck } from 'react-icons/fi'
+import { apiGet, apiPost } from '../utils/api'
+import { 
+  FiMapPin, 
+  FiClock, 
+  FiUsers, 
+  FiFileText, 
+  FiPaperclip, 
+  FiX, 
+  FiCheck,
+  FiZap,
+  FiSun
+} from 'react-icons/fi'
 
 export const jobListings = [
   {
@@ -147,6 +158,36 @@ export const jobListings = [
   }
 ]
 
+const mapApiJobToFrontend = (job) => ({
+  id: job.id || job._id,
+  backendId: job.id || job._id,
+
+  title: job.jobTitle || '',
+  department: (job.department || '').toLowerCase(),
+
+  deptLabel: job.department || 'General',
+
+  location: job.location || '',
+  experience: job.experienceRequired || '',
+  type: job.employmentType || '',
+
+  openings: job.numberOfOpenings || 0,
+
+  overview: job.jobDescription || '',
+
+  responsibilities: Array.isArray(job.jobResponsibilities)
+    ? job.jobResponsibilities
+    : [],
+
+  requirements: job.qualification
+    ? [job.qualification]
+    : [],
+
+  applicationDeadline: job.applicationDeadline,
+  jobStatus: job.jobStatus
+})
+
+
 export default function CareersPage() {
   const [activeDepartment, setActiveDepartment] = useState('ALL')
   const [selectedJob, setSelectedJob] = useState(null)
@@ -161,23 +202,78 @@ export default function CareersPage() {
   const [applicantLocation, setApplicantLocation] = useState('')
   const [applicantNote, setApplicantNote] = useState('')
 
+
+  const [jobs, setJobs] = useState(jobListings)
+  const [jobsStatus, setJobsStatus] = useState('loading')
+  const [jobsError, setJobsError] = useState('')
+
+  const [resumeFile, setResumeFile] = useState(null)
+  const [applicationSubmitting, setApplicationSubmitting] = useState(false)
+  const [applicationError, setApplicationError] = useState('')
+
+  const loadJobs = async () => {
+  setJobsStatus('loading')
+  setJobsError('')
+
+  const result = await apiGet('/jobs')
+
+  if (!result.success) {
+    setJobs(jobListings)
+    setJobsStatus('error')
+    setJobsError(result.message || 'Unable to load current openings.')
+    return
+  }
+
+  const apiJobs = Array.isArray(result.data)
+    ? result.data.map(mapApiJobToFrontend)
+    : []
+
+  setJobs(apiJobs)
+  setJobsStatus(apiJobs.length ? 'ready' : 'empty')
+}
+
   useEffect(() => {
-    document.title = 'Careers | N Solutions Solar EPC'
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }, [])
+  document.title = 'Careers | N Solutions Solar EPC'
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+
+  loadJobs()
+}, [])
 
   const departments = [
-    { id: 'ALL', label: 'All Openings', count: jobListings.length },
-    { id: 'engineering', label: 'Engineering & Design', count: jobListings.filter(j => j.department === 'engineering').length },
-    { id: 'execution', label: 'Project Execution & EPC', count: jobListings.filter(j => j.department === 'execution').length },
-    { id: 'om', label: 'Operations & Maintenance', count: jobListings.filter(j => j.department === 'om').length },
-    { id: 'sales', label: 'Business Development', count: jobListings.filter(j => j.department === 'sales').length },
-    { id: 'liaison', label: 'Regulatory & Liaison', count: jobListings.filter(j => j.department === 'liaison').length },
-  ]
-
+  {
+    id: 'ALL',
+    label: 'All Openings',
+    count: jobs.length
+  },
+  {
+    id: 'engineering',
+    label: 'Engineering & Design',
+    count: jobs.filter(j => j.department === 'engineering').length
+  },
+  {
+    id: 'execution',
+    label: 'Project Execution & EPC',
+    count: jobs.filter(j => j.department === 'execution').length
+  },
+  {
+    id: 'om',
+    label: 'Operations & Maintenance',
+    count: jobs.filter(j => j.department === 'om').length
+  },
+  {
+    id: 'sales',
+    label: 'Business Development',
+    count: jobs.filter(j => j.department === 'sales').length
+  },
+  {
+    id: 'liaison',
+    label: 'Regulatory & Liaison',
+    count: jobs.filter(j => j.department === 'liaison').length
+  }
+]
   const filteredJobs = activeDepartment === 'ALL'
-    ? jobListings
-    : jobListings.filter(j => j.department === activeDepartment)
+  ? jobs
+  : jobs.filter(j => j.department === activeDepartment)
 
   const handleApplyClick = (job) => {
     setSelectedJob(job)
@@ -185,12 +281,46 @@ export default function CareersPage() {
     setApplicationSuccess(false)
   }
 
-  const handleSubmitApplication = (e) => {
-    e.preventDefault()
-    // Simulated submission
-    setApplicationSuccess(true)
+  const handleSubmitApplication = async (e) => {
+  e.preventDefault()
+
+  if (!selectedJob?.backendId) {
+    setApplicationError('Unable to identify this job. Please select an active opening.')
+    return
   }
 
+  if (!resumeFile) {
+    setApplicationError('Please upload your resume before submitting.')
+    return
+  }
+
+  setApplicationSubmitting(true)
+  setApplicationError('')
+
+  const formData = new FormData()
+
+  formData.append('jobId', selectedJob.backendId)
+  formData.append('fullName', applicantName.trim())
+  formData.append('email', applicantEmail.trim())
+  formData.append('phoneNumber', applicantPhone.trim())
+  formData.append('positionAppliedFor', selectedJob.title || '')
+  formData.append('yearsOfExperience', applicantExp === 'fresher' ? '0' : applicantExp.split('-')[0])
+  formData.append('message', applicantNote.trim())
+  formData.append('resume', resumeFile)
+
+  const result = await apiPost('/job-applications', formData)
+
+  setApplicationSubmitting(false)
+
+  if (!result.success) {
+    setApplicationError(
+      result.message || 'Unable to submit your application. Please try again.'
+    )
+    return
+  }
+
+  setApplicationSuccess(true)
+}
   return (
     <div className="careers-page">
       <SiteHeader activePath="/careers" />
@@ -215,7 +345,7 @@ export default function CareersPage() {
 
             <div className="careers-hero-actions">
               <a className="button button-accent" href="#openings">
-                Explore Open Positions ({jobListings.length}) <Arrow />
+                Explore Open Positions ({jobs.length}) <Arrow />
               </a>
             </div>
           </div>
@@ -338,17 +468,6 @@ export default function CareersPage() {
               </p>
             </div>
             <div className="spontaneous-actions">
-              <button 
-                type="button" 
-                className="button button-accent"
-                onClick={() => {
-                  setSelectedJob({ title: 'General Solar Engineering Application', deptLabel: 'Open Consideration' })
-                  setIsApplying(true)
-                  setApplicationSuccess(false)
-                }}
-              >
-                Submit General Application <Arrow />
-              </button>
               <span>Or email your resume to <strong>careers@nsolutions.in</strong></span>
             </div>
           </div>
@@ -362,18 +481,17 @@ export default function CareersPage() {
                 type="button" 
                 className="modal-close-btn"
                 onClick={() => setSelectedJob(null)}
-                aria-label="Close dialog"
               >
-                <FiX />
+                ✕
               </button>
 
               <div className="job-modal-header">
                 <span className="badge-tag">{selectedJob.deptLabel}</span>
                 <h2>{selectedJob.title}</h2>
                 <div className="job-modal-pills">
-                  <span><FiMapPin style={{ marginRight: '5px', verticalAlign: 'middle' }} /> {selectedJob.location}</span>
-                  <span><FiClock style={{ marginRight: '5px', verticalAlign: 'middle' }} /> {selectedJob.experience}</span>
-                  <span><FiFileText style={{ marginRight: '5px', verticalAlign: 'middle' }} /> {selectedJob.type}</span>
+                  <span>📍 {selectedJob.location}</span>
+                  <span>⏱ {selectedJob.experience}</span>
+                  <span>📋 {selectedJob.type}</span>
                 </div>
               </div>
 
@@ -434,9 +552,8 @@ export default function CareersPage() {
                 type="button" 
                 className="modal-close-btn"
                 onClick={() => setIsApplying(false)}
-                aria-label="Close dialog"
               >
-                <FiX />
+                ✕
               </button>
 
               <div className="job-modal-header">
@@ -449,7 +566,7 @@ export default function CareersPage() {
 
               {applicationSuccess ? (
                 <div className="application-success-view">
-                  <div className="success-icon"><FiCheck /></div>
+                  <div className="success-icon">✓</div>
                   <h3>Application Submitted Successfully!</h3>
                   <p>
                     Thank you, <strong>{applicantName || 'Candidate'}</strong>. Your application for <strong>{selectedJob?.title}</strong> has been received by our recruitment desk.
@@ -470,100 +587,156 @@ export default function CareersPage() {
                 </div>
               ) : (
                 <form onSubmit={handleSubmitApplication} className="application-form">
-                  <div className="form-row-grid">
-                    <div className="form-group">
-                      <label htmlFor="app-name">Full Name *</label>
-                      <input 
-                        id="app-name"
-                        type="text" 
-                        required 
-                        placeholder="e.g. Rajesh Kumar"
-                        value={applicantName}
-                        onChange={(e) => setApplicantName(e.target.value)}
-                      />
-                    </div>
+  <div className="form-row-grid">
+    <div className="form-group">
+      <label htmlFor="app-name">Full Name *</label>
+      <input
+        id="app-name"
+        type="text"
+        required
+        placeholder="e.g. Rajesh Kumar"
+        value={applicantName}
+        onChange={(e) => setApplicantName(e.target.value)}
+      />
+    </div>
 
-                    <div className="form-group">
-                      <label htmlFor="app-email">Email Address *</label>
-                      <input 
-                        id="app-email"
-                        type="email" 
-                        required 
-                        placeholder="e.g. rajesh@domain.com"
-                        value={applicantEmail}
-                        onChange={(e) => setApplicantEmail(e.target.value)}
-                      />
-                    </div>
-                  </div>
+    <div className="form-group">
+      <label htmlFor="app-email">Email Address *</label>
+      <input
+        id="app-email"
+        type="email"
+        required
+        placeholder="e.g. rajesh@domain.com"
+        value={applicantEmail}
+        onChange={(e) => setApplicantEmail(e.target.value)}
+      />
+    </div>
+  </div>
 
-                  <div className="form-row-grid">
-                    <div className="form-group">
-                      <label htmlFor="app-phone">Phone / WhatsApp Number *</label>
-                      <input 
-                        id="app-phone"
-                        type="tel" 
-                        required 
-                        placeholder="e.g. +91 98765 43210"
-                        value={applicantPhone}
-                        onChange={(e) => setApplicantPhone(e.target.value)}
-                      />
-                    </div>
+  <div className="form-row-grid">
+    <div className="form-group">
+      <label htmlFor="app-phone">Phone / WhatsApp Number *</label>
+      <input
+        id="app-phone"
+        type="tel"
+        required
+        placeholder="e.g. +91 98765 43210"
+        value={applicantPhone}
+        onChange={(e) => setApplicantPhone(e.target.value)}
+      />
+    </div>
 
-                    <div className="form-group">
-                      <label htmlFor="app-exp">Years of Solar / Engineering Experience</label>
-                      <select 
-                        id="app-exp"
-                        value={applicantExp} 
-                        onChange={(e) => setApplicantExp(e.target.value)}
-                      >
-                        <option value="fresher">Fresher / Graduate (&lt;1 yr)</option>
-                        <option value="1-3">1 – 3 Years</option>
-                        <option value="3-5">3 – 5 Years</option>
-                        <option value="5-8">5 – 8 Years</option>
-                        <option value="8+">8+ Years Senior Level</option>
-                      </select>
-                    </div>
-                  </div>
+    <div className="form-group">
+      <label htmlFor="app-exp">
+        Years of Solar / Engineering Experience
+      </label>
 
-                  <div className="form-group">
-                    <label htmlFor="app-loc">Current City & State</label>
-                    <input 
-                      id="app-loc"
-                      type="text" 
-                      placeholder="e.g. Visakhapatnam, Andhra Pradesh"
-                      value={applicantLocation}
-                      onChange={(e) => setApplicantLocation(e.target.value)}
-                    />
-                  </div>
+      <select
+        id="app-exp"
+        value={applicantExp}
+        onChange={(e) => setApplicantExp(e.target.value)}
+      >
+        <option value="fresher">
+          Fresher / Graduate (&lt;1 yr)
+        </option>
+        <option value="1-3">1 – 3 Years</option>
+        <option value="3-5">3 – 5 Years</option>
+        <option value="5-8">5 – 8 Years</option>
+        <option value="8+">8+ Years Senior Level</option>
+      </select>
+    </div>
+  </div>
 
-                  <div className="form-group">
-                    <label htmlFor="app-note">Brief Summary of Experience / Key Projects</label>
-                    <textarea 
-                      id="app-note"
-                      rows={3} 
-                      placeholder="Mention your relevant solar design, PVSyst, rooftop or MW execution experience..."
-                      value={applicantNote}
-                      onChange={(e) => setApplicantNote(e.target.value)}
-                    />
-                  </div>
+  <div className="form-group">
+    <label htmlFor="app-loc">Current City & State</label>
 
-                  <div className="form-file-box">
-                    <span><FiPaperclip style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Resume Upload: Send your CV directly with this form or email to careers@nsolutions.in</span>
-                  </div>
+    <input
+      id="app-loc"
+      type="text"
+      placeholder="e.g. Visakhapatnam, Andhra Pradesh"
+      value={applicantLocation}
+      onChange={(e) => setApplicantLocation(e.target.value)}
+    />
+  </div>
 
-                  <div className="application-form-footer">
-                    <button 
-                      type="button" 
-                      className="button button-ghost-dark"
-                      onClick={() => setIsApplying(false)}
-                    >
-                      Cancel
-                    </button>
-                    <button type="submit" className="button button-accent">
-                      Submit Job Application <Arrow />
-                    </button>
-                  </div>
-                </form>
+  <div className="form-group">
+    <label htmlFor="app-note">
+      Brief Summary of Experience / Key Projects
+    </label>
+
+    <textarea
+      id="app-note"
+      rows={3}
+      placeholder="Mention your relevant solar design, PVSyst, rooftop or MW execution experience..."
+      value={applicantNote}
+      onChange={(e) => setApplicantNote(e.target.value)}
+    />
+  </div>
+
+  {/* Resume Upload - API Integration */}
+  <div className="form-file-box">
+    <label htmlFor="app-resume">
+      <FiPaperclip
+        style={{
+          marginRight: '6px',
+          verticalAlign: 'middle'
+        }}
+      />
+      Resume Upload *
+    </label>
+
+    <input
+      id="app-resume"
+      type="file"
+      accept=".pdf,.doc,.docx"
+      required
+      onChange={(e) => {
+        setResumeFile(e.target.files?.[0] || null)
+        setApplicationError('')
+      }}
+    />
+
+    <span>
+      Upload your CV or resume in PDF, DOC, or DOCX format.
+    </span>
+  </div>
+
+  {/* API Error Message */}
+  {applicationError && (
+    <div
+      className="application-error-view"
+      role="alert"
+      aria-live="polite"
+    >
+      {applicationError}
+    </div>
+  )}
+
+  <div className="application-form-footer">
+    <button
+      type="button"
+      className="button button-ghost-dark"
+      onClick={() => setIsApplying(false)}
+      disabled={applicationSubmitting}
+    >
+      Cancel
+    </button>
+
+    <button
+      type="submit"
+      className="button button-accent"
+      disabled={applicationSubmitting}
+    >
+      {applicationSubmitting ? (
+        'Submitting...'
+      ) : (
+        <>
+          Submit Job Application <Arrow />
+        </>
+      )}
+    </button>
+  </div>
+</form>
               )}
             </div>
           </div>

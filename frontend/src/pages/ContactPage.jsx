@@ -1,6 +1,62 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { SiteHeader, SiteFooter, Arrow, Reveal } from '../components/Shared'
-import { FiPhone, FiSmartphone, FiMail, FiGlobe, FiClock, FiZap, FiCheck, FiPlus, FiMinus } from 'react-icons/fi'
+import { apiPost } from '../utils/api'
+import {
+  FiPhone,
+  FiSmartphone,
+  FiMail,
+  FiGlobe,
+  FiClock,
+  FiZap,
+  FiCheck,
+  FiPlus,
+  FiMinus
+} from 'react-icons/fi'
+
+const ENQUIRY_PROJECT_TYPES = [
+  'Commercial Solar',
+  'Industrial Solar',
+  'Residential Rooftop',
+  'PM Surya Ghar',
+  'Government Project',
+  'Solar Pump',
+  'O&M Services',
+  'Product Enquiry',
+  'Other'
+]
+
+const ENQUIRY_PROJECT_TYPE_MAP = {
+  'PM Surya Ghar Residential Rooftop': 'PM Surya Ghar',
+  'Commercial Solar Installation': 'Commercial Solar',
+  'Industrial Solar EPC': 'Industrial Solar',
+  'PM-KUSUM Agri Solar Pumps': 'Solar Pump',
+  'Solar Operation & Maintenance': 'O&M Services',
+  'Solar Products & Inverters': 'Product Enquiry'
+}
+
+function mapEnquiryProjectType(value) {
+  if (ENQUIRY_PROJECT_TYPES.includes(value)) return value
+  return ENQUIRY_PROJECT_TYPE_MAP[value] || 'Other'
+}
+
+function buildEnquiryPayload(formData) {
+  const payload = {
+    fullName: formData.fullName.trim(),
+    phoneNumber: formData.phone.trim(),
+    emailAddress: formData.email.trim(),
+    projectType: mapEnquiryProjectType(formData.projectType)
+  }
+
+  const companyName = formData.organization.trim()
+  const projectLocation = formData.location.trim()
+  const message = formData.message.trim()
+
+  if (companyName) payload.companyName = companyName
+  if (projectLocation) payload.projectLocation = projectLocation
+  if (message) payload.message = message
+
+  return payload
+}
 
 export default function ContactPage() {
   // Form State
@@ -14,7 +70,10 @@ export default function ContactPage() {
     message: ''
   })
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState('')
   const [activeFaq, setActiveFaq] = useState(null)
+  const submittingRef = useRef(false)
 
   useEffect(() => {
     document.title = 'Contact & Project Consultation | N Solutions Solar EPC'
@@ -24,12 +83,36 @@ export default function ContactPage() {
   const handleInputChange = (e) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
+    if (submitError) setSubmitError('')
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    setIsSubmitted(true)
+
+    if (submittingRef.current) return
+
+    submittingRef.current = true
+    setSubmitError('')
+    setIsSubmitting(true)
+
+    const result = await apiPost(
+      '/enquiries',
+      buildEnquiryPayload(formData)
+    )
+
+    submittingRef.current = false
+    setIsSubmitting(false)
+
+    if (result.success) {
+      setIsSubmitted(true)
+      return
+    }
+
+    setSubmitError(
+      result.message || 'Unable to send your inquiry. Please try again.'
+    )
   }
+  
 
   const faqs = [
     {
@@ -173,7 +256,10 @@ export default function ContactPage() {
                     <button 
                       type="button" 
                       className="button button-accent"
-                      onClick={() => setIsSubmitted(false)}
+                      onClick={() => {
+                        setIsSubmitted(false)
+                        setSubmitError('')
+                      }}
                     >
                       Submit Another Inquiry <Arrow />
                     </button>
@@ -279,8 +365,24 @@ export default function ContactPage() {
                       />
                     </div>
 
-                    <button type="submit" className="button button-accent submit-btn">
-                      Request Solar Feasibility Study & Site Audit <Arrow />
+                    {submitError ? (
+                      <p className="heading-note" role="alert">
+                        {submitError}
+                      </p>
+                    ) : null}
+
+                    <button
+                      type="submit"
+                      className="button button-accent submit-btn"
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? (
+                        'Submitting...'
+                      ) : (
+                        <>
+                          Request Solar Feasibility Study & Site Audit <Arrow />
+                        </>
+                      )}
                     </button>
                   </form>
                 )}

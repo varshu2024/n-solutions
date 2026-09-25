@@ -2,7 +2,12 @@ import { deleteProject, createProject, getProject, listProjects, updateProjectSt
 import { deleteProjectImage, uploadProjectImage } from '../config/cloudinary.js';
 import { sendSuccess } from '../utils/response.js';
 
-const categories = ['residential', 'commercial', 'industrial'];
+const categories = [
+  'residential',
+  'commercial',
+  'industrial',
+  'government'
+];
 const statuses = ['completed', 'in_progress'];
 
 const parseServices = (value) => {
@@ -23,7 +28,8 @@ const validateProjectInput = (input) => {
     if (input[field] === undefined || input[field] === '') details[field] = `${field} is required.`;
   });
   if (input.category !== undefined && !categories.includes(input.category)) {
-    details.category = 'Category must be residential, commercial, or industrial.';
+   details.category =
+  'Category must be residential, commercial, industrial, or government.';
   }
   if (input.status !== undefined && !statuses.includes(input.status)) {
     details.status = 'Status must be completed or in_progress.';

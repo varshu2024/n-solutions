@@ -1,9 +1,46 @@
-import { Router } from 'express';
-import { asyncHandler } from '../utils/asyncHandler.js';
-import { list } from '../controllers/public-gallery.controller.js';
+import { Router } from 'express'
 
-const router = Router();
+import { requireAdmin } from '../middleware/auth.middleware.js'
+import { mediaImageUpload } from '../middleware/upload.middleware.js'
+import { asyncHandler } from '../utils/asyncHandler.js'
 
-router.get('/', asyncHandler(list));
+import { list as publicList } from '../controllers/public-gallery.controller.js'
+import {
+  create,
+  get,
+  update,
+  remove
+} from '../controllers/gallery.controller.js'
 
-export default router;
+const router = Router()
+
+// Public
+router.get('/', asyncHandler(publicList))
+
+// Admin
+router.post(
+  '/',
+  requireAdmin,
+  mediaImageUpload,
+  asyncHandler(create)
+)
+
+router.get(
+  '/:id',
+  asyncHandler(get)
+)
+
+router.patch(
+  '/:id',
+  requireAdmin,
+  mediaImageUpload,
+  asyncHandler(update)
+)
+
+router.delete(
+  '/:id',
+  requireAdmin,
+  asyncHandler(remove)
+)
+
+export default router
