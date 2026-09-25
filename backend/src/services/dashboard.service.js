@@ -20,11 +20,85 @@ export const getDashboardStats = async () => {
 };
 
 export const getRecentEnquiries = async (limit) => {
-  const { Enquiry } = getDashboardModels();
-  return findRecent(Enquiry, { _id: 0, fullName: 1, projectType: 1, status: 1, createdAt: 1 }, limit);
-};
+  const { Enquiry } = getDashboardModels()
+
+  const enquiries = await Enquiry.find(
+    {},
+    {
+      _id: 1,
+      fullName: 1,
+      companyName: 1,
+      phoneNumber: 1,
+      emailAddress: 1,
+      projectType: 1,
+      message: 1,
+      status: 1,
+      createdAt: 1
+    }
+  )
+    .sort({ createdAt: -1 })
+    .limit(limit)
+    .lean()
+
+  return enquiries.map((enquiry) => ({
+    id: enquiry._id.toString(),
+    name: enquiry.fullName,
+    company: enquiry.companyName || '',
+    phone: enquiry.phoneNumber,
+    email: enquiry.emailAddress,
+    service: enquiry.projectType,
+    message: enquiry.message || '',
+    status: enquiry.status
+  }))
+}
+
+
 
 export const getRecentLeads = async (limit) => {
-  const { Lead } = getDashboardModels();
-  return findRecent(Lead, { _id: 0, name: 1, type: 1, location: 1, status: 1, createdAt: 1 }, limit);
-};
+  const { Lead } = getDashboardModels()
+
+  const leads = await Lead.find(
+    {},
+    {
+      _id: 1,
+      name: 1,
+      company: 1,
+      type: 1,
+      capacity: 1,
+      location: 1,
+      status: 1,
+      date: 1,
+      createdAt: 1
+    }
+  )
+    .sort({ createdAt: -1 })
+    .limit(limit)
+    .lean()
+
+  return leads.map((lead) => {
+    let date = ''
+
+    if (lead.createdAt) {
+      const parsedDate = new Date(lead.createdAt)
+
+      if (!Number.isNaN(parsedDate.getTime())) {
+        date = parsedDate.toISOString().slice(0, 10)
+      }
+    }
+
+    if (!date && lead.date) {
+      date = lead.date
+    }
+
+    return {
+      id: lead._id.toString(),
+      name: lead.name,
+      company: lead.company || '',
+      type: lead.type,
+      capacity: lead.capacity || '',
+      location: lead.location,
+      status: lead.status,
+      date
+    }
+  })
+}

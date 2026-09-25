@@ -30,7 +30,22 @@ const leadSchema = new mongoose.Schema(
       type: String,
       enum: ['new', 'in_progress', 'qualified'],
       default: 'new'
-    }
+    },
+    phone: {
+  type: String,
+  trim: true
+},
+
+email: {
+  type: String,
+  trim: true,
+  lowercase: true
+},
+
+capacity: {
+  type: String,
+  trim: true
+}
   },
   { timestamps: true }
 );

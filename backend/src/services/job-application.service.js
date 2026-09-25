@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { Job } from '../models/Job.js';
 import { JobApplication } from '../models/JobApplication.js';
-
+import { APPLICATION_STATUS_VALUES } from '../models/JobApplication.js'
 const invalidJobId = () => {
   const error = new Error('Invalid job ID.');
   error.statusCode = 400;
@@ -55,3 +55,32 @@ export const listJobApplications = async () => {
 
   return applications.map(applicationResponse);
 };
+
+export const updateJobApplicationStatus = async (id, status) => {
+  if (!mongoose.isValidObjectId(id)) {
+    const error = new Error('Invalid application ID.')
+    error.statusCode = 400
+    throw error
+  }
+
+  if (!APPLICATION_STATUS_VALUES.includes(status)) {
+    const error = new Error(
+      'Status must be Applied, Shortlisted, Interview, Selected, or Rejected.'
+    )
+    error.statusCode = 400
+    throw error
+  }
+
+  const application = await JobApplication.findById(id)
+
+  if (!application) {
+    const error = new Error('Job application not found.')
+    error.statusCode = 404
+    throw error
+  }
+
+  application.applicationStatus = status
+  await application.save()
+
+  return applicationResponse(application)
+}

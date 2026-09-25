@@ -1,7 +1,16 @@
 import { createLead, getLead, listLeads, updateLead, deleteLead } from '../services/lead.service.js';
 import { sendSuccess } from '../utils/response.js';
 
-const allowedFields = new Set(['name', 'company', 'type', 'location', 'status']);
+const allowedFields = new Set([
+  'name',
+  'company',
+  'phone',
+  'email',
+  'type',
+  'location',
+  'capacity',
+  'status'
+]);
 
 const validateUpdateInput = (input) => {
   const details = {};
@@ -30,7 +39,17 @@ const validateUpdateInput = (input) => {
   if (Object.hasOwn(input, 'status') && !['new', 'in_progress', 'qualified'].includes(input.status)) {
     details.status = 'Status must be new, in_progress, or qualified.';
   }
+  if (Object.hasOwn(input, 'phone') && typeof input.phone !== 'string') {
+  details.phone = 'Phone must be a string.';
+}
 
+if (Object.hasOwn(input, 'email') && typeof input.email !== 'string') {
+  details.email = 'Email must be a string.';
+}
+
+if (Object.hasOwn(input, 'capacity') && typeof input.capacity !== 'string') {
+  details.capacity = 'Capacity must be a string.';
+}
   return details;
 };
 

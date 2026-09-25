@@ -6,20 +6,37 @@ const leadResponse = (lead, includeTimestamps = false) => {
     id: lead._id.toString(),
     name: lead.name,
     company: lead.company || '',
+    phone: lead.phone || '',
+    email: lead.email || '',
     type: lead.type,
     location: lead.location,
+    capacity: lead.capacity || '',
     status: lead.status
-  };
-
-  if (includeTimestamps) {
-    response.createdAt = lead.createdAt;
-    response.updatedAt = lead.updatedAt;
-  } else {
-    response.date = lead.createdAt.toISOString().slice(0, 10);
   }
 
-  return response;
-};
+  if (includeTimestamps) {
+    response.createdAt = lead.createdAt
+    response.updatedAt = lead.updatedAt
+  } else {
+    let date = ''
+
+    if (lead.createdAt) {
+      const parsedDate = new Date(lead.createdAt)
+
+      if (!Number.isNaN(parsedDate.getTime())) {
+        date = parsedDate.toISOString().slice(0, 10)
+      }
+    }
+
+    if (!date && lead.date) {
+      date = lead.date
+    }
+
+    response.date = date
+  }
+
+  return response
+}
 
 const invalidIdError = () => {
   const error = new Error('Invalid lead ID.');
@@ -42,7 +59,7 @@ const findLead = async (id) => {
 
 export const listLeads = async () => {
   const leads = await Lead.find({})
-    .select('name company type location status createdAt')
+    .select('name company phone email type location capacity status date createdAt')
     .sort({ createdAt: -1 })
     .lean();
   return leads.map((lead) => leadResponse(lead));

@@ -2,13 +2,18 @@ import { Router } from 'express';
 import { requireAdmin } from '../middleware/auth.middleware.js';
 import { projectImageUpload } from '../middleware/upload.middleware.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
-import { create, get, remove, updateStatus } from '../controllers/project.controller.js';
-import { list as listPublic } from '../controllers/public-project.controller.js';
+import {
+  create,
+  get,
+  list,
+  remove,
+  updateStatus
+} from '../controllers/project.controller.js';
 
 const router = Router();
 
-router.get('/', asyncHandler(listPublic));
 router.use(requireAdmin);
+router.get('/', requireAdmin, asyncHandler(list));
 router.post('/', projectImageUpload, asyncHandler(create));
 router.get('/:id', asyncHandler(get));
 router.patch('/:id/status', asyncHandler(updateStatus));

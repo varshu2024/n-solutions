@@ -1,5 +1,10 @@
 import { deleteResume, uploadResume } from '../config/cloudinary.js';
-import { createJobApplication, findJobForApplication, listJobApplications } from '../services/job-application.service.js';
+import {
+  createJobApplication,
+  findJobForApplication,
+  listJobApplications,
+  updateJobApplicationStatus
+} from '../services/job-application.service.js';
 import { sendSuccess } from '../utils/response.js';
 import { isValidEmail } from '../utils/validation.js';
 import { JobApplication } from '../models/JobApplication.js';
@@ -99,3 +104,29 @@ export const list = async (request, response) => sendSuccess(
   'Job applications fetched successfully.',
   await listJobApplications()
 );
+
+
+export const updateStatus = async (request, response) => {
+  const { status } = request.body;
+
+  if (
+    !status ||
+    typeof status !== 'string'
+  ) {
+    const error = new Error('Status is required.')
+    error.statusCode = 400
+    throw error
+  }
+
+  const application = await updateJobApplicationStatus(
+    request.params.id,
+    status
+  )
+
+  return sendSuccess(
+    response,
+    200,
+    'Application status updated successfully.',
+    application
+  )
+}

@@ -80,6 +80,29 @@
   pointer-events: none;
 }
 
+.adm-status-select {
+  appearance: none;
+  border: 1px solid var(--adm-border);
+  background: var(--adm-surface);
+  color: var(--adm-text);
+  padding: 7px 30px 7px 10px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+  min-width: 125px;
+}
+
+.adm-status-select:focus {
+  border-color: var(--adm-accent);
+}
+
+.adm-status-select option {
+  background: var(--adm-surface);
+  color: var(--adm-text);
+}
+
 .adm-login-card {
   width: 100%;
   max-width: 440px;

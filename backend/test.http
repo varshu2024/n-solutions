@@ -23,7 +23,7 @@ X-Admin-Registration-Key: {{$dotenv ADMIN_REGISTRATION_KEY}}
 {
   "name": "NSolutions Admin",
   "email": "admin@nsolutions.com",
-  "password": "StrongPassword123"
+  "password": "Admin@123"
 }
 
 ### Admin - Login
@@ -105,12 +105,12 @@ GET {{baseUrl}}/api/leads/6aa56093347caa115ad4fe57
 Authorization: Bearer {{adminToken}}
 
 ### Admin - Update Lead
-PUT {{baseUrl}}/api/leads/6aa56093347caa115ad4fe57
+PUT {{baseUrl}}/api/leads/6ab68c6aee30deebdf709ff9
 Authorization: Bearer {{adminToken}}
 Content-Type: application/json
 
 {
-  "status": "qualified"
+  "status": "new"
 }
 
 ### Admin - Delete Lead
@@ -218,12 +218,12 @@ GET {{baseUrl}}/api/projects
 Authorization: Bearer {{adminToken}}
 
 ### Admin - Get Project
-GET {{baseUrl}}/api/projects/6a9ed3f87aa1d5f60a8c71c6
+GET {{baseUrl}}/api/projects/6ab56f19be719f941365275f
 Authorization: Bearer {{adminToken}}
 
 
 ### Admin - Update Project Status
-PATCH {{baseUrl}}/api/projects/6a9ed3f87aa1d5f60a8c71c6/status
+PATCH {{baseUrl}}/api/projects/6ab56f19be719f941365275f/status
 Authorization: Bearer {{adminToken}}
 Content-Type: application/json
 
@@ -232,7 +232,7 @@ Content-Type: application/json
 }
 
 ### Admin - Delete Project
-DELETE {{baseUrl}}/api/projects/6ab3a1cf4f5165336b6d1051
+DELETE {{baseUrl}}/api/projects/6ab679488c9f550222acb3cc
 Authorization: Bearer {{adminToken}}
 
 ### ---------------- PUBLIC PROJECT APIS ----------------
@@ -590,8 +590,17 @@ Content-Type: application/json
   "jobStatus": "Open"
 }
 
+###
+PATCH {{baseUrl}}/api/job-applications/6ab63481ceb8e05cfebeaa38/status
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "status": "Interview"
+}
+
 ### Admin - Update Job
-PATCH {{baseUrl}}/api/jobs/6aa56cbe4f2f6267eccfed38
+PATCH {{baseUrl}}/api/jobs/6ab634a5ceb8e05cfebeaa3a
 Authorization: Bearer {{adminToken}}
 Content-Type: application/json
 

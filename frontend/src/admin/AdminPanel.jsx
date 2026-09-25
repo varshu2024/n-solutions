@@ -1,33 +1,34 @@
 import { useState, useEffect } from 'react'
 import { getStoredData, saveStoredData, adminLogout } from './adminAuth'
 import { navigate } from '../components/Shared'
-import { apiGet, apiPost, apiPatch, apiDelete } from '../utils/api'
-import { 
-  FiGrid, 
-  FiTrendingUp, 
-  FiBriefcase, 
-  FiPackage, 
-  FiImage, 
-  FiMessageSquare, 
-  FiUsers, 
-  FiMail, 
-  FiUser, 
-  FiSettings, 
-  FiArrowUpRight, 
-  FiLogOut, 
-  FiZap, 
-  FiGlobe, 
-  FiCheck, 
-  FiPhone, 
-  FiX, 
-  FiPlus, 
-  FiTrash2, 
-  FiStar, 
-  FiLock, 
+import { apiGet, apiPost, apiPut, apiPatch, apiDelete } from '../utils/api'
+import {
+  FiGrid,
+  FiTrendingUp,
+  FiBriefcase,
+  FiPackage,
+  FiImage,
+  FiMessageSquare,
+  FiUsers,
+  FiMail,
+  FiUser,
+  FiSettings,
+  FiArrowUpRight,
+  FiLogOut,
+  FiZap,
+  FiGlobe,
+  FiCheck,
+  FiPhone,
+  FiX,
+  FiPlus,
+  FiTrash2,
+  FiStar,
+  FiLock,
   FiShield,
   FiBarChart2,
   FiInbox
 } from 'react-icons/fi'
+
 import { FaSun } from 'react-icons/fa'
 import './admin.css'
 
@@ -40,12 +41,12 @@ export default function AdminPanel({ adminUser, onLogout }) {
   const [toastMessage, setToastMessage] = useState('')
   const [projects, setProjects] = useState([])
   const [projectsLoading, setProjectsLoading] = useState(false)
-  // Search and filter states
   const [leadSearch, setLeadSearch] = useState('')
   const [leadFilter, setLeadFilter] = useState('all')
   const [products, setProducts] = useState([])
-const [productsLoading, setProductsLoading] = useState(false)
-  // Modals
+  const [productsLoading, setProductsLoading] = useState(false)
+  const [applications, setApplications] = useState([])
+  const [applicationsLoading, setApplicationsLoading] = useState(false)
   const [showAddLeadModal, setShowAddLeadModal] = useState(false)
   const [newLead, setNewLead] = useState({
     name: '',
@@ -90,6 +91,17 @@ const [enquiriesLoading, setEnquiriesLoading] = useState(false)
   if (activeTab === 'enquiries') {
     loadEnquiries()
   }
+   if (activeTab === 'careers') {
+    loadApplications()
+  }
+    if (activeTab === 'leads') {
+    loadLeads()
+  }
+  if (activeTab === 'overview') {
+  loadDashboard()
+  loadRecentLeads()
+   loadRecentEnquiries()
+}
 }, [activeTab])
 
   // Media state
@@ -133,6 +145,111 @@ const [enquiriesLoading, setEnquiriesLoading] = useState(false)
     })
   }
 
+  const loadRecentEnquiries = async () => {
+  try {
+    const result = await apiGet(
+      '/dashboard/recent-enquiries?limit=4'
+    )
+
+    if (!result.success) {
+      throw new Error(
+        result.message || 'Failed to load recent enquiries'
+      )
+    }
+
+    updateData((prev) => ({
+      ...prev,
+      recentEnquiries: Array.isArray(result.data)
+        ? result.data
+        : []
+    }))
+  } catch (error) {
+    console.error('Failed to load recent enquiries:', error)
+    showToast(
+      error.message || 'Failed to load recent enquiries'
+    )
+  }
+}
+
+  const loadRecentLeads = async () => {
+  try {
+    const result = await apiGet('/dashboard/recent-leads?limit=4')
+
+    if (!result.success) {
+      throw new Error(
+        result.message || 'Failed to load recent leads'
+      )
+    }
+
+    updateData((prev) => ({
+      ...prev,
+      recentLeads: Array.isArray(result.data)
+        ? result.data
+        : []
+    }))
+  } catch (error) {
+    console.error('Failed to load recent leads:', error)
+    showToast(
+      error.message || 'Failed to load recent leads'
+    )
+  }
+}
+
+  const loadDashboard = async () => {
+  try {
+    const result = await apiGet('/dashboard/stats')
+
+    if (!result.success) {
+      throw new Error(
+        result.message || 'Failed to load dashboard statistics'
+      )
+    }
+
+    updateData((prev) => ({
+      ...prev,
+      stats: {
+        ...prev.stats,
+        totalLeads: result.data?.totalLeads ?? 0,
+        activeProjects: result.data?.activeProjects ?? 0,
+        productsListed: result.data?.productsListed ?? 0,
+        openPositions: result.data?.openPositions ?? 0
+      }
+    }))
+  } catch (error) {
+    console.error('Failed to load dashboard statistics:', error)
+    showToast(
+      error.message || 'Failed to load dashboard statistics'
+    )
+  }
+}
+
+const handleEnquiryDelete = async (id) => {
+  if (!window.confirm('Are you sure you want to delete this enquiry?')) {
+    return
+  }
+
+  try {
+    const result = await apiDelete(`/enquiries/${id}`)
+
+    if (!result.success) {
+      throw new Error(
+        result.message || 'Failed to delete enquiry'
+      )
+    }
+
+    setEnquiries((prevEnquiries) =>
+      prevEnquiries.filter((enquiry) => enquiry.id !== id)
+    )
+
+    showToast('Enquiry deleted successfully')
+  } catch (error) {
+    console.error('Failed to delete enquiry:', error)
+    showToast(
+      error.message || 'Failed to delete enquiry'
+    )
+  }
+}
+
   const handleLogout = () => {
     adminLogout()
     if (onLogout) onLogout()
@@ -147,7 +264,6 @@ const [enquiriesLoading, setEnquiriesLoading] = useState(false)
       const items = Array.isArray(result.data)
         ? result.data
         : []
-
       setProjects(items)
     } else {
       console.error('Failed to fetch projects:', result.message)
@@ -160,7 +276,6 @@ const [enquiriesLoading, setEnquiriesLoading] = useState(false)
     setProjectsLoading(false)
   }
 }
-
 const fetchProducts = async () => {
   setProductsLoading(true)
 
@@ -226,50 +341,160 @@ const loadEnquiries = async () => {
   }
 }
 
-  // Filtered leads
-  const filteredLeads = data.leads.filter((lead) => {
-    const matchesSearch =
-      lead.name.toLowerCase().includes(leadSearch.toLowerCase()) ||
-      lead.company.toLowerCase().includes(leadSearch.toLowerCase()) ||
-      lead.location.toLowerCase().includes(leadSearch.toLowerCase())
-    const matchesStatus = leadFilter === 'all' || lead.status === leadFilter
-    return matchesSearch && matchesStatus
-  })
-  // Lead status updater
-  const handleLeadStatusChange = (id, newStatus) => {
-    updateData((prev) => ({
-      ...prev,
-      leads: prev.leads.map((l) => (l.id === id ? { ...l, status: newStatus } : l))
-    }))
-    showToast(`Lead marked as ${newStatus}`)
-  }
-
-  // Delete lead
-  const handleDeleteLead = (id) => {
-    if (!window.confirm('Are you sure you want to delete this lead?')) return
-    updateData((prev) => ({
-      ...prev,
-      leads: prev.leads.filter((l) => l.id !== id),
-      stats: { ...prev.stats, totalLeads: Math.max(0, prev.stats.totalLeads - 1) }
-    }))
-    showToast('Lead deleted successfully')
-  }
-
-  // Add lead
-  const handleCreateLead = (e) => {
-    e.preventDefault()
-    if (!newLead.name || !newLead.phone) return
-    const created = {
-      ...newLead,
-      id: 'lead-' + Date.now(),
-      date: new Date().toISOString().split('T')[0]
+  const loadLeads = async () => {
+  try {
+    const result = await apiGet('/leads')
+    if (!result.success) {
+      throw new Error(result.message || 'Failed to fetch leads')
     }
     updateData((prev) => ({
       ...prev,
-      leads: [created, ...prev.leads],
-      stats: { ...prev.stats, totalLeads: prev.stats.totalLeads + 1 }
+      leads: result.data || []
     }))
+  } catch (error) {
+    showToast(error.message || 'Failed to fetch leads')
+  }
+}
+
+  const loadApplications = async () => {
+  setApplicationsLoading(true)
+
+  try {
+    const response = await apiGet('/job-applications')
+
+    if (!response.success) {
+      showToast(
+        response.message || 'Failed to load job applications.',
+        'error'
+      )
+      return
+    }
+
+    setApplications(
+      Array.isArray(response.data) ? response.data : []
+    )
+  } catch (error) {
+    console.error('Failed to load job applications:', error)
+    showToast('Failed to load job applications.', 'error')
+  } finally {
+    setApplicationsLoading(false)
+  }
+}
+  // Filtered leads
+const filteredLeads = data.leads.filter((lead) => {
+  const search = leadSearch.toLowerCase()
+
+  const matchesSearch =
+    (lead.name || '').toLowerCase().includes(search) ||
+    (lead.company || '').toLowerCase().includes(search) ||
+    (lead.location || '').toLowerCase().includes(search)
+
+  const matchesStatus =
+    leadFilter === 'all' || lead.status === leadFilter
+
+  return matchesSearch && matchesStatus
+})
+  // Lead status updater
+ const handleLeadStatusChange = async (id, newStatus) => {
+  try {
+   
+    const result = await apiPut(`/leads/${id}`, {
+      status: newStatus
+    })
+
+  
+    if (!result.success) {
+      throw new Error(
+        result.message || 'Failed to update lead status'
+      )
+    }
+
+    updateData((prev) => ({
+      ...prev,
+      leads: prev.leads.map((lead) =>
+        lead.id === id
+          ? {
+              ...lead,
+              status: result.data?.status || newStatus
+            }
+          : lead
+      )
+    }))
+
+    showToast(`Lead marked as ${newStatus}`)
+  } catch (error) {
+    showToast(error.message || 'Failed to update lead status')
+  }
+}
+
+  // Delete lead
+ const handleDeleteLead = async (id) => {
+  if (!window.confirm('Are you sure you want to delete this lead?')) {
+    return
+  }
+
+  try {
+    const result = await apiDelete(`/leads/${id}`)
+
+    if (!result.success) {
+      throw new Error(
+        result.message || 'Failed to delete lead'
+      )
+    }
+
+    updateData((prev) => ({
+      ...prev,
+      leads: prev.leads.filter((lead) => lead.id !== id),
+      stats: {
+        ...prev.stats,
+        totalLeads: Math.max(0, prev.stats.totalLeads - 1)
+      }
+    }))
+
+    showToast('Lead deleted successfully')
+  } catch (error) {
+    console.error('Failed to delete lead:', error)
+    showToast(error.message || 'Failed to delete lead')
+  }
+}
+
+  // Add lead
+  const handleCreateLead = async (e) => {
+  e.preventDefault()
+
+  if (!newLead.name || !newLead.phone) return
+
+  try {
+    const result = await apiPost('/leads', {
+      name: newLead.name,
+      company: newLead.company,
+      phone: newLead.phone,
+      email: newLead.email,
+      type: newLead.type,
+      location: newLead.location,
+      capacity: newLead.capacity,
+      status: newLead.status
+    })
+
+    if (!result.success) {
+      throw new Error(
+        result.message || 'Failed to create lead'
+      )
+    }
+
+    const createdLead = result.data
+
+    updateData((prev) => ({
+      ...prev,
+      leads: [createdLead, ...prev.leads],
+      stats: {
+        ...prev.stats,
+        totalLeads: prev.stats.totalLeads + 1
+      }
+    }))
+
     setShowAddLeadModal(false)
+
     setNewLead({
       name: '',
       company: '',
@@ -280,8 +505,16 @@ const loadEnquiries = async () => {
       capacity: '',
       status: 'new'
     })
-    showToast('New lead added to database')
+
+    showToast('New lead added successfully')
+  } catch (error) {
+    console.error('Failed to create lead:', error)
+
+    showToast(
+      error.message || 'Failed to create lead'
+    )
   }
+}
 
   // Project status toggle
   const handleToggleProjectStatus = async (id) => {
@@ -451,7 +684,6 @@ const handleDeleteProduct = async (id) => {
     showToast('Failed to delete product')
   }
 }
-
   // Add Product
   const handleCreateProduct = async (e) => {
   e.preventDefault()
@@ -533,17 +765,8 @@ const handleDeleteProduct = async (id) => {
   } catch (error) {
     console.error('Failed to create product:', error)
     showToast('Failed to create product')
-  }
-}
+  }}
 
-  // Application status
-  const handleAppStatusChange = (id, newStatus) => {
-    updateData((prev) => ({
-      ...prev,
-      applications: prev.applications.map((a) => (a.id === id ? { ...a, status: newStatus } : a))
-    }))
-    showToast(`Applicant status set to ${newStatus}`)
-  }
 
   // Media handlers
   const handleCreateMedia = (e) => {
@@ -561,6 +784,41 @@ const handleDeleteProduct = async (id) => {
     setShowAddMediaModal(false)
     setNewMedia({ title: '', category: 'Projects', imageUrl: '', featured: false })
     showToast('Media asset uploaded')
+  }
+
+  // Application status
+  const handleApplicationStatusChange = async (applicationId, newStatus) => {
+    try {
+      const result = await apiPatch(
+        `/job-applications/${applicationId}/status`,
+        {
+          status: newStatus
+        }
+      )
+
+      if (!result.success) {
+        throw new Error(
+          result.message || 'Failed to update application status'
+        )
+      }
+
+      setApplications((prevApplications) =>
+        prevApplications.map((app) =>
+          app.id === applicationId
+            ? {
+                ...app,
+                applicationStatus:
+                  result.data?.applicationStatus || newStatus
+              }
+            : app
+        )
+      )
+    } catch (error) {
+      console.error(
+        'Failed to update application status:',
+        error
+      )
+    }
   }
 
   const handleDeleteMedia = (id) => {
@@ -680,6 +938,7 @@ const handleDeleteProduct = async (id) => {
           >
             <span className="adm-nav-icon"><FiTrendingUp /></span>
             <span>Leads</span>
+            <span className="adm-badge highlight">{data.stats.totalLeads ?? 0}</span>
           </button>
           <button
             type="button"
@@ -688,6 +947,7 @@ const handleDeleteProduct = async (id) => {
           >
             <span className="adm-nav-icon"><FiBriefcase /></span>
             <span>Projects</span>
+            <span className="adm-badge">{projects.length}</span>
           </button>
           <button
             type="button"
@@ -816,7 +1076,7 @@ const handleDeleteProduct = async (id) => {
                       <FiUsers size={20} />
                     </div>
                   </div>
-                  <div className="adm-stat-value">{data.leads.length}</div>
+                  <div className="adm-stat-value">{data.stats.totalLeads ?? 0}</div>
                   <div className="adm-stat-meta">
                     <span className="adm-pill-up"><FiTrendingUp size={12} style={{ verticalAlign: 'middle', marginRight: 3 }} /> Active inquiries</span> across AP & Telangana
                   </div>
@@ -830,10 +1090,10 @@ const handleDeleteProduct = async (id) => {
                     </div>
                   </div>
                   <div className="adm-stat-value">
-                    {data.projects.filter((p) => p.status === 'in_progress').length}
+                    {data.stats.activeProjects ?? 0}
                   </div>
                   <div className="adm-stat-meta">
-                    <span>{data.projects.filter((p) => p.status === 'completed').length} completed portfolio</span>
+                  <span> {projects.filter((p) => p.status === 'completed').length} completed portfolio</span>
                   </div>
                 </div>
 
@@ -857,7 +1117,7 @@ const handleDeleteProduct = async (id) => {
                       <FiPackage size={20} />
                     </div>
                   </div>
-                  <div className="adm-stat-value">{data.products.length}</div>
+                  <div className="adm-stat-value">{data.stats.productsListed ?? 0}</div>
                   <div className="adm-stat-meta">
                     <span>Panels, Inverters, Pumps</span>
                   </div>
@@ -890,7 +1150,7 @@ const handleDeleteProduct = async (id) => {
                       </tr>
                     </thead>
                     <tbody>
-                      {data.leads.slice(0, 4).map((lead) => (
+                      {data.recentLeads?.map((lead) => (
                         <tr key={lead.id}>
                           <td>
                             <strong>{lead.name}</strong>
@@ -940,7 +1200,7 @@ const handleDeleteProduct = async (id) => {
                       </tr>
                     </thead>
                     <tbody>
-                      {data.enquiries.map((enq) => (
+                      {data.recentEnquiries?.map((enq) => (
                         <tr key={enq.id}>
                           <td>
                             <strong>{enq.name}</strong>
@@ -1135,8 +1395,9 @@ const handleDeleteProduct = async (id) => {
               </td>
             </tr>
           ) : (
-            projects.map((proj) => (
-              <tr key={proj.id}>
+  projects.map((proj) => {
+  return (
+    <tr key={proj.id}>
                 {/* Project Title */}
                 <td>
                   <strong>{proj.title}</strong>
@@ -1246,8 +1507,9 @@ const handleDeleteProduct = async (id) => {
                   </button>
                 </td>
               </tr>
-            ))
-          )}
+    )
+  })
+)}
         </tbody>
       </table>
     </div>
@@ -1423,13 +1685,14 @@ const handleDeleteProduct = async (id) => {
       ) : (
         <table className="adm-table">
           <thead>
-            <tr>
-              <th>Customer Details</th>
-              <th>Area / Service</th>
-              <th>Inquiry Message</th>
-              <th>Received</th>
-              <th>Status</th>
-            </tr>
+           <tr>
+  <th>Customer Details</th>
+  <th>Area / Service</th>
+  <th>Inquiry Message</th>
+  <th>Received</th>
+  <th>Status</th>
+  <th>Actions</th>
+</tr>
           </thead>
 
           <tbody>
@@ -1570,6 +1833,17 @@ const handleDeleteProduct = async (id) => {
                     <option value="Resolved">Resolved</option>
                   </select>
                 </td>
+                <td>
+  <div className="adm-actions-cell">
+    <button
+      className="adm-btn-tiny danger"
+      onClick={() => handleEnquiryDelete(enq.id)}
+      title="Delete Enquiry"
+    >
+      Delete
+    </button>
+  </div>
+</td>
               </tr>
             ))}
           </tbody>
@@ -1580,60 +1854,150 @@ const handleDeleteProduct = async (id) => {
 )}
 
           {/* TAB: CAREERS */}
-          {activeTab === 'careers' && (
-            <div className="adm-panel-card">
-              <div className="adm-card-header">
-                <h3 className="adm-card-title">
-                  <span>Job Applications & Candidate Profiles</span>
-                </h3>
-              </div>
+         {activeTab === 'careers' && (
+  <div className="adm-panel-card">
+    <div className="adm-card-header">
+      <h3 className="adm-card-title">
+        <span>Job Applications & Candidate Profiles</span>
+      </h3>
+    </div>
 
-              <div className="adm-table-wrap">
-                <table className="adm-table">
-                  <thead>
-                    <tr>
-                      <th>Candidate Name</th>
-                      <th>Applied Role</th>
-                      <th>Experience</th>
-                      <th>Contact</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {data.applications.map((app) => (
-                      <tr key={app.id}>
-                        <td>
-                          <strong>{app.candidate}</strong>
-                          <div style={{ color: 'var(--adm-text-dim)', fontSize: '0.75rem' }}>
-                            Submitted: {app.date}
-                          </div>
-                        </td>
-                        <td>
-                          <span className="adm-type-badge">{app.role}</span>
-                        </td>
-                        <td>{app.experience}</td>
-                        <td>
-                          <div>{app.phone}</div>
-                          <div style={{ color: 'var(--adm-text-dim)', fontSize: '0.75rem' }}>{app.email}</div>
-                        </td>
-                        <td>
-                          <select
-                            className="adm-filter-select"
-                            value={app.status}
-                            onChange={(e) => handleAppStatusChange(app.id, e.target.value)}
-                          >
-                            <option value="pending">Pending</option>
-                            <option value="reviewed">Reviewed</option>
-                            <option value="shortlisted">Shortlisted</option>
-                          </select>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
+    <div className="adm-table-wrap">
+      {applicationsLoading ? (
+        <div
+          style={{
+            padding: '40px',
+            textAlign: 'center',
+            color: 'var(--adm-text-muted)'
+          }}
+        >
+          Loading job applications...
+        </div>
+      ) : applications.length === 0 ? (
+        <div
+          style={{
+            padding: '40px',
+            textAlign: 'center',
+            color: 'var(--adm-text-muted)'
+          }}
+        >
+          No job applications found.
+        </div>
+      ) : (
+        <table className="adm-table">
+          <thead>
+            <tr>
+              <th>Candidate Name</th>
+              <th>Applied Role</th>
+              <th>Experience</th>
+              <th>Contact</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {applications.map((app) => (
+              <tr key={app.id}>
+                {/* CANDIDATE */}
+                <td>
+                  <strong>{app.fullName}</strong>
+
+                  <div
+                    style={{
+                      color: 'var(--adm-text-dim)',
+                      fontSize: '0.75rem'
+                    }}
+                  >
+                    Submitted:{' '}
+                    {app.appliedDate
+                      ? new Date(app.appliedDate).toLocaleString(
+                          'en-IN',
+                          {
+                            day: '2-digit',
+                            month: 'short',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          }
+                        )
+                      : '—'}
+                  </div>
+                </td>
+
+                {/* ROLE */}
+                <td>
+                  <span className="adm-type-badge">
+                    {app.positionAppliedFor || app.jobTitle || '—'}
+                  </span>
+
+                  {app.jobTitle &&
+                    app.positionAppliedFor &&
+                    app.jobTitle !== app.positionAppliedFor && (
+                      <div
+                        style={{
+                          color: 'var(--adm-text-dim)',
+                          fontSize: '0.72rem',
+                          marginTop: '5px'
+                        }}
+                      >
+                        Job: {app.jobTitle}
+                      </div>
+                    )}
+                </td>
+
+                {/* EXPERIENCE */}
+                <td>
+                  {app.yearsOfExperience !== null &&
+                  app.yearsOfExperience !== undefined
+                    ? `${app.yearsOfExperience} ${
+                        app.yearsOfExperience === 1
+                          ? 'year'
+                          : 'years'
+                      }`
+                    : 'Not specified'}
+                </td>
+
+                {/* CONTACT */}
+                <td>
+                  <div>{app.phoneNumber}</div>
+
+                  <div
+                    style={{
+                      color: 'var(--adm-text-dim)',
+                      fontSize: '0.75rem'
+                    }}
+                  >
+                    {app.email}
+                  </div>
+                </td>
+
+                {/* STATUS */}
+                <td>
+  <select
+    className="adm-status-select"
+    value={app.applicationStatus || 'Applied'}
+    onChange={(e) =>
+      handleApplicationStatusChange(
+        app.id,
+        e.target.value
+      )
+    }
+  >
+    <option value="Applied">Applied</option>
+    <option value="Shortlisted">Shortlisted</option>
+    <option value="Interview">Interview</option>
+    <option value="Selected">Selected</option>
+    <option value="Rejected">Rejected</option>
+  </select>
+</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  </div>
+)}
 
           {/* TAB: GALLERY / MEDIA */}
           {activeTab === 'media' && (
@@ -1953,6 +2317,7 @@ const handleDeleteProduct = async (id) => {
                   <label>Company / Organization</label>
                   <input
                     type="text"
+                    required
                     className="adm-search-input"
                     style={{ width: '100%' }}
                     value={newLead.company}
@@ -1976,6 +2341,7 @@ const handleDeleteProduct = async (id) => {
                   <label>Email Address</label>
                   <input
                     type="email"
+                    required
                     className="adm-search-input"
                     style={{ width: '100%' }}
                     value={newLead.email}
@@ -2001,6 +2367,7 @@ const handleDeleteProduct = async (id) => {
                   <label>Capacity Requirement</label>
                   <input
                     type="text"
+                    required
                     className="adm-search-input"
                     style={{ width: '100%' }}
                     value={newLead.capacity}
@@ -2012,6 +2379,7 @@ const handleDeleteProduct = async (id) => {
                   <label>Location / City</label>
                   <input
                     type="text"
+                    required
                     className="adm-search-input"
                     style={{ width: '100%' }}
                     value={newLead.location}
@@ -2651,4 +3019,4 @@ const handleDeleteProduct = async (id) => {
       )}
     </div>
   )
-}
+  }
