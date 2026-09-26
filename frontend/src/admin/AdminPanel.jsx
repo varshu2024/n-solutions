@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { getStoredData, saveStoredData, adminLogout } from './adminAuth'
 import { navigate } from '../components/Shared'
-import { apiGet, apiPost, apiPut, apiPatch, apiDelete } from '../utils/api'
+import { apiGet, apiPost, apiPut, apiPatch, apiDelete, apiRequest, apiUpload  } from '../utils/api'
 import {
   FiGrid,
   FiTrendingUp,
@@ -58,6 +58,7 @@ export default function AdminPanel({ adminUser, onLogout }) {
     capacity: '',
     status: 'new'
   })
+  const [mediaItems, setMediaItems] = useState([])
   const [enquiries, setEnquiries] = useState([])
 const [enquiriesLoading, setEnquiriesLoading] = useState(false)
   const [showAddProjectModal, setShowAddProjectModal] = useState(false)
@@ -71,6 +72,22 @@ const [enquiriesLoading, setEnquiriesLoading] = useState(false)
   image: null
 })
 
+const [mediaData, setMediaData] = useState({
+  news: [],
+  projectMilestones: [],
+  gallery: [],
+  videos: []
+})
+const [newMedia, setNewMedia] = useState({
+  type: 'press',
+  name: '',
+  description: '',
+  readTime: '',
+  category: 'Projects',
+  photo: null,
+  video: null,
+  file: null
+})
   const [showAddProductModal, setShowAddProductModal] = useState(false)
   const [newProduct, setNewProduct] = useState({
   name: '',
@@ -80,6 +97,7 @@ const [enquiriesLoading, setEnquiriesLoading] = useState(false)
   applications: '',
   image: null
 })
+const [mediaTab, setMediaTab] = useState('all');
 
   useEffect(() => {
   if (activeTab === 'projects') {
@@ -102,16 +120,17 @@ const [enquiriesLoading, setEnquiriesLoading] = useState(false)
   loadRecentLeads()
    loadRecentEnquiries()
 }
+  if (activeTab === 'media') {
+    loadMedia()
+  }
+  if (activeTab === 'testimonials') {
+  loadTestimonials()
+}
 }, [activeTab])
 
   // Media state
   const [showAddMediaModal, setShowAddMediaModal] = useState(false)
-  const [newMedia, setNewMedia] = useState({
-    title: '',
-    category: 'Projects',
-    imageUrl: '',
-    featured: false
-  })
+
   const [mediaFilter, setMediaFilter] = useState('all')
 
   // Testimonials state
@@ -247,6 +266,26 @@ const handleEnquiryDelete = async (id) => {
     showToast(
       error.message || 'Failed to delete enquiry'
     )
+  }
+}
+const loadTestimonials = async () => {
+  try {
+    const result = await apiGet('/testimonials/admin')
+
+    if (!result.success) {
+      throw new Error(result.message || 'Failed to load testimonials')
+    }
+
+    const testimonials = Array.isArray(result.data)
+      ? result.data
+      : []
+
+    setData((prev) => ({
+      ...prev,
+      testimonials
+    }))
+  } catch (error) {
+    console.error('Failed to load testimonials:', error)
   }
 }
 
@@ -769,22 +808,121 @@ const handleDeleteProduct = async (id) => {
 
 
   // Media handlers
-  const handleCreateMedia = (e) => {
-    e.preventDefault()
-    if (!newMedia.title || !newMedia.imageUrl) return
-    const created = {
-      ...newMedia,
-      id: 'med-' + Date.now(),
-      date: new Date().toISOString().split('T')[0]
+
+const handleCreateMedia = async (e) => {
+  e.preventDefault()
+
+  try {
+    // PHOTO
+    if (newMedia.type === 'photo') {
+      if (!newMedia.photo) {
+        console.error('Please select a photo')
+        return
+      }
+
+      const formData = new FormData()
+
+      formData.append('title', newMedia.name)
+      formData.append('description', newMedia.description || '')
+      formData.append('category', newMedia.category)
+      formData.append('image', newMedia.photo)
+
+      const result = await apiUpload('/gallery', formData)
+
+      if (!result.success) {
+        throw new Error(result.message || 'Failed to create gallery item')
+      }
     }
-    updateData((prev) => ({
-      ...prev,
-      media: [created, ...(prev.media || [])]
-    }))
-    setShowAddMediaModal(false)
-    setNewMedia({ title: '', category: 'Projects', imageUrl: '', featured: false })
-    showToast('Media asset uploaded')
+
+    // VIDEO
+    if (newMedia.type === 'video') {
+  if (!newMedia.video) {
+    console.error('Please select a video')
+    return
   }
+
+  if (!newMedia.file) {
+    console.error('Please select a thumbnail')
+    return
+  }
+
+  const formData = new FormData()
+
+  formData.append('title', newMedia.name)
+  formData.append('description', newMedia.description || '')
+  formData.append('category', newMedia.category || 'Projects')
+  formData.append('video', newMedia.video)
+  formData.append('thumbnail', newMedia.file)
+
+  console.log('VIDEO NAME:', newMedia.name)
+  console.log('VIDEO DESCRIPTION:', newMedia.description)
+  console.log('VIDEO CATEGORY:', newMedia.category)
+  console.log('VIDEO FILE:', newMedia.video)
+  console.log('THUMBNAIL FILE:', newMedia.file)
+
+  const result = await apiUpload('/videos', formData)
+
+  console.log('VIDEO API RESULT:', result)
+
+  if (!result.success) {
+    console.error('VIDEO API ERROR:', result)
+    console.error('VIDEO API DETAILS:', result.error)
+    throw new Error(result.message || 'Failed to create video')
+  }
+}
+
+    // PRESS RELEASE
+   if (newMedia.type === 'press') {
+  if (!newMedia.photo) {
+    console.error('Please select a photo')
+    return
+  }
+
+  const formData = new FormData()
+
+  formData.append('title', newMedia.name)
+  formData.append('summary', newMedia.description)
+  formData.append('readTime', newMedia.readTime || '')
+  formData.append(
+    'publicationDate',
+    new Date().toISOString().split('T')[0]
+  )
+  formData.append('source', 'N Solutions')
+  formData.append('articleUrl', 'https://nsolutions.in')
+  formData.append('image', newMedia.photo)
+
+  const result = await apiUpload('/news', formData)
+
+  console.log('PRESS RELEASE API RESULT:', result)
+
+  if (!result.success) {
+    console.error('PRESS RELEASE API ERROR:', result)
+    return
+  }
+}
+
+    // Refresh admin media list
+    await loadMedia()
+
+    // Reset form
+    setNewMedia({
+      name: '',
+      type: 'press',
+      description: '',
+      readTime: '',
+      category: 'Projects',
+      photo: null,
+      videoUrl: '',
+      file: null
+    })
+
+    setShowAddMediaModal(false)
+
+  } catch (error) {
+    console.error('Failed to create media:', error)
+  }
+}
+
 
   // Application status
   const handleApplicationStatusChange = async (applicationId, newStatus) => {
@@ -821,50 +959,175 @@ const handleDeleteProduct = async (id) => {
     }
   }
 
-  const handleDeleteMedia = (id) => {
-    if (!window.confirm('Delete this media asset?')) return
-    updateData((prev) => ({
-      ...prev,
-      media: (prev.media || []).filter((m) => m.id !== id)
-    }))
-    showToast('Media asset removed')
-  }
+const handleDeleteMedia = async (id) => {
+  try {
+    const item = mediaItems.find((media) => media.id === id)
 
-  // Testimonial handlers
-  const handleCreateTestimonial = (e) => {
-    e.preventDefault()
-    if (!newTestimonial.clientName || !newTestimonial.comment) return
-    const created = {
-      ...newTestimonial,
-      id: 'test-' + Date.now(),
-      date: new Date().toISOString().split('T')[0]
+    if (!item) return
+
+    let endpoint = ''
+
+    if (item.type === 'press') {
+      endpoint = `/news/${id}`
+    } else if (item.type === 'video') {
+      endpoint = `/videos/${id}`
+    } else if (item.type === 'photo') {
+      endpoint = `/gallery/${id}`
     }
-    updateData((prev) => ({
-      ...prev,
-      testimonials: [created, ...(prev.testimonials || [])]
-    }))
+
+    const result = await apiDelete(endpoint)
+
+    if (!result.success) {
+      throw new Error(result.message || 'Failed to delete media')
+    }
+
+    // Refresh the list from backend
+    await loadMedia()
+
+  } catch (error) {
+    console.error('Failed to delete media:', error)
+  }
+}
+const loadMedia = async () => {
+  try {
+    const [galleryResult, videosResult, newsResult] = await Promise.all([
+      apiGet('/gallery/'),
+      apiGet('/videos'),
+      apiGet('/news')
+    ])
+
+    const galleryItems =
+      galleryResult?.success && Array.isArray(galleryResult.data)
+        ? galleryResult.data.map((item) => ({
+            id: item.id,
+            type: 'photo',
+            title: item.title || '',
+            description: item.description || '',
+            imageUrl: item.image?.url || '',
+            date: item.createdAt || '',
+            category: item.category || ''
+          }))
+        : []
+
+    const videoItems =
+      videosResult?.success && Array.isArray(videosResult.data)
+        ? videosResult.data.map((item) => ({
+            id: item.id,
+            type: 'video',
+            title: item.title || '',
+            description: item.description || '',
+            imageUrl: item.thumbnail?.url || '',
+            videoUrl: item.videoUrl || '',
+            date: item.createdAt || '',
+            category: item.category || ''
+          }))
+        : []
+
+    const newsItems =
+      newsResult?.success && Array.isArray(newsResult.data)
+        ? newsResult.data.map((item) => ({
+            id: item.id,
+            type: 'press',
+            title: item.title || '',
+            description: item.summary || '',
+            imageUrl: item.image?.url || '',
+            date: item.publicationDate || item.createdAt || '',
+            readTime: item.readTime || '',
+            category: 'Press Release',
+            articleUrl: item.articleUrl || ''
+          }))
+        : []
+
+    setMediaItems([
+      ...newsItems,
+      ...galleryItems,
+      ...videoItems
+    ])
+  } catch (error) {
+    console.error('Failed to load media', error)
+  }
+}
+  // Testimonial handlers
+  const handleCreateTestimonial = async (e) => {
+  e.preventDefault()
+
+  if (!newTestimonial.clientName || !newTestimonial.comment) return
+
+  try {
+    const result = await apiPost('/testimonials', {
+      clientName: newTestimonial.clientName,
+      company: newTestimonial.company,
+      location: newTestimonial.location,
+      rating: Number(newTestimonial.rating),
+      comment: newTestimonial.comment,
+      status: newTestimonial.status || 'approved'
+    })
+
+    if (!result.success) {
+      throw new Error(
+        result.message || 'Failed to create testimonial'
+      )
+    }
+
+    await loadTestimonials()
+
     setShowAddTestimonialModal(false)
-    setNewTestimonial({ clientName: '', company: '', location: '', rating: 5, comment: '', status: 'approved' })
+
+    setNewTestimonial({
+      clientName: '',
+      company: '',
+      location: '',
+      rating: 5,
+      comment: '',
+      status: 'approved'
+    })
+
     showToast('Testimonial saved')
+  } catch (error) {
+    console.error('Failed to create testimonial:', error)
+    showToast(error.message || 'Failed to save testimonial')
   }
+}
 
-  const handleToggleTestimonialStatus = (id, newStatus) => {
-    updateData((prev) => ({
-      ...prev,
-      testimonials: (prev.testimonials || []).map((t) => (t.id === id ? { ...t, status: newStatus } : t))
-    }))
-    showToast(`Testimonial marked as ${newStatus}`)
+ const handleToggleTestimonialStatus = async (id, status) => {
+  try {
+    const result = await apiPatch(`/testimonials/${id}`, {
+      status
+    })
+
+    if (!result.success) {
+      throw new Error(
+        result.message || 'Failed to update testimonial status'
+      )
+    }
+
+    await loadTestimonials()
+
+    showToast('Testimonial status updated')
+  } catch (error) {
+    console.error('Failed to update testimonial status:', error)
+    showToast(error.message || 'Failed to update status')
   }
+}
 
-  const handleDeleteTestimonial = (id) => {
-    if (!window.confirm('Delete this testimonial?')) return
-    updateData((prev) => ({
-      ...prev,
-      testimonials: (prev.testimonials || []).filter((t) => t.id !== id)
-    }))
-    showToast('Testimonial removed')
+  const handleDeleteTestimonial = async (id) => {
+  try {
+    const result = await apiDelete(`/testimonials/${id}`)
+
+    if (!result.success) {
+      throw new Error(
+        result.message || 'Failed to delete testimonial'
+      )
+    }
+
+    await loadTestimonials()
+
+    showToast('Testimonial deleted')
+  } catch (error) {
+    console.error('Failed to delete testimonial:', error)
+    showToast(error.message || 'Failed to delete testimonial')
   }
-
+}
   // Admin Profile handler
   const handleUpdateProfilePassword = (e) => {
     e.preventDefault()
@@ -2001,66 +2264,159 @@ const handleDeleteProduct = async (id) => {
 
           {/* TAB: GALLERY / MEDIA */}
           {activeTab === 'media' && (
-            <div className="adm-panel-card">
-              <div className="adm-card-header">
-                <div>
-                  <h3 className="adm-card-title">Gallery & Media Assets</h3>
-                  <p style={{ margin: '4px 0 0', color: 'var(--adm-text-muted)', fontSize: '0.85rem' }}>
-                    Manage public photo galleries, press highlights, and milestone imagery.
-                  </p>
-                </div>
-                <div className="adm-card-controls">
-                  <div className="adm-filter-group">
-                    <select
-                      className="adm-filter-select"
-                      value={mediaFilter}
-                      onChange={(e) => setMediaFilter(e.target.value)}
-                    >
-                      <option value="all">All Media Categories</option>
-                      <option value="Residential">Residential</option>
-                      <option value="Industrial">Industrial</option>
-                      <option value="Products">Products</option>
-                      <option value="Company">Company</option>
-                    </select>
-                  </div>
-                  <button
-                    type="button"
-                    className="adm-btn-action"
-                    onClick={() => setShowAddMediaModal(true)}
-                  >
-                    + Add Media Asset
-                  </button>
-                </div>
+  <div className="adm-panel-card">
+
+    {/* Header */}
+    <div className="adm-card-header">
+      <div>
+        <h3 className="adm-card-title">Gallery & Media Assets</h3>
+        <p
+          style={{
+            margin: '4px 0 0',
+            color: 'var(--adm-text-muted)',
+            fontSize: '0.85rem'
+          }}
+        >
+          Manage press releases, videos, photo galleries, and brand assets.
+        </p>
+      </div>
+
+      <div className="adm-card-controls">
+        <button
+          type="button"
+          className="adm-btn-action"
+          onClick={() => setShowAddMediaModal(true)}
+        >
+          + Add Media Asset
+        </button>
+      </div>
+    </div>
+
+    {/* Media Type Tabs */}
+    <div className="adm-media-tabs">
+
+      <button
+        type="button"
+        className={`adm-media-tab ${
+          mediaTab === 'all' ? 'active' : ''
+        }`}
+        onClick={() => setMediaTab('all')}
+      >
+        All Updates
+      </button>
+
+      <button
+        type="button"
+        className={`adm-media-tab ${
+          mediaTab === 'press' ? 'active' : ''
+        }`}
+        onClick={() => setMediaTab('press')}
+      >
+        Press Releases
+      </button>
+
+      <button
+        type="button"
+        className={`adm-media-tab ${
+          mediaTab === 'video' ? 'active' : ''
+        }`}
+        onClick={() => setMediaTab('video')}
+      >
+        Video Spotlights
+      </button>
+
+      <button
+        type="button"
+        className={`adm-media-tab ${
+          mediaTab === 'photo' ? 'active' : ''
+        }`}
+        onClick={() => setMediaTab('photo')}
+      >
+        Photo Archive
+      </button>
+
+    
+
+    </div>
+
+    {/* Media Grid */}
+    <div className="adm-media-grid">
+
+      {(mediaItems || [])
+        .filter((item) => {
+          if (mediaTab === 'all') return true;
+          return item.type === mediaTab;
+        })
+        .map((item) => (
+
+          <div key={item.id} className="adm-media-card">
+
+            <div className="adm-media-thumb">
+
+              {item.type === 'video' ? (
+  <div className="adm-media-video-placeholder">
+    <img
+      src={item.imageUrl}
+      alt={item.title}
+    />
+
+    <span>▶</span>
+  </div>
+) : (
+  <img
+    src={item.imageUrl}
+    alt={item.title}
+  />
+)}
+
+              <span className="adm-media-category-badge">
+                {item.type === 'press' && 'Press Release'}
+                {item.type === 'video' && 'Video'}
+                {item.type === 'photo' && 'Photo'}
+                {item.type === 'brand' && 'Media Kit'}
+              </span>
+
+            </div>
+
+            <div className="adm-media-body">
+
+              <h4 className="adm-media-title">
+                {item.title}
+              </h4>
+
+              {item.description && (
+                <p className="adm-media-description">
+                  {item.description}
+                </p>
+              )}
+
+              <div className="adm-media-footer">
+
+                <span className="adm-media-date">
+                  {item.date}
+                </span>
+
+                <button
+                  type="button"
+                  className="adm-btn-tiny danger"
+                  onClick={() => handleDeleteMedia(item.id)}
+                  title="Delete Media"
+                >
+                  Delete
+                </button>
+
               </div>
 
-              <div className="adm-media-grid">
-                {(data.media || [])
-                  .filter((m) => mediaFilter === 'all' || m.category === mediaFilter)
-                  .map((item) => (
-                    <div key={item.id} className="adm-media-card">
-                      <div className="adm-media-thumb">
-                        <img src={item.imageUrl} alt={item.title} />
-                        <span className="adm-media-category-badge">{item.category}</span>
-                      </div>
-                      <div className="adm-media-body">
-                        <h4 className="adm-media-title">{item.title}</h4>
-                        <div className="adm-media-footer">
-                          <span className="adm-media-date">{item.date}</span>
-                          <button
-                            type="button"
-                            className="adm-btn-tiny danger"
-                            onClick={() => handleDeleteMedia(item.id)}
-                            title="Delete Media"
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-              </div>
             </div>
-          )}
+
+          </div>
+
+        ))}
+
+    </div>
+
+  </div>
+)}
 
           {/* TAB: TESTIMONIALS */}
           {activeTab === 'testimonials' && (
@@ -2858,70 +3214,335 @@ const handleDeleteProduct = async (id) => {
 )}
 
       {/* ADD MEDIA MODAL */}
-      {showAddMediaModal && (
-        <div className="adm-modal-backdrop" onClick={() => setShowAddMediaModal(false)}>
-          <div className="adm-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="adm-modal-header">
-              <h3>Add Media / Gallery Asset</h3>
-              <button type="button" className="adm-modal-close" onClick={() => setShowAddMediaModal(false)}><FiX /></button>
-            </div>
-            <form onSubmit={handleCreateMedia}>
-              <div className="adm-modal-body">
-                <div className="adm-form-group">
-                  <label>Title / Caption *</label>
-                  <input
-                    type="text"
-                    required
-                    className="adm-search-input"
-                    style={{ width: '100%' }}
-                    value={newMedia.title}
-                    onChange={(e) => setNewMedia({ ...newMedia, title: e.target.value })}
-                    placeholder="e.g. 500kW Industrial Rooftop Commissioning"
-                  />
-                </div>
-                <div className="adm-form-group">
-                  <label>Category</label>
-                  <select
-                    className="adm-filter-select"
-                    style={{ width: '100%' }}
-                    value={newMedia.category}
-                    onChange={(e) => setNewMedia({ ...newMedia, category: e.target.value })}
-                  >
-                    <option value="Residential">Residential</option>
-                    <option value="Industrial">Industrial</option>
-                    <option value="Products">Products</option>
-                    <option value="Company">Company</option>
-                  </select>
-                </div>
-                <div className="adm-form-group">
-                  <label>Image URL *</label>
-                  <input
-                    type="url"
-                    required
-                    className="adm-search-input"
-                    style={{ width: '100%' }}
-                    value={newMedia.imageUrl}
-                    onChange={(e) => setNewMedia({ ...newMedia, imageUrl: e.target.value })}
-                    placeholder="https://images.unsplash.com/..."
-                  />
-                </div>
-              </div>
-              <div className="adm-modal-footer">
-                <button
-                  type="button"
-                  className="adm-btn-secondary"
-                  onClick={() => setShowAddMediaModal(false)}
-                >
-                  Cancel
-                </button>
-                <button type="submit" className="adm-btn-action">
-                  Upload Asset
-                </button>
-              </div>
-            </form>
+
+{showAddMediaModal && (
+  <div
+    className="adm-modal-backdrop"
+    onClick={() => setShowAddMediaModal(false)}
+  >
+    <div
+      className="adm-modal"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <div className="adm-modal-header">
+        <h3>Add Media / Gallery Asset</h3>
+
+        <button
+          type="button"
+          className="adm-modal-close"
+          onClick={() => setShowAddMediaModal(false)}
+        >
+          <FiX />
+        </button>
+      </div>
+
+      <form onSubmit={handleCreateMedia}>
+        <div className="adm-modal-body">
+
+          {/* Name */}
+          <div className="adm-form-group">
+            <label>Title *</label>
+
+            <input
+              type="text"
+              required
+              className="adm-search-input"
+              style={{ width: '100%' }}
+              value={newMedia.name}
+              onChange={(e) =>
+                setNewMedia({
+                  ...newMedia,
+                  name: e.target.value
+                })
+              }
+              placeholder="Enter name"
+            />
           </div>
+
+          {/* Media Type */}
+          <div className="adm-form-group">
+            <label>Media Type *</label>
+
+            <select
+              required
+              className="adm-filter-select"
+              style={{ width: '100%' }}
+              value={newMedia.type}
+              onChange={(e) =>
+                setNewMedia({
+                  ...newMedia,
+                  type: e.target.value,
+                  name: '',
+                  description: '',
+                  readTime: '',
+                  category: 'Projects',
+                  photo: null,
+                  video: '',
+                  file: null
+                })
+              }
+            >
+              <option value="press">Press Release</option>
+              <option value="photo">Photo Archive</option>
+              <option value="video">Video Spotlight</option>
+            </select>
+          </div>
+
+          {/* Press Release */}
+          {newMedia.type === 'press' && (
+            <>
+              {/* Read Time */}
+              <div className="adm-form-group">
+                <label>Time Taken to Read *</label>
+
+                <input
+                  type="text"
+                  required
+                  className="adm-search-input"
+                  style={{ width: '100%' }}
+                  value={newMedia.readTime}
+                  onChange={(e) =>
+                    setNewMedia({
+                      ...newMedia,
+                      readTime: e.target.value
+                    })
+                  }
+                  placeholder="e.g. 5 min read"
+                />
+              </div>
+
+              {/* Description */}
+              <div className="adm-form-group">
+                <label>Description *</label>
+
+                <textarea
+                  required
+                  className="adm-search-input"
+                  style={{ width: '100%' }}
+                  value={newMedia.description}
+                  onChange={(e) =>
+                    setNewMedia({
+                      ...newMedia,
+                      description: e.target.value
+                    })
+                  }
+                  placeholder="Enter description"
+                />
+              </div>
+
+              {/* Press Release Image */}
+              <div className="adm-form-group">
+                <label>Image *</label>
+
+                <input
+                  type="file"
+                  required
+                  accept="image/*"
+                  onChange={(e) =>
+                    setNewMedia({
+                      ...newMedia,
+                      photo: e.target.files?.[0] || null
+                    })
+                  }
+                />
+
+                {newMedia.photo && (
+                  <small style={{ color: 'var(--adm-text-muted)' }}>
+                    Selected: {newMedia.photo.name}
+                  </small>
+                )}
+              </div>
+            </>
+          )}
+
+          {/* Photo Archive */}
+          {newMedia.type === 'photo' && (
+            <>
+              {/* Description */}
+              <div className="adm-form-group">
+                <label>Description *</label>
+
+                <textarea
+                  required
+                  className="adm-search-input"
+                  style={{ width: '100%' }}
+                  value={newMedia.description}
+                  onChange={(e) =>
+                    setNewMedia({
+                      ...newMedia,
+                      description: e.target.value
+                    })
+                  }
+                  placeholder="Enter description"
+                />
+              </div>
+
+              {/* Category */}
+              <div className="adm-form-group">
+                <label>Category *</label>
+
+                <select
+                  required
+                  className="adm-filter-select"
+                  style={{ width: '100%' }}
+                  value={newMedia.category}
+                  onChange={(e) =>
+                    setNewMedia({
+                      ...newMedia,
+                      category: e.target.value
+                    })
+                  }
+                >
+                  <option value="Projects">Projects</option>
+                  <option value="Installations">Installations</option>
+                  <option value="Events">Events</option>
+                  <option value="Company">Company</option>
+                </select>
+              </div>
+
+              {/* Photo */}
+              <div className="adm-form-group">
+                <label>Photo *</label>
+
+                <input
+                  type="file"
+                  required
+                  accept="image/*"
+                  onChange={(e) =>
+                    setNewMedia({
+                      ...newMedia,
+                      photo: e.target.files?.[0] || null
+                    })
+                  }
+                />
+
+                {newMedia.photo && (
+                  <small style={{ color: 'var(--adm-text-muted)' }}>
+                    Selected: {newMedia.photo.name}
+                  </small>
+                )}
+              </div>
+            </>
+          )}
+
+          {/* Video Spotlight */}
+          {newMedia.type === 'video' && (
+            <>
+              {/* Description */}
+              <div className="adm-form-group">
+                <label>Description *</label>
+
+                <textarea
+                  required
+                  className="adm-search-input"
+                  style={{ width: '100%' }}
+                  value={newMedia.description}
+                  onChange={(e) =>
+                    setNewMedia({
+                      ...newMedia,
+                      description: e.target.value
+                    })
+                  }
+                  placeholder="Enter description"
+                />
+              </div>
+
+              {/* Video URL */}
+              <div className="adm-form-group">
+                <label>Video *</label>
+
+               <input
+  type="file"
+  required
+  accept="video/*"
+  onChange={(e) =>
+    setNewMedia({
+      ...newMedia,
+      video: e.target.files?.[0] || null
+    })
+  }
+/>
+
+{newMedia.video && (
+  <small style={{ color: 'var(--adm-text-muted)' }}>
+    Selected: {newMedia.video.name}
+  </small>
+)}
+              </div>
+
+              {/* Category */}
+              <div className="adm-form-group">
+                <label>Category *</label>
+
+                <select
+                  required
+                  className="adm-filter-select"
+                  style={{ width: '100%' }}
+                  value={newMedia.category}
+                  onChange={(e) =>
+                    setNewMedia({
+                      ...newMedia,
+                      category: e.target.value
+                    })
+                  }
+                >
+                  <option value="Projects">Projects</option>
+                  <option value="Installations">Installations</option>
+                  <option value="Events">Events</option>
+                  <option value="Company">Company</option>
+                </select>
+              </div>
+
+              {/* Video Thumbnail */}
+              <div className="adm-form-group">
+                <label>Thumbnail *</label>
+
+                <input
+                  type="file"
+                  required
+                  accept="image/*"
+                  onChange={(e) =>
+                    setNewMedia({
+                      ...newMedia,
+                      file: e.target.files?.[0] || null
+                    })
+                  }
+                />
+
+                {newMedia.file && (
+                  <small style={{ color: 'var(--adm-text-muted)' }}>
+                    Selected: {newMedia.file.name}
+                  </small>
+                )}
+              </div>
+            </>
+          )}
+
         </div>
-      )}
+
+        <div className="adm-modal-footer">
+
+          <button
+            type="button"
+            className="adm-btn-secondary"
+            onClick={() => setShowAddMediaModal(false)}
+          >
+            Cancel
+          </button>
+
+          <button
+            type="submit"
+            className="adm-btn-action"
+          >
+            Upload Asset
+          </button>
+
+        </div>
+      </form>
+    </div>
+  </div>
+)}
+
 
       {/* ADD TESTIMONIAL MODAL */}
       {showAddTestimonialModal && (
@@ -3009,6 +3630,7 @@ const handleDeleteProduct = async (id) => {
           </div>
         </div>
       )}
+
 
       {/* Toast Notification */}
       {toastMessage && (

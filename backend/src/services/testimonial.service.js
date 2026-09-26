@@ -3,14 +3,13 @@ import { Testimonial } from '../models/Testimonial.js';
 
 const testimonialResponse = (testimonial) => ({
   id: testimonial._id.toString(),
-  name: testimonial.name,
-  role: testimonial.role,
-  company: testimonial.company,
-  metric: testimonial.metric,
-  quote: testimonial.quote,
-  rating: testimonial.rating
+  clientName: testimonial.clientName || testimonial.name || '',
+  company: testimonial.company || '',
+  location: testimonial.location || testimonial.metric || '',
+  rating: testimonial.rating ?? 5,
+  comment: testimonial.comment || testimonial.quote || '',
+  status: testimonial.status || 'approved'
 });
-
 const invalidIdError = () => {
   const error = new Error('Invalid testimonial ID.');
   error.statusCode = 400;
@@ -33,11 +32,25 @@ const findTestimonial = async (id) => {
 export const createTestimonial = async (input) => testimonialResponse(await Testimonial.create(input));
 
 export const updateTestimonial = async (id, input) => {
-  const testimonial = await findTestimonial(id);
-  Object.assign(testimonial, input);
-  await testimonial.save();
-  return testimonialResponse(testimonial);
-};
+  if (!mongoose.isValidObjectId(id)) {
+    throw invalidIdError()
+  }
+
+  const testimonial = await Testimonial.findByIdAndUpdate(
+    id,
+    { $set: input },
+    {
+      new: true,
+      runValidators: false
+    }
+  )
+
+  if (!testimonial) {
+    throw notFoundError()
+  }
+
+  return testimonialResponse(testimonial)
+}
 
 export const deleteTestimonial = async (id) => {
   const testimonial = await findTestimonial(id);
@@ -45,8 +58,12 @@ export const deleteTestimonial = async (id) => {
 };
 
 export const listPublicTestimonials = async () => {
-  const testimonials = await Testimonial.find({})
-    .select('name role company metric quote rating')
+  const testimonials = await Testimonial.find({
+    status: 'approved'
+  })
+    .select(
+      'clientName company location rating comment status'
+    )
     .sort({ createdAt: -1 })
     .lean();
 
@@ -64,3 +81,5 @@ export const listAdminTestimonials = async () => {
     updatedAt: testimonial.updatedAt
   }));
 };
+
+

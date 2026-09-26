@@ -7,8 +7,14 @@ import {
 } from '../services/testimonial.service.js';
 import { sendSuccess } from '../utils/response.js';
 
-const testimonialFields = ['description', 'clientName', 'company', 'location'];
-
+const testimonialFields = [
+  'clientName',
+  'company',
+  'location',
+  'rating',
+  'comment',
+  'status'
+]
 const validationError = (details) => {
   const error = new Error('Request validation failed.');
   error.statusCode = 400;
@@ -17,32 +23,92 @@ const validationError = (details) => {
 };
 
 const validateInput = (input, partial = false) => {
-  const details = {};
+  const details = {}
+
   if (!input || typeof input !== 'object' || Array.isArray(input)) {
-    details.body = 'Request body must be a JSON object.';
-    return details;
+    details.body = 'Request body must be a JSON object.'
+    return details
   }
 
-  const fields = Object.keys(input);
-  const unknownFields = fields.filter((field) => !testimonialFields.includes(field));
-  if (unknownFields.length > 0) details.fields = `Unsupported fields: ${unknownFields.join(', ')}.`;
-  if (partial && fields.length === 0) details.body = 'At least one testimonial field is required.';
+  const fields = Object.keys(input)
 
-  testimonialFields.forEach((field) => {
-    if (!partial && (input[field] === undefined || input[field] === '')) {
-      details[field] = `${field} is required.`;
+  const unknownFields = fields.filter(
+    (field) => !testimonialFields.includes(field)
+  )
+
+  if (unknownFields.length > 0) {
+    details.fields = `Unsupported fields: ${unknownFields.join(', ')}.`
+  }
+
+  if (partial && fields.length === 0) {
+    details.body = 'At least one testimonial field is required.'
+  }
+
+  // Required fields for CREATE
+  if (!partial) {
+    ;['clientName', 'company', 'location', 'comment'].forEach((field) => {
+      if (
+        input[field] === undefined ||
+        typeof input[field] !== 'string' ||
+        input[field].trim().length === 0
+      ) {
+        details[field] = `${field} is required.`
+      }
+    })
+
+    if (input.rating === undefined) {
+      details.rating = 'rating is required.'
     }
-    if (input[field] !== undefined && (typeof input[field] !== 'string' || input[field].trim().length === 0)) {
-      details[field] = `${field} must be a non-empty string.`;
+  }
+
+  // Validate strings when supplied
+  ;['clientName', 'company', 'location', 'comment'].forEach((field) => {
+    if (
+      input[field] !== undefined &&
+      (typeof input[field] !== 'string' ||
+        input[field].trim().length === 0)
+    ) {
+      details[field] = `${field} must be a non-empty string.`
     }
-  });
+  })
 
-  return details;
-};
+  // Validate rating when supplied
+  if (input.rating !== undefined) {
+    const rating = Number(input.rating)
 
-const normalizeInput = (input) => Object.fromEntries(
-  Object.entries(input).map(([field, value]) => [field, value.trim()])
-);
+    if (
+      !Number.isInteger(rating) ||
+      rating < 1 ||
+      rating > 5
+    ) {
+      details.rating = 'rating must be an integer between 1 and 5.'
+    }
+  }
+
+  // Validate status when supplied
+  if (input.status !== undefined) {
+    if (!['approved', 'pending'].includes(input.status)) {
+      details.status = 'status must be approved or pending.'
+    }
+  }
+
+  return details
+}
+
+const normalizeInput = (input) =>
+  Object.fromEntries(
+    Object.entries(input).map(([field, value]) => {
+      if (typeof value === 'string') {
+        return [field, value.trim()]
+      }
+
+      if (field === 'rating') {
+        return [field, Number(value)]
+      }
+
+      return [field, value]
+    })
+  )
 
 export const create = async (request, response) => {
   const details = validateInput(request.body);
@@ -57,16 +123,28 @@ export const create = async (request, response) => {
 };
 
 export const update = async (request, response) => {
-  const details = validateInput(request.body, true);
-  if (Object.keys(details).length > 0) throw validationError(details);
+
+  const { status } = request.body
+
+  if (!status) {
+    const error = new Error('Status is required.')
+    error.statusCode = 400
+    throw error
+  }
+
+  if (!['approved', 'pending'].includes(status)) {
+    const error = new Error('Status must be approved or pending.')
+    error.statusCode = 400
+    throw error
+  }
 
   return sendSuccess(
     response,
     200,
-    'Testimonial updated successfully.',
-    await updateTestimonial(request.params.id, normalizeInput(request.body))
-  );
-};
+    'Testimonial status updated successfully.',
+    await updateTestimonial(request.params.id, { status })
+  )
+}
 
 export const remove = async (request, response) => {
   await deleteTestimonial(request.params.id);

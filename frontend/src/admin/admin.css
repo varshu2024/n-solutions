@@ -93,6 +93,23 @@
   outline: none;
   min-width: 125px;
 }
+.adm-media-video-placeholder {
+  position: relative;
+  overflow: hidden;
+}
+
+.adm-media-video-placeholder img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.adm-media-video-placeholder span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 
 .adm-status-select:focus {
   border-color: var(--adm-accent);
@@ -101,6 +118,40 @@
 .adm-status-select option {
   background: var(--adm-surface);
   color: var(--adm-text);
+}
+
+.adm-media-tabs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 24px 0;
+  padding: 6px;
+  background: #f5f7fa;
+  border-radius: 999px;
+  overflow-x: auto;
+}
+
+.adm-media-tab {
+  border: none;
+  background: transparent;
+  padding: 11px 20px;
+  border-radius: 999px;
+  color: var(--adm-text);
+  font-size: 0.9rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.adm-media-tab:hover {
+  background: rgba(30, 105, 190, 0.08);
+}
+
+.adm-media-tab.active {
+  background: #1769c2;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(23, 105, 194, 0.2);
 }
 
 .adm-login-card {

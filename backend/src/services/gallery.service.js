@@ -10,7 +10,15 @@ const findGallery = async (id) => {
   if (!gallery) throw notFound();
   return gallery;
 };
-const response = (gallery) => ({ id: gallery._id.toString(), title: gallery.title, category: gallery.category, image: gallery.image, createdAt: gallery.createdAt, updatedAt: gallery.updatedAt });
+const response = (gallery) => ({
+  id: gallery._id.toString(),
+  title: gallery.title,
+  description: gallery.description || '',
+  category: gallery.category,
+  image: gallery.image,
+  createdAt: gallery.createdAt,
+  updatedAt: gallery.updatedAt
+});
 
 export const createGallery = async (input) => response(await Gallery.create(input));
 export const listGallery = async () => (await Gallery.find({}).sort({ createdAt: -1 }).lean()).map(response);

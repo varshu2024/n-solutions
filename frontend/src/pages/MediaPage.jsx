@@ -140,44 +140,53 @@ export default function MediaPage() {
   const [articles, setArticles] = useState(pressArticles)
   const [gallery, setGallery] = useState(galleryImages)
   const [videos, setVideos] = useState([])
-
+const [projectMilestones, setProjectMilestones] = useState([])
   useEffect(() => {
-    document.title = 'Media & News Center | N Solutions Solar EPC'
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+  document.title = 'Media & News Center | N Solutions Solar EPC'
+  window.scrollTo({ top: 0, behavior: 'smooth' })
 
-    const loadMedia = async () => {
-      const [newsResult, videoResult, galleryResult] = await Promise.all([
-        apiGet('/media?type=News%20%26%20Media%20Coverage'),
-        apiGet('/media?type=Videos'),
-        apiGet('/gallery')
-      ])
+  const loadMedia = async () => {
+    try {
+      const mediaResult = await apiGet('/media')
 
-      if (
-        newsResult.success &&
-        Array.isArray(newsResult.data) &&
-        newsResult.data.length > 0
-      ) {
+      if (!mediaResult?.success || !mediaResult?.data) {
+        console.error('Failed to retrieve media data')
+        return
+      }
+
+      const {
+        news = [],
+        projectMilestones = [],
+        gallery = [],
+        videos = []
+      } = mediaResult.data
+
+      // NEWS
+      if (Array.isArray(news) && news.length > 0) {
         setArticles(
-          newsResult.data.map((news) => ({
-            id: news.id,
-            tag: news.source || 'Press Release',
-            date: news.publicationDate || '',
-            readTime: '',
-            title: news.title || '',
-            summary: news.summary || '',
-            fullText: news.summary || '',
-            image: news.image?.url || ''
+          news.map((item) => ({
+            id: item.id,
+            tag: item.source || item.tag || 'Press Release',
+            date: item.publicationDate || '',
+            readTime: item.readTime || '',
+            title: item.title || '',
+            summary: item.summary || '',
+            fullText: item.fullText || item.summary || '',
+            image: item.image?.url || ''
           }))
         )
       } else {
         setArticles(pressArticles)
       }
 
-      if (
-        videoResult.success &&
-        Array.isArray(videoResult.data)
-      ) {
-        const mappedVideos = videoResult.data.map((video) => ({
+      // PROJECT MILESTONES
+      if (Array.isArray(projectMilestones)) {
+        setProjectMilestones(projectMilestones)
+      }
+
+      // VIDEOS
+      if (Array.isArray(videos) && videos.length > 0) {
+        const mappedVideos = videos.map((video) => ({
           id: video.id,
           title: video.title || '',
           description: video.description || '',
@@ -188,21 +197,20 @@ export default function MediaPage() {
 
         setVideos(mappedVideos)
 
-        if (mappedVideos.length > 0 && mappedVideos[0].videoUrl) {
+        if (mappedVideos[0]?.videoUrl) {
           setActiveVideo(mappedVideos[0].videoUrl)
         }
+      } else {
+        setVideos([])
       }
 
-      if (
-        galleryResult.success &&
-        Array.isArray(galleryResult.data) &&
-        galleryResult.data.length > 0
-      ) {
+      // GALLERY
+      if (Array.isArray(gallery) && gallery.length > 0) {
         setGallery(
-          galleryResult.data.map((photo) => ({
+          gallery.map((photo) => ({
             id: photo.id,
             title: photo.title || '',
-            location: '',
+            location: photo.location || '',
             category: photo.category || '',
             src: photo.image?.url || ''
           }))
@@ -210,10 +218,13 @@ export default function MediaPage() {
       } else {
         setGallery(galleryImages)
       }
+    } catch (error) {
+      console.error('Failed to load media:', error)
     }
+  }
 
-    loadMedia()
-  }, [])
+  loadMedia()
+}, [])
 
   return (
     <div className="media-page">

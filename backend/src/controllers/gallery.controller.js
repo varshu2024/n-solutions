@@ -6,11 +6,42 @@ import { sendSuccess } from '../utils/response.js';
 const validationError = (details) => { const error = new Error('Request validation failed.'); error.statusCode = 400; error.details = details; return error; };
 const validate = (input, partial = false, hasFile = false) => {
   const details = {};
-  ['title', 'category'].forEach((field) => { if ((!partial && (!input[field] || typeof input[field] !== 'string' || !input[field].trim())) || (partial && input[field] !== undefined && (typeof input[field] !== 'string' || !input[field].trim()))) details[field] = `${field} is required.`; });
-  if (input.category !== undefined && !GALLERY_CATEGORIES.includes(input.category)) details.category = 'Category is invalid.';
-  if (partial && Object.keys(input).length === 0 && !hasFile) details.gallery = 'At least one field is required.';
+
+  ['title', 'category'].forEach((field) => {
+    if (
+      (!partial &&
+        (!input[field] ||
+          typeof input[field] !== 'string' ||
+          !input[field].trim())) ||
+      (partial &&
+        input[field] !== undefined &&
+        (typeof input[field] !== 'string' || !input[field].trim()))
+    ) {
+      details[field] = `${field} is required.`;
+    }
+  });
+
+  if (
+    input.description !== undefined &&
+    typeof input.description !== 'string'
+  ) {
+    details.description = 'Description must be a string.';
+  }
+
+  if (
+    input.category !== undefined &&
+    !GALLERY_CATEGORIES.includes(input.category)
+  ) {
+    details.category = 'Category is invalid.';
+  }
+
+  if (partial && Object.keys(input).length === 0 && !hasFile) {
+    details.gallery = 'At least one field is required.';
+  }
+
   return details;
 };
+
 const cleanup = async (asset) => { try { await deleteMediaImage(asset?.publicId); } catch (error) { console.error(`Media image cleanup failed: ${error.message}`); } };
 
 export const create = async (request, response) => {

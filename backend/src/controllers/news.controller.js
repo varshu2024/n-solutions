@@ -6,12 +6,30 @@ const validationError = (details) => { const error = new Error('Request validati
 const isUrl = (value) => { try { return Boolean(new URL(value)); } catch (error) { return false; } };
 const validate = (input, partial = false) => {
   const details = {};
-  ['title', 'summary', 'publicationDate', 'source', 'articleUrl'].forEach((field) => {
-    if (!partial && (!input[field] || typeof input[field] !== 'string' || !input[field].trim())) details[field] = `${field} is required.`;
-    if (partial && input[field] !== undefined && (typeof input[field] !== 'string' || !input[field].trim())) details[field] = `${field} is required.`;
+
+  ['title', 'summary'].forEach((field) => {
+    if (
+      !partial &&
+      (!input[field] ||
+        typeof input[field] !== 'string' ||
+        !input[field].trim())
+    ) {
+      details[field] = `${field} is required.`;
+    }
+
+    if (
+      partial &&
+      input[field] !== undefined &&
+      (typeof input[field] !== 'string' || !input[field].trim())
+    ) {
+      details[field] = `${field} is required.`;
+    }
   });
-  if (input.publicationDate !== undefined && (!/^\d{4}-\d{2}-\d{2}$/.test(input.publicationDate) || Number.isNaN(Date.parse(input.publicationDate)))) details.publicationDate = 'Publication date must be a valid YYYY-MM-DD date.';
-  if (input.articleUrl !== undefined && !isUrl(input.articleUrl)) details.articleUrl = 'Article URL must be a valid URL.';
+
+  if (partial && Object.keys(input).length === 0) {
+    details.news = 'At least one field is required.';
+  }
+
   return details;
 };
 const cleanup = async (asset) => { try { await deleteMediaImage(asset?.publicId); } catch (error) { console.error(`Media image cleanup failed: ${error.message}`); } };

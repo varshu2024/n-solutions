@@ -10,7 +10,18 @@ const findNews = async (id) => {
   if (!news) throw notFound();
   return news;
 };
-const response = (news) => ({ id: news._id.toString(), title: news.title, summary: news.summary, image: news.image, publicationDate: news.publicationDate, source: news.source, articleUrl: news.articleUrl, createdAt: news.createdAt, updatedAt: news.updatedAt });
+const response = (news) => ({
+  id: news._id.toString(),
+  title: news.title,
+  summary: news.summary,
+  readTime: news.readTime,
+  image: news.image,
+  publicationDate: news.publicationDate,
+  source: news.source,
+  articleUrl: news.articleUrl,
+  createdAt: news.createdAt,
+  updatedAt: news.updatedAt
+});
 
 export const createNews = async (input) => response(await News.create(input));
 export const listNews = async () => (await News.find({}).sort({ publicationDate: -1, createdAt: -1 }).lean()).map(response);

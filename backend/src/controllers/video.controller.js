@@ -7,10 +7,20 @@ const validationError = (details) => { const error = new Error('Request validati
 const isUrl = (value) => { try { return Boolean(new URL(value)); } catch (error) { return false; } };
 const validate = (input, partial = false) => {
   const details = {};
-  ['title', 'description', 'category'].forEach((field) => { if ((!partial && (!input[field] || typeof input[field] !== 'string' || !input[field].trim())) || (partial && input[field] !== undefined && (typeof input[field] !== 'string' || !input[field].trim()))) details[field] = `${field} is required.`; });
-  if (!partial && !input.videoUrl) details.videoUrl = 'Video URL or video file is required.';
-  if (input.videoUrl !== undefined && !isUrl(input.videoUrl)) details.videoUrl = 'Video URL must be a valid URL.';
-  if (input.category !== undefined && !VIDEO_CATEGORIES.includes(input.category)) details.category = 'Category is invalid.';
+  ['title', 'description', 'category'].forEach((field) => { 
+    if ((!partial && (!input[field] || typeof input[field] !== 'string' || !input[field].trim())) || (partial && input[field] !== undefined && (typeof input[field] !== 'string' || !input[field].trim()))) details[field] = `${field} is required.`; });
+  if (!partial && !input.videoUrl) {
+  details.videoUrl = 'Video URL or video file is required.'
+}
+
+if (
+  input.videoUrl !== undefined &&
+  input.videoUrl !== 'uploaded-video' &&
+  !isUrl(input.videoUrl)
+) {
+  details.videoUrl = 'Video URL must be a valid URL.'
+}
+if (input.category !== undefined && !VIDEO_CATEGORIES.includes(input.category)) details.category = 'Category is invalid.';
   if (partial && Object.keys(input).length === 0) details.video = 'At least one field is required.';
   return details;
 };
