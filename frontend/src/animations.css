@@ -5394,3 +5394,45 @@ select:focus {
   gap: 9px;
 }
 
+
+/* =========================================================
+   PROOF-ASIDE VIDEO — Replace static background with video
+   ========================================================= */
+.proof-aside-video {
+  /* Override the background-image from the base rule */
+  background: none !important;
+  background-image: none !important;
+}
+
+.proof-aside-video::before {
+  background: linear-gradient(
+    135deg,
+    rgba(7, 18, 31, 0.78) 0%,
+    rgba(7, 39, 66, 0.52) 55%,
+    rgba(7, 39, 66, 0.22) 100%
+  ) !important;
+  z-index: 1;
+}
+
+.proof-aside-video::after {
+  z-index: 2;
+}
+
+.proof-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 0;
+  display: block;
+}
+
+/* All text/icons inside must sit above the video */
+.proof-aside-video .proof-aside-mark,
+.proof-aside-video > div,
+.proof-aside-video .proof-aside-line {
+  position: relative;
+  z-index: 3;
+}
