@@ -304,11 +304,30 @@ function AnimatedMetric({ value, suffix = '', label }) {
 function Reveal({ children, className = '' }) {
   const ref = useRef(null)
   useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => { if (entry.isIntersecting) { entry.target.classList.add('is-visible'); observer.disconnect() } }, { threshold: .12 })
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible')
+        observer.disconnect()
+      }
+    }, { threshold: .12 })
     if (ref.current) observer.observe(ref.current)
     return () => observer.disconnect()
   }, [])
   return <div ref={ref} className={`reveal ${className}`}>{children}</div>
+}
+
+function ScrollProgressBar() {
+  const [width, setWidth] = useState(0)
+  useEffect(() => {
+    const onScroll = () => {
+      const scrollTop = window.scrollY
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight
+      setWidth(docHeight > 0 ? Math.min(100, (scrollTop / docHeight) * 100) : 0)
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+  return <div className="scroll-progress-bar" style={{ width: `${width}%` }} aria-hidden="true" />
 }
 
 function EmptyState({ label, text }) {
@@ -718,178 +737,141 @@ function ProcessPipelineCockpit({ eyebrow, title, subtitle, intro, ctaText = 'St
   const total = pipelinePhases.length
 
   return (
-    <section className="workflow-section workflow-light-blueprint" id="how-we-work">
-      {/* Background picture only (grid completely removed) */}
-      <div className="workflow-photo-bg" aria-hidden="true" />
+    <section className="proc-section" id="how-we-work">
+      <div className="proc-wrap">
 
-      <div className="orbit-full-wrap">
-        <Reveal className="workflow-header">
-          <p className="eyebrow"><span /> {eyebrow || '03 — HOW WE WORK'}</p>
-          <h2 className="workflow-main-h2">
-            {title ? title.toUpperCase() : 'FROM PLANNING'}<br />
-            <em>{subtitle ? subtitle.toUpperCase() : 'TO PERFORMANCE.'}</em>
+        {/* Header */}
+        <Reveal className="proc-header">
+          <p className="proc-eyebrow">
+            <span className="proc-eyebrow-line" aria-hidden="true" />
+            {eyebrow || '03 — HOW WE WORK'}
+          </p>
+          <h2 className="proc-heading">
+            {title || 'From planning'}&nbsp;<em>{subtitle || 'to performance.'}</em>
           </h2>
-          <p className="workflow-intro-p">
+          <p className="proc-lead">
             {intro || 'A six-stage engineering process designed to take your solar project from feasibility to long-term performance.'}
           </p>
         </Reveal>
 
-        {/* 1. Continuous Electrical Energy Trace Path */}
-        <div className="energy-trace-nav-container">
-          <div className="energy-trace-track">
-            <div
-              className="energy-trace-fill"
-              style={{ width: `${(activeStep / (total - 1)) * 100}%` }}
-            />
-            <div
-              className="energy-trace-pulse-head"
-              style={{ left: `${(activeStep / (total - 1)) * 100}%` }}
-            />
-          </div>
+        {/* Main Layout */}
+        <div className="proc-layout">
 
-          <div className="energy-trace-nodes">
+          {/* Left: Phase Selector Tabs */}
+          <nav className="proc-tabs" aria-label="Project phases">
+            {/* Animated progress spine */}
+            <div className="proc-spine-track" aria-hidden="true">
+              <div
+                className="proc-spine-fill"
+                style={{ height: `${(activeStep / (total - 1)) * 100}%` }}
+              />
+            </div>
+
             {pipelinePhases.map((phase, idx) => {
-              const isPassed = idx <= activeStep
               const isActive = idx === activeStep
+              const isDone = idx < activeStep
               return (
                 <button
                   key={phase.number}
                   type="button"
-                  className={`energy-trace-node ${isActive ? 'is-active' : ''} ${isPassed ? 'is-passed' : ''}`}
+                  className={`proc-tab${isActive ? ' is-active' : ''}${isDone ? ' is-done' : ''}`}
                   onClick={() => setActiveStep(idx)}
-                  aria-label={`Phase ${phase.number}: ${phase.shortLabel}`}
+                  aria-current={isActive ? 'step' : undefined}
                 >
-                  <span className="trace-node-circle">
-                    <span className="trace-node-dot" />
+                  <span className="proc-tab-dot" aria-hidden="true">
+                    {isDone ? <FiCheckCircle /> : <span className="proc-tab-dot-inner" />}
                   </span>
-                  <span className="trace-node-number">{phase.number}</span>
-                  <span className="trace-node-label">{phase.shortLabel.toUpperCase()}</span>
-                  {isActive && <span className="trace-node-active-pill">ACTIVE</span>}
+                  <span className="proc-tab-body">
+                    <span className="proc-tab-num">Phase {phase.number}</span>
+                    <span className="proc-tab-name">{phase.shortLabel}</span>
+                  </span>
                 </button>
               )
             })}
-          </div>
-        </div>
+          </nav>
 
-        {/* 2 & 3. Asymmetric Canvas with Giant Watermark Number */}
-        <Reveal className="energy-phase-canvas">
-          {/* Giant Phase Number Watermark behind content */}
-          <div className="giant-phase-watermark" aria-hidden="true">
-            {current.number}
-          </div>
+          {/* Right: Content — key forces remount → triggers CSS entry animation */}
+          <div key={activeStep} className="proc-content">
 
-          {/* Left Column: Asymmetric Narrative & SVG Illustration */}
-          <div className="energy-phase-main-col">
-            <div className="energy-phase-eyebrow-row">
-              <span className="energy-phase-fraction">{current.number} / 06</span>
-              <span className="energy-phase-tag">{current.tag}</span>
+            {/* Phase tag */}
+            <div className="proc-content-tag">
+              <span className="proc-tag-badge">{current.tag}</span>
+              <span className="proc-tag-fraction">{current.number} of 0{total}</span>
             </div>
 
-            <h3 className="energy-phase-title">{current.title}</h3>
-            <p className="energy-phase-text">{current.text}</p>
+            {/* Title + body */}
+            <h3 className="proc-content-title">{current.title}</h3>
+            <p className="proc-content-text">{current.text}</p>
 
-            {/* 4. Small Animated Solar Engineering Illustration */}
-            <div className="energy-phase-illustration-wrap">
-              <PhaseEngineeringIllustration phaseNumber={current.number} />
-            </div>
-
-            {/* Key Deliverables */}
-            <div className="energy-deliverables-box">
-              <h4 className="deliverables-title">Key Engineering Deliverables</h4>
-              <div className="deliverables-grid">
-                {current.deliverables.map((deliv) => (
-                  <div key={deliv} className="deliverable-chip">
-                    <FiCheckCircle className="chip-check-icon" aria-hidden="true" />
-                    <span>{deliv}</span>
+            {/* Metrics */}
+            <div className="proc-kpi-row">
+              {current.metrics.map((m, i) => (
+                <div key={m.label} className="proc-kpi" style={{ animationDelay: `${i * 80}ms` }}>
+                  <strong className="proc-kpi-val">{m.value}</strong>
+                  <span className="proc-kpi-lbl">{m.label}</span>
+                  <div className="proc-kpi-track">
+                    <div
+                      className="proc-kpi-bar"
+                      style={{ width: i === 0 ? '100%' : i === 1 ? '94%' : '82%' }}
+                    />
                   </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Right Column: 5. Live Project Parameters Engineering Readout */}
-          <div className="energy-phase-readout-col">
-            <div className="live-readout-card">
-              <div className="live-readout-header">
-                <div>
-                  <span className="live-readout-pretitle">LIVE PROJECT PARAMETERS</span>
-                  <h4 className="live-readout-title">Phase {current.number} Verification</h4>
                 </div>
-                <span className="live-readout-status-chip">
-                  <span className="live-status-dot" /> LIVE AUDIT
+              ))}
+            </div>
+
+            {/* Deliverables */}
+            <div className="proc-deliv-wrap">
+              <p className="proc-deliv-heading">Key Deliverables</p>
+              <ul className="proc-deliv-list">
+                {current.deliverables.map((d, i) => (
+                  <li
+                    key={d}
+                    className="proc-deliv-item"
+                    style={{ animationDelay: `${120 + i * 70}ms` }}
+                  >
+                    <FiCheckCircle className="proc-deliv-check" aria-hidden="true" />
+                    {d}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Footer: nav + cta */}
+            <div className="proc-footer">
+              <div className="proc-nav-row">
+                <button
+                  type="button"
+                  className="proc-nav-btn"
+                  disabled={activeStep === 0}
+                  onClick={() => setActiveStep(p => Math.max(0, p - 1))}
+                  aria-label="Previous phase"
+                >← Prev</button>
+                <span className="proc-nav-count">
+                  {String(activeStep + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}
                 </span>
+                <button
+                  type="button"
+                  className="proc-nav-btn"
+                  disabled={activeStep === total - 1}
+                  onClick={() => setActiveStep(p => Math.min(total - 1, p + 1))}
+                  aria-label="Next phase"
+                >Next →</button>
               </div>
-
-              <div className="live-metrics-list">
-                {current.metrics.map((m, mIdx) => (
-                  <div key={m.label} className="live-metric-row">
-                    <div className="metric-row-top">
-                      <span className="metric-label">{m.label.toUpperCase()}</span>
-                      <strong className="metric-value">{m.value}</strong>
-                    </div>
-                    <div className="metric-progress-line">
-                      <div
-                        className="metric-progress-bar"
-                        style={{ width: mIdx === 0 ? '100%' : mIdx === 1 ? '94%' : '88%' }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="live-readout-compliance">
-                <FiCheckCircle className="compliance-icon" aria-hidden="true" />
-                <div>
-                  <strong>IEC 62446 · CEA COMPLIANT</strong>
-                  <small>National DISCOM Synchronization Standard</small>
-                </div>
-              </div>
+              <a
+                href="/contact"
+                onClick={e => { e.preventDefault(); navigate('/contact') }}
+                className="proc-cta"
+              >
+                {ctaText} <Arrow />
+              </a>
             </div>
-          </div>
-        </Reveal>
-
-        {/* 8. Integrated Journey Navigation & Next Step CTA */}
-        <div className="energy-journey-cta-bar">
-          <div className="energy-nav-controls">
-            <button
-              type="button"
-              className="energy-step-nav-btn"
-              disabled={activeStep === 0}
-              onClick={() => setActiveStep((prev) => Math.max(0, prev - 1))}
-            >
-              ← Previous Stage
-            </button>
-            <span className="energy-step-counter">
-              Stage {current.number} of 06
-            </span>
-            <button
-              type="button"
-              className="energy-step-nav-btn"
-              disabled={activeStep === total - 1}
-              onClick={() => setActiveStep((prev) => Math.min(total - 1, prev + 1))}
-            >
-              Next Stage →
-            </button>
-          </div>
-
-          <div className="energy-cta-callout">
-            <div className="cta-callout-text">
-              <strong>READY TO BEGIN?</strong>
-              <p>Let's turn your energy requirements into a measurable solar system.</p>
-            </div>
-            <a
-              href="/contact"
-              onClick={(e) => { e.preventDefault(); navigate('/contact') }}
-              className="button button-accent energy-cta-btn"
-            >
-              {ctaText} <Arrow />
-            </a>
           </div>
         </div>
       </div>
     </section>
   )
 }
+
 
 const aboutPrinciples = [
   ['01', 'Clean energy future', 'Accelerate the adoption of solar and renewable energy for a cleaner tomorrow.'],
@@ -1028,7 +1010,7 @@ function AboutPage() {
   const [horizonTab, setHorizonTab] = useState('vision')
   const { companyOverview, chairmanMessage, visionAndMission, journey, whatWeDo, howWeWork } = aboutContent
 
-  return <div className="about-page"><SiteHeader activePath="/about" /><main>
+  return <div className="about-page"><ScrollProgressBar /><SiteHeader activePath="/about" /><main>
 
     <section className="about-hero">
       {/* Solar energy background video — download from pixabay.com/videos/solar-panels-solar-power-plant-177600/ and place in public/media/solar-hero.mp4 */}
@@ -1375,6 +1357,7 @@ function ServicesPage() {
 
   return (
     <div className="services-page">
+      <ScrollProgressBar />
       <SiteHeader activePath="/services" />
       <main>
         <section className="services-hero">
@@ -1590,6 +1573,7 @@ function App() {
 
 
   return <div className="site-shell home-page">
+    <ScrollProgressBar />
     <SiteHeader />
 
     <main id="top">
@@ -1631,15 +1615,6 @@ function App() {
         <ServicesShowcase />
         <a className="section-cta text-link" href="/services" onClick={(e) => { e.preventDefault(); navigate('/services') }}>Explore Our Services <Arrow /></a>
       </section>
-
-      {/* How We Work - Interactive Process Pipeline Cockpit */}
-      <ProcessPipelineCockpit
-        eyebrow="03 — HOW WE WORK"
-        title="From planning"
-        subtitle="to performance."
-        intro="A six-stage engineering process designed to take your solar project from feasibility to long-term performance."
-        ctaText="Start your project"
-      />
 
       <section className="chairman wrap">
         <Reveal className="chairman-copy">
