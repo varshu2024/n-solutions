@@ -61,9 +61,6 @@ export const listPublicTestimonials = async () => {
   const testimonials = await Testimonial.find({
     status: 'approved'
   })
-    .select(
-      'clientName company location rating comment status'
-    )
     .sort({ createdAt: -1 })
     .lean();
 

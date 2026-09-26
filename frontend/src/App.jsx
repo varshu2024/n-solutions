@@ -481,9 +481,9 @@ function TestimonialsShowcase({ theme = 'light' }) {
               </div>
 
               <p className="testimonial-quote-text">
-                “{t.quote}”
+                “{t.comment}”
               </p>
-
+              
               <div className="testimonial-author-row">
                 <div className="testimonial-author-info">
                   <strong className="testimonial-author-name">
