@@ -1836,7 +1836,7 @@ const loadMedia = async () => {
               </td>
             </tr>
           ) : (
-            products.map((prod) => (
+  (Array.isArray(products) ? products : []).map((prod) => (
               <tr key={prod.id}>
 
                 {/* Product */}
