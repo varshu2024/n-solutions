@@ -420,7 +420,7 @@ const loadEnquiries = async () => {
   }
 }
   // Filtered leads
-const filteredLeads = data.leads.filter((lead) => {
+const filteredLeads = (Array.isArray(data.leads) ? data.leads : []).filter((lead) => {
   const search = leadSearch.toLowerCase()
 
   const matchesSearch =

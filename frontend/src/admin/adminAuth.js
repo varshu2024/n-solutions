@@ -266,21 +266,42 @@ const INITIAL_DEMO_DATA = {
   ]
 }
 
+
 export function getStoredData() {
   try {
     const raw = localStorage.getItem(DATA_STORAGE_KEY)
+
     if (raw) {
       const parsed = JSON.parse(raw)
-      if (!parsed.media || parsed.media.length === 0) parsed.media = INITIAL_DEMO_DATA.media
-      if (!parsed.testimonials || parsed.testimonials.length === 0) parsed.testimonials = INITIAL_DEMO_DATA.testimonials
+
+      if (!parsed.media || parsed.media.length === 0) {
+        parsed.media = INITIAL_DEMO_DATA.media
+      }
+
+      if (!parsed.testimonials || parsed.testimonials.length === 0) {
+        parsed.testimonials = INITIAL_DEMO_DATA.testimonials
+      }
+
+      // Leads are retrieved from the backend.
+      // Always make sure the local value is an array.
+      if (!Array.isArray(parsed.leads)) {
+        parsed.leads = []
+      }
+
       return parsed
     }
   } catch (e) {
     console.error('Failed to parse admin data from storage', e)
   }
-  localStorage.setItem(DATA_STORAGE_KEY, JSON.stringify(INITIAL_DEMO_DATA))
+
+  localStorage.setItem(
+    DATA_STORAGE_KEY,
+    JSON.stringify(INITIAL_DEMO_DATA)
+  )
+
   return INITIAL_DEMO_DATA
 }
+
 
 export function saveStoredData(data) {
   try {

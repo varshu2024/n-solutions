@@ -1,4 +1,4 @@
-@baseUrl = http://localhost:5000
+@baseUrl =https://n-solutions.onrender.com
 @adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWE1NWY1NjM0N2NhYTExNWFkNGZlM2UiLCJlbWFpbCI6ImFkbWluQG5zb2x1dGlvbnMuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzkwMTQxODI0LCJleHAiOjE3OTA3NDY2MjR9.9pZaio3jdcqmWrsRRt-OSuGXg7pFD8pgEwO0Rau3JKQ
 @projectImage = C:/Users/USER/Downloads/solar.jpg
 
