@@ -632,24 +632,7 @@ export const servicesAndSolutionsContent = {
       title: 'Energy Efficiency, Subsidies, Financing & Net Metering',
       subtitle: 'Supporting Smarter Solar Adoption',
       text: "Beyond installation, customers often need support with energy efficiency, applicable subsidies, financing options, and net-metering requirements. N Solutions' resource specifically identifies subsidies & financing as a service area, alongside solar installation, O&M, and product supply.",
-      subAreas: [
-        {
-          title: 'Energy Efficiency Solutions',
-          text: "We help identify opportunities to make better use of energy through practical energy-efficiency approaches aligned with the customer's requirements."
-        },
-        {
-          title: 'Subsidy Assistance',
-          text: 'Guidance regarding applicable government solar subsidy schemes, eligibility considerations, documentation, and related processes.'
-        },
-        {
-          title: 'Financing Assistance',
-          text: 'Support in understanding available financing possibilities and the considerations involved in planning a solar investment.'
-        },
-        {
-          title: 'Net Metering Assistance',
-          text: 'Guidance on the applicable net-metering process, technical requirements, documentation, and coordination for eligible solar installations.'
-        }
-      ],
+
       benefits: [
         'Better understanding of energy consumption',
         'Guidance on applicable solar schemes',

@@ -1475,18 +1475,21 @@ function ServicesPage() {
           <div className="services-catalog-grid">
             {services.map((service) => (
               <Reveal className="service-catalog-card" key={service.number}>
-                <div className="service-catalog-image-wrap">
-                  <img
-                    src={service.image || 'https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=1200&q=85'}
-                    alt={service.title}
-                    loading="lazy"
-                  />
-                  <div className="service-catalog-img-scrim" />
-                  <div className="service-catalog-badges">
-                    <span className="service-catalog-num">{service.number}</span>
-                    {service.tag && <span className="service-catalog-tag">{service.tag}</span>}
+                {service.image && (
+                  <div className="service-catalog-image-wrap">
+                    <img
+                      src={service.image}
+                      alt={service.title}
+                      loading="lazy"
+                    />
+                    <div className="service-catalog-img-scrim" />
+                    <div className="service-catalog-badges">
+                      <span className="service-catalog-num">{service.number}</span>
+                      {service.tag && <span className="service-catalog-tag">{service.tag}</span>}
+                    </div>
                   </div>
-                </div>
+                )}
+
 
                 <div className="service-catalog-body">
                   <div className="service-catalog-title-row">
