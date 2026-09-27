@@ -84,7 +84,7 @@ function StrengthsOrbitWheel({ items }) {
     clearInterval(timerRef.current)
     timerRef.current = setInterval(() => {
       setActiveIdx(prev => (prev + 1) % N)
-    }, 3200)
+    }, 3400)
   }
 
   useEffect(() => {
@@ -97,25 +97,48 @@ function StrengthsOrbitWheel({ items }) {
     startTimer()
   }
 
+  const handlePrev = () => {
+    setActiveIdx(prev => (prev - 1 + N) % N)
+    startTimer()
+  }
+
+  const handleNext = () => {
+    setActiveIdx(prev => (prev + 1) % N)
+    startTimer()
+  }
+
   const nodes = items.map((item, i) => {
     const angle = (2 * Math.PI * i / N) - Math.PI / 2
+    const x = CX + RADIUS * Math.cos(angle)
+    const y = CY + RADIUS * Math.sin(angle)
     return {
-      x: CX + RADIUS * Math.cos(angle),
-      y: CY + RADIUS * Math.sin(angle),
+      x,
+      y,
+      pctX: ((x / SIZE) * 100).toFixed(3),
+      pctY: ((y / SIZE) * 100).toFixed(3),
       item,
       idx: i
     }
   })
 
-  const activeNode = nodes[activeIdx]
   const arcLen = 2 * Math.PI * RADIUS
   const segLen = arcLen / N
   const dashOffset = -(arcLen * activeIdx / N) + 0.01
 
   return (
     <div className="orbit-wheel-wrapper">
+      {/* Mobile/Tablet Header: shown when stacked */}
+      <div className="orbit-mobile-header">
+        <p className="eyebrow"><span /> {homeContent.whyChooseUs.eyebrow}</p>
+        <h2 className="orbit-right-h2">
+          {homeContent.whyChooseUs.title}<br />
+          <em>{homeContent.whyChooseUs.subtitle}</em>
+        </h2>
+        <p className="orbit-right-note">{homeContent.whyChooseUs.note}</p>
+      </div>
+
       <div className="orbit-wheel-left">
-        <div className="orbit-stage-container" style={{ width: SIZE, height: SIZE }}>
+        <div className="orbit-stage-container">
           {/* SVG Background Orbits and Laser Beam */}
           <svg viewBox={`0 0 ${SIZE} ${SIZE}`} className="orbit-svg" aria-hidden="true">
             <defs>
@@ -182,7 +205,7 @@ function StrengthsOrbitWheel({ items }) {
           </svg>
 
           {/* Center Hub */}
-          <div className="orbit-center-hub" style={{ left: `${CX}px`, top: `${CY}px` }}>
+          <div className="orbit-center-hub">
             <div className="orbit-center-radar" />
             <div className="orbit-center-content">
               <span className="orbit-center-icon">
@@ -195,15 +218,15 @@ function StrengthsOrbitWheel({ items }) {
 
           {/* 8 Outer Nodes with React Icons */}
           <div className="orbit-nodes-layer">
-            {nodes.map(({ x, y, item, idx }) => {
+            {nodes.map(({ pctX, pctY, item, idx }) => {
               const isActive = idx === activeIdx
               return (
                 <div
                   key={item.number}
                   className={`orbit-node-wrapper ${isActive ? 'is-active' : ''}`}
                   style={{
-                    left: `${x}px`,
-                    top: `${y}px`,
+                    left: `${pctX}%`,
+                    top: `${pctY}%`,
                   }}
                 >
                   <button
@@ -228,12 +251,15 @@ function StrengthsOrbitWheel({ items }) {
 
       {/* Right Column: Information */}
       <div className="orbit-wheel-right">
-        <p className="eyebrow"><span /> {homeContent.whyChooseUs.eyebrow}</p>
-        <h2 className="orbit-right-h2">
-          {homeContent.whyChooseUs.title}<br />
-          <em>{homeContent.whyChooseUs.subtitle}</em>
-        </h2>
-        <p className="orbit-right-note">{homeContent.whyChooseUs.note}</p>
+        {/* Desktop Header */}
+        <div className="orbit-desktop-header">
+          <p className="eyebrow"><span /> {homeContent.whyChooseUs.eyebrow}</p>
+          <h2 className="orbit-right-h2">
+            {homeContent.whyChooseUs.title}<br />
+            <em>{homeContent.whyChooseUs.subtitle}</em>
+          </h2>
+          <p className="orbit-right-note">{homeContent.whyChooseUs.note}</p>
+        </div>
 
         {/* Executive Active Card */}
         <div className="orbit-active-card" key={current.number}>
@@ -245,12 +271,54 @@ function StrengthsOrbitWheel({ items }) {
               <span className="orbit-active-step-chip">Pillar {current.number} of {N}</span>
               <span className="orbit-active-stat-chip">{current.stat}</span>
             </div>
+            {/* Prev / Next touch buttons */}
+            <div className="orbit-card-nav-controls">
+              <button
+                type="button"
+                className="orbit-card-nav-btn"
+                onClick={handlePrev}
+                aria-label="Previous strength pillar"
+                title="Previous pillar"
+              >
+                <FiChevronLeft />
+              </button>
+              <button
+                type="button"
+                className="orbit-card-nav-btn"
+                onClick={handleNext}
+                aria-label="Next strength pillar"
+                title="Next pillar"
+              >
+                <FiChevronRight />
+              </button>
+            </div>
           </div>
           <h3 className="orbit-active-title">{current.title}</h3>
           <p className="orbit-active-desc">{current.description}</p>
           <div className="orbit-active-progress-bar">
             <div className="orbit-active-progress-fill is-playing" />
           </div>
+        </div>
+
+        {/* Mobile & Tablet Interactive 8-Pillars Quick Selector */}
+        <div className="orbit-pillars-selector" role="tablist" aria-label="Strengths quick navigation">
+          {items.map((item, idx) => {
+            const isActive = idx === activeIdx
+            return (
+              <button
+                key={item.number}
+                type="button"
+                role="tab"
+                aria-selected={isActive}
+                className={`orbit-pillar-pill ${isActive ? 'is-active' : ''}`}
+                onClick={() => handleClick(idx)}
+              >
+                <span className="orbit-pill-badge">{item.number}</span>
+                <span className="orbit-pill-icon">{getStrengthIcon(item.number)}</span>
+                <span className="orbit-pill-text">{item.stat}</span>
+              </button>
+            )
+          })}
         </div>
       </div>
     </div>

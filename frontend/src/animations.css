@@ -1,4 +1,4 @@
-﻿/* =========================================================
+/* =========================================================
    N SOLUTIONS SOLAR - SIGNATURE ANIMATIONS & MICRO-INTERACTIONS
    ========================================================= */
 
@@ -1427,13 +1427,21 @@ h2 em {
 
 .orbit-wheel-wrapper {
   display: grid;
-  grid-template-columns: 650px 1fr;
-  gap: 72px;
+  grid-template-columns: minmax(460px, 620px) 1fr;
+  gap: 64px;
   align-items: center;
   width: 100%;
-  min-height: 660px;
   position: relative;
   z-index: 2;
+}
+
+/* Header switching for desktop vs stacked */
+.orbit-mobile-header {
+  display: none;
+}
+
+.orbit-desktop-header {
+  display: block;
 }
 
 /* --- Orbit Wheel Stage --- */
@@ -1442,15 +1450,18 @@ h2 em {
   align-items: center;
   justify-content: center;
   position: relative;
+  width: 100%;
 }
 
 .orbit-stage-container {
   position: relative;
-  width: 640px;
-  height: 640px;
+  width: 100%;
+  max-width: 580px;
+  aspect-ratio: 1 / 1;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin: 0 auto;
 }
 
 .orbit-svg {
@@ -1465,9 +1476,11 @@ h2 em {
 /* --- Center Hub --- */
 .orbit-center-hub {
   position: absolute;
-  width: 164px;
-  height: 164px;
+  left: 50%;
+  top: 50%;
   transform: translate(-50%, -50%);
+  width: clamp(120px, 22vw, 164px);
+  height: clamp(120px, 22vw, 164px);
   border-radius: 50%;
   background: linear-gradient(135deg, #0d47a1 0%, #1565c0 100%);
   border: 4px solid #93c5fd;
@@ -1499,11 +1512,11 @@ h2 em {
   align-items: center;
   justify-content: center;
   gap: 3px;
-  padding: 10px;
+  padding: 8px;
 }
 
 .orbit-center-icon {
-  font-size: 38px;
+  font-size: clamp(26px, 4.5vw, 38px);
   color: #ffffff;
   display: flex;
   align-items: center;
@@ -1514,7 +1527,7 @@ h2 em {
 }
 
 .orbit-center-badge {
-  font-size: 11px;
+  font-size: clamp(9.5px, 1.8vw, 11px);
   font-weight: 800;
   color: #93c5fd;
   letter-spacing: 0.09em;
@@ -1523,7 +1536,7 @@ h2 em {
 }
 
 .orbit-center-stat {
-  font-size: 15.5px;
+  font-size: clamp(12.5px, 2.2vw, 15.5px);
   font-weight: 800;
   color: #ffffff;
   font-family: 'Manrope', sans-serif;
@@ -1551,8 +1564,8 @@ h2 em {
 
 .orbit-node-btn {
   position: relative;
-  width: 74px;
-  height: 74px;
+  width: clamp(52px, 8.5vw, 74px);
+  height: clamp(52px, 8.5vw, 74px);
   border-radius: 50%;
   border: 2.5px solid #cbd5e1;
   background: #ffffff;
@@ -1574,7 +1587,7 @@ h2 em {
 }
 
 .orbit-node-react-icon {
-  font-size: 30px;
+  font-size: clamp(22px, 3.8vw, 30px);
   color: #1565c0;
   display: flex;
   align-items: center;
@@ -1657,7 +1670,7 @@ h2 em {
 
 .orbit-right-h2 {
   color: #0f2b48 !important;
-  font: 800 52px/1.12 'Manrope', sans-serif !important;
+  font: 800 clamp(32px, 4vw, 52px)/1.12 'Manrope', sans-serif !important;
   letter-spacing: -0.035em;
   margin: 12px 0 16px 0;
 }
@@ -1671,7 +1684,7 @@ h2 em {
   color: #475569 !important;
   font-size: 17px;
   line-height: 1.68;
-  margin: 0 0 34px 0;
+  margin: 0 0 28px 0;
   max-width: 520px;
 }
 
@@ -1680,7 +1693,7 @@ h2 em {
   background: #ffffff;
   border: 1.5px solid rgba(21, 101, 192, 0.16);
   border-radius: 24px;
-  padding: 38px 40px 32px;
+  padding: 34px 36px 30px;
   box-shadow: 0 20px 48px rgba(13, 71, 161, 0.08), 0 4px 14px rgba(0, 0, 0, 0.03);
   position: relative;
   overflow: hidden;
@@ -1695,17 +1708,17 @@ h2 em {
 .orbit-active-top {
   display: flex;
   align-items: center;
-  gap: 18px;
-  margin-bottom: 18px;
+  gap: 16px;
+  margin-bottom: 16px;
 }
 
 .orbit-active-icon-badge {
-  width: 58px;
-  height: 58px;
+  width: 56px;
+  height: 56px;
   border-radius: 16px;
   background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%);
   color: #ffffff;
-  font-size: 30px;
+  font-size: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1716,7 +1729,7 @@ h2 em {
 .orbit-active-meta {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   flex-wrap: wrap;
 }
 
@@ -1739,16 +1752,47 @@ h2 em {
   letter-spacing: 0.03em;
 }
 
+/* Card navigation controls */
+.orbit-card-nav-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.orbit-card-nav-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1.5px solid #e2e8f0;
+  background: #f8fafc;
+  color: #334155;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  outline: none;
+}
+
+.orbit-card-nav-btn:hover {
+  background: #1565c0;
+  color: #ffffff;
+  border-color: #1565c0;
+  transform: scale(1.06);
+}
+
 .orbit-active-title {
   color: #0f2b48 !important;
-  font: 800 28px/1.22 'Manrope', sans-serif !important;
+  font: 800 clamp(22px, 3vw, 28px)/1.22 'Manrope', sans-serif !important;
   letter-spacing: -0.025em;
-  margin: 14px 0 12px 0;
+  margin: 12px 0 10px 0;
 }
 
 .orbit-active-desc {
   color: #475569 !important;
-  font-size: 16.5px;
+  font-size: 16px;
   line-height: 1.7;
   margin: 0;
 }
@@ -1765,7 +1809,7 @@ h2 em {
 .orbit-active-progress-fill.is-playing {
   height: 100%;
   background: linear-gradient(90deg, #1565c0, #0284c7, #f59e0b);
-  animation: orbitProgressFill 3.2s linear infinite;
+  animation: orbitProgressFill 3.4s linear infinite;
 }
 
 @keyframes orbitProgressFill {
@@ -1773,55 +1817,233 @@ h2 em {
   100% { width: 100%; }
 }
 
-/* Responsive */
-@media (max-width: 1340px) {
+/* Interactive 8-Pillars Quick Selector */
+.orbit-pillars-selector {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.orbit-pillar-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  color: #334155;
+  font-family: 'Manrope', sans-serif;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-align: left;
+}
+
+.orbit-pillar-pill:hover {
+  border-color: #1565c0;
+  background: #f0f7ff;
+}
+
+.orbit-pillar-pill.is-active {
+  background: linear-gradient(135deg, #0d47a1 0%, #1565c0 100%);
+  border-color: #1565c0;
+  color: #ffffff;
+  box-shadow: 0 6px 16px rgba(21, 101, 192, 0.26);
+}
+
+.orbit-pill-badge {
+  font-size: 10.5px;
+  font-weight: 800;
+  background: rgba(21, 101, 192, 0.1);
+  color: #1565c0;
+  padding: 2px 6px;
+  border-radius: 8px;
+  line-height: 1;
+}
+
+.orbit-pillar-pill.is-active .orbit-pill-badge {
+  background: rgba(255, 255, 255, 0.24);
+  color: #ffffff;
+}
+
+.orbit-pill-icon {
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+}
+
+.orbit-pillar-pill.is-active .orbit-pill-icon {
+  color: #f59e0b;
+}
+
+.orbit-pill-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* =========================================================
+   RESPONSIVE BREAKPOINTS (Desktop, Tablet, Mobile)
+   ========================================================= */
+
+/* Desktop Narrow (1025px to 1280px) */
+@media (max-width: 1280px) {
   .orbit-wheel-wrapper {
-    grid-template-columns: 560px 1fr;
-    gap: 48px;
+    grid-template-columns: minmax(420px, 500px) 1fr;
+    gap: 40px;
   }
   .orbit-stage-container {
-    transform: scale(0.88);
-    transform-origin: center center;
+    max-width: 480px;
+  }
+  .orbit-node-label {
+    font-size: 11px;
+    padding: 2px 8px;
   }
 }
 
-@media (max-width: 1100px) {
+/* Tablet Screens (768px to 1024px) */
+@media (max-width: 1024px) {
+  .why.why-orbit {
+    padding: 68px 0 76px !important;
+  }
   .orbit-full-wrap {
-    padding: 0 24px;
+    padding: 0 28px;
   }
   .orbit-wheel-wrapper {
     grid-template-columns: 1fr;
-    gap: 48px;
-    justify-items: center;
-  }
-  .orbit-stage-container {
-    transform: scale(0.82);
-    margin: -30px 0;
-  }
-  .orbit-wheel-right {
+    gap: 32px;
     max-width: 680px;
-    width: 100%;
+    margin: 0 auto;
+  }
+  .orbit-desktop-header {
+    display: none;
+  }
+  .orbit-mobile-header {
+    display: block;
     text-align: center;
+    margin-bottom: 4px;
+  }
+  .orbit-right-h2 {
+    font-size: clamp(32px, 5vw, 42px) !important;
   }
   .orbit-right-note {
-    max-width: 100%;
+    margin: 0 auto 16px auto;
   }
-  .orbit-active-top {
-    justify-content: center;
+  .orbit-stage-container {
+    max-width: 440px;
+    width: 100%;
+  }
+  /* On tablets, only show the active label to eliminate perimeter collisions */
+  .orbit-node-label {
+    display: none;
+  }
+  .orbit-node-wrapper.is-active .orbit-node-label {
+    display: block;
   }
 }
 
-@media (max-width: 640px) {
-  .orbit-stage-container {
-    transform: scale(0.56);
-    transform-origin: center center;
-    margin: -110px 0;
+/* Small Tablets & Large Phones (641px to 767px) */
+@media (max-width: 767px) {
+  .why.why-orbit {
+    padding: 50px 0 58px !important;
+  }
+  .orbit-full-wrap {
+    padding: 0 20px;
+  }
+  .orbit-wheel-wrapper {
+    gap: 24px;
+    max-width: 580px;
+  }
+  .orbit-mobile-header {
+    text-align: left;
   }
   .orbit-right-h2 {
-    font-size: 34px !important;
+    font-size: 30px !important;
+    line-height: 1.15 !important;
+  }
+  .orbit-right-note {
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+  .orbit-wheel-left {
+    display: none;
   }
   .orbit-active-card {
-    padding: 24px 20px;
+    padding: 26px 22px 24px;
+    border-radius: 20px;
+  }
+  .orbit-pillars-selector {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-top: 16px;
+  }
+}
+
+/* Mobile Phones (up to 640px down to 320px) */
+@media (max-width: 640px) {
+  .orbit-full-wrap {
+    padding: 0 16px;
+  }
+  .orbit-wheel-left {
+    display: none;
+  }
+  .orbit-mobile-header {
+    text-align: left;
+  }
+  .orbit-right-h2 {
+    font-size: 26px !important;
+    line-height: 1.18 !important;
+  }
+  .orbit-right-note {
+    font-size: 14px;
+    line-height: 1.55;
+    margin-bottom: 12px;
+  }
+  .orbit-active-card {
+    padding: 20px 16px 18px;
+    border-radius: 18px;
+  }
+  .orbit-active-top {
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .orbit-active-icon-badge {
+    width: 44px;
+    height: 44px;
+    font-size: 22px;
+    border-radius: 12px;
+  }
+  .orbit-active-step-chip,
+  .orbit-active-stat-chip {
+    font-size: 11px;
+    padding: 3px 10px;
+  }
+  .orbit-card-nav-btn {
+    width: 34px;
+    height: 34px;
+    font-size: 16px;
+  }
+  .orbit-active-title {
+    font-size: 19px !important;
+    margin: 8px 0 6px 0;
+  }
+  .orbit-active-desc {
+    font-size: 13.5px;
+    line-height: 1.55;
+  }
+  .orbit-pillars-selector {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+    margin-top: 14px;
+  }
+  .orbit-pillar-pill {
+    padding: 8px 10px;
+    font-size: 11px;
+    border-radius: 10px;
   }
 }
 

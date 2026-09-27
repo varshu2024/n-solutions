@@ -38,6 +38,11 @@
   box-sizing: border-box;
 }
 
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
 body {
   background: #ffffff !important;
   color: var(--ink) !important;
