@@ -13,7 +13,12 @@ const transporter = nodemailer.createTransport({
 });
 
 export const sendOtpEmail = async ({ to, otp }) => {
-  await transporter.sendMail({
+  const start = Date.now();
+
+  console.log('📧 Starting OTP email:', to);
+
+
+await transporter.sendMail({
     from: `"N Solutions Admin" <${env.gmailUser}>`,
     to,
     subject: 'N Solutions Admin Login OTP',
@@ -42,4 +47,7 @@ export const sendOtpEmail = async ({ to, otp }) => {
       </div>
     `
   });
+
+
+  console.log(`✅ OTP email sent in ${Date.now() - start}ms`);
 };
