@@ -1237,14 +1237,14 @@ function AboutPage() {
               className={`horizon-tab-btn ${horizonTab === 'vision' ? 'is-active' : ''}`}
               onClick={() => setHorizonTab('vision')}
             >
-              <FiSun size={15} /> Strategic Vision · Horizon 2030
+              <FiSun size={15} /> Our Vision
             </button>
             <button
               type="button"
               className={`horizon-tab-btn mission-tab ${horizonTab === 'mission' ? 'is-active' : ''}`}
               onClick={() => setHorizonTab('mission')}
             >
-              <FiShield size={15} /> Operational Mission · Field Protocols
+              <FiShield size={15} /> Our Mission
             </button>
           </div>
 
@@ -1252,7 +1252,7 @@ function AboutPage() {
             <Reveal className="horizon-stage-canvas">
               <div className="horizon-manifesto-box">
                 <span className="horizon-manifesto-badge">
-                  <FiCompass /> {visionAndMission.vision.tag} · Clean Energy Direction
+                  <FiCompass /> Our Vision
                 </span>
                 <h3>{visionAndMission.vision.title}</h3>
                 <p>{visionAndMission.vision.text}</p>
@@ -1265,7 +1265,7 @@ function AboutPage() {
                       {getVisionIcon(num)}
                     </div>
                     <div className="vector-content">
-                      <span className="vector-meta-tag">Strategic Vector · {num}</span>
+                      <span className="vector-meta-tag">Principle · {num}</span>
                       <h4>{t}</h4>
                       <p>{d}</p>
                     </div>
@@ -1277,7 +1277,7 @@ function AboutPage() {
             <Reveal className="horizon-stage-canvas">
               <div className="horizon-manifesto-box">
                 <span className="horizon-manifesto-badge mission-badge">
-                  <FiSliders /> {visionAndMission.mission.tag} · Engineering Directives
+                  <FiSliders /> Our Mission
                 </span>
                 <h3>{visionAndMission.mission.title}</h3>
                 <p>{visionAndMission.mission.text}</p>
@@ -1290,7 +1290,7 @@ function AboutPage() {
                       {getMissionIcon(num)}
                     </div>
                     <div className="vector-content">
-                      <span className="vector-meta-tag">Execution Directive · {num}</span>
+                      <span className="vector-meta-tag">Principle · {num}</span>
                       <h4>{t}</h4>
                       <p>{d}</p>
                     </div>
