@@ -326,7 +326,7 @@ export function getAuthToken() {
   return localStorage.getItem(TOKEN_KEY)
 }
 
-export const VITE_API_BASE_URL = (import.meta.env?.VITE_API_URL || '/api').replace(/\/+$/, '')
+export const API_BASE_URL = (import.meta.env?.VITE_API_BASE_URL || '/api').replace(/\/+$/, '')
 
 export async function adminLogin(email, password) {
   try {
@@ -334,7 +334,7 @@ export async function adminLogin(email, password) {
     const timeoutId = setTimeout(() => {
       controller.abort()
     }, 8000)
-    const response = await fetch(`${VITE_API_BASE_URL}/auth/login`, {
+    const response = await fetch(`${API_BASE_URL}/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
