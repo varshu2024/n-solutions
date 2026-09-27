@@ -329,7 +329,7 @@ export function getAuthToken() {
 export const API_BASE_URL = (
   import.meta.env?.VITE_API_BASE_URL || '/api'
 ).replace(/\/+$/, '')
-
+console.log('🔥 API BASE URL:', API_BASE_URL)
 export async function adminLogin(email, password) {
   try {
     const controller = new AbortController()
