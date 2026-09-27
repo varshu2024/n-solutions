@@ -319,7 +319,7 @@ const fetchProducts = async () => {
   setProductsLoading(true)
 
   try {
-    const result = await apiGet('/products')
+    const result = await apiGet('/public/products')
 
     if (!result.success) {
       showToast(result.message || 'Failed to fetch products')

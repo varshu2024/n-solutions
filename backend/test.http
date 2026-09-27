@@ -32,7 +32,7 @@ Content-Type: application/json
 
 {
   "email": "admin@nsolutions.com",
-  "password": "StrongPassword123"
+  "password": "Admin@123"
 }
 
 ### =========================================================
