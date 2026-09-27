@@ -282,12 +282,6 @@ export function getStoredData() {
         parsed.testimonials = INITIAL_DEMO_DATA.testimonials
       }
 
-      // Leads are retrieved from the backend.
-      // Always make sure the local value is an array.
-      if (!Array.isArray(parsed.leads)) {
-        parsed.leads = []
-      }
-
       return parsed
     }
   } catch (e) {
@@ -329,7 +323,7 @@ export function getAuthToken() {
 export const API_BASE_URL = (
   import.meta.env?.VITE_API_BASE_URL || '/api'
 ).replace(/\/+$/, '')
-console.log('🔥 API BASE URL:', API_BASE_URL)
+
 export async function adminLogin(email, password) {
   try {
     const controller = new AbortController()

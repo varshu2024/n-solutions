@@ -1,5 +1,5 @@
-@baseUrl =https://n-solutions.onrender.com
-@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWE1NWY1NjM0N2NhYTExNWFkNGZlM2UiLCJlbWFpbCI6ImFkbWluQG5zb2x1dGlvbnMuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzkwMTQxODI0LCJleHAiOjE3OTA3NDY2MjR9.9pZaio3jdcqmWrsRRt-OSuGXg7pFD8pgEwO0Rau3JKQ
+@baseUrl =http://localhost:5000
+@adminToken = {{$dotenv ADMIN_TOKEN}}
 @projectImage = C:/Users/USER/Downloads/solar.jpg
 
 @productImage = C:/Users/USER/Downloads/solar2.jpg
@@ -22,7 +22,7 @@ X-Admin-Registration-Key: {{$dotenv ADMIN_REGISTRATION_KEY}}
 
 {
   "name": "NSolutions Admin",
-  "email": "admin@nsolutions.com",
+  "email": "bhuvaneswarivishaka@gmail.com",
   "password": "Admin@123"
 }
 
@@ -61,6 +61,25 @@ Content-Type: application/json
 {
   "currentPassword": "NewStrongPassword123",
   "newPassword": "StrongPassword123"
+}
+
+### - sent otp
+
+POST {{baseUrl}}/api/auth/send-otp
+Content-Type: application/json
+
+{
+  "email": "bhuvaneswarivishaka@gmail.com",
+  "password": "Admin@123"
+}
+
+### verify - otp
+POST {{baseUrl}}/api/auth/verify-otp
+Content-Type: application/json
+
+{
+  "email": "bhuvaneswarivishaka@gmail.com",
+  "otp": "575825"
 }
 
 ### =========================================================

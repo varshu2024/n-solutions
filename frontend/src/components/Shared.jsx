@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { FiArrowUpRight } from 'react-icons/fi';
+import { FiArrowUpRight} from 'react-icons/fi';
 
 export function Arrow() {
   return <FiArrowUpRight aria-hidden="true" style={{ display: 'inline', verticalAlign: 'middle', strokeWidth: 2.5 }} />
@@ -135,53 +135,6 @@ const logoGroups = [
         srcs: [
           '/logos/logo_5.png',
           'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Vikram_Solar_logo.svg/320px-Vikram_Solar_logo.svg.png',
-        ],
-      },
-    ],
-  },
-  {
-    label: 'Certifications & Awards',
-    logos: [
-      {
-        name: 'ISO 9001:2015',
-        srcs: [
-          '/logos/logo_6.jpeg',
-          'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/ISO_9001-2015_logo.svg/200px-ISO_9001-2015_logo.svg.png',
-        ],
-      },
-      {
-        name: 'PM Surya Ghar',
-        srcs: [
-          '/logos/logo_7.png',
-          'https://pmsuryaghar.gov.in/wp-content/uploads/2024/02/PM-Surya-Ghar-Logo-PNG-1.png',
-        ],
-      },
-      {
-        name: 'NREDCAP',
-        srcs: [
-          '/logos/logo_8.png',
-          'https://nredcap.in/images/logo.png',
-        ],
-      },
-      {
-        name: 'APEPDCL',
-        srcs: [
-          '/logos/logo_9.jpeg',
-          'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/APEPDCL_logo.jpg/240px-APEPDCL_logo.jpg',
-        ],
-      },
-      {
-        name: 'MNRE',
-        srcs: [
-          '/logos/logo_10.png',
-          'https://mnre.gov.in/img/documents/uploads/file_f-1623139036030.jpg',
-        ],
-      },
-      {
-        name: 'MSME',
-        srcs: [
-          '/logos/logo_11.png',
-          'https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/MSME_logo.png/320px-MSME_logo.png',
         ],
       },
     ],
@@ -355,91 +308,581 @@ function LogoStrip({ logos, reverse = false, speed = 28 }) {
     </div>
   )
 }
+export function Credentials(){
+  return(
+<section className="credentials-section">
+  <div className="credentials-overlay" />
 
+  <div className="credentials-content">
 
-function LogoPartnersSection() {
-  return (
-    <section className="logo-partners-section" aria-label="Partners, Clients & Certifications">
-      <div className="wrap">
-        <div className="logo-partners-heading">
-          <p className="eyebrow"><span /> Our ecosystem</p>
-          <h2>Trusted partners &amp; <em>valued clients.</em></h2>
+    <div className="credentials-heading">
+      <p className="credentials-eyebrow">
+        OUR CREDENTIALS
+      </p>
+
+      <h2>
+        <span>Certifications &amp;</span>{' '}
+        <span className="credentials-blue">Awards</span>
+      </h2>
+
+      <p className="credentials-description">
+        Recognized through Certifications, registrations,
+        and industry enpanelments
+      </p>
+    </div>
+
+    <div className="credentials-logos">
+
+      <div className="credential-item">
+        <div className="credential-logo">
+          <img src="/logos/logo_6.jpeg" alt="ISO 9001:2015" />
         </div>
+
+        <h3>ISO 9001:2015</h3>
+        <p>Certified Company</p>
       </div>
-      <div className="logo-partners-grid">
-        {logoGroups.map((group, gi) => (
-          <div key={gi} className="logo-partners-row">
-            <div className="logo-partners-label"><span>{group.label}</span></div>
-            <div className="logo-strip-viewport">
-              <LogoStrip logos={group.logos} reverse={gi % 2 === 1} speed={22 + gi * 5} />
-            </div>
-          </div>
-        ))}
+
+      <div className="credential-item">
+        <div className="credential-logo">
+          <img src="/logos/logo_7.png" alt="PM Surya Ghar" />
+        </div>
+
+        <h3>PM Surya Ghar</h3>
+        <p>Muft Bijli Yojana</p>
       </div>
-    </section>
+
+      <div className="credential-item">
+        <div className="credential-logo">
+          <img src="/logos/logo_8.png" alt="NREDCAP" />
+        </div>
+
+        <h3>NREDCAP</h3>
+        <p>Registered</p>
+      </div>
+
+      <div className="credential-item">
+        <div className="credential-logo">
+          <img src="/logos/logo_9.jpeg" alt="APEPDCL" />
+        </div>
+
+        <h3>APEPDCL</h3>
+        <p>Empanelled</p>
+      </div>
+
+      <div className="credential-item">
+        <div className="credential-logo">
+          <img src="/logos/logo_10.png" alt="MNRE" />
+        </div>
+
+        <h3>Ministry of New and Renewable Energy</h3>
+        <p>Enpanelled</p>
+      </div>
+
+      <div className="credential-item credential-sixth">
+        <div className="credential-logo">
+          <img src="/logos/logo_11.png" alt="MSME" />
+        </div>
+
+        <h3>MSME</h3>
+        <p>Registered Enterprise</p>
+      </div>
+
+    </div>
+<div className="credentials-divider">
+  <span />
+
+  <div className="credentials-badges">
+
+    <div className="credential-badge">
+      <div className="badge-icon">
+        <svg
+          viewBox="0 0 24 24"
+          width="21"
+          height="21"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.7"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z" />
+          <path d="m9 12 2 2 4-4" />
+        </svg>
+      </div>
+      <span>Certified</span>
+    </div>
+
+    <div className="credential-badge">
+      <div className="badge-icon">
+        <svg
+          viewBox="0 0 24 24"
+          width="21"
+          height="21"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.7"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M6 3h9l3 3v15H6z" />
+          <path d="M15 3v4h4" />
+          <path d="M9 12h6" />
+          <path d="M9 16h6" />
+        </svg>
+      </div>
+      <span>Registered</span>
+    </div>
+
+    <div className="credential-badge">
+      <div className="badge-icon">
+        <svg
+          viewBox="0 0 24 24"
+          width="21"
+          height="21"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.7"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <circle cx="9" cy="8" r="3" />
+          <circle cx="17" cy="9" r="2.5" />
+          <path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6" />
+          <path d="M15 15c3.2-.2 5.5 1.9 6 5" />
+        </svg>
+      </div>
+      <span>Empanelled</span>
+    </div>
+
+  </div>
+
+  <span />
+</div>
+
+
+  </div>
+</section>
+
   )
 }
 
-export function SiteFooter() {
-  const handleNav = (e, path) => { e.preventDefault(); navigate(path) }
+function LogoPartnersSection() {
   return (
     <>
-      <LogoPartnersSection />
-      <footer className="footer">
-        <div className="wrap footer-top">
-          <div className="footer-brand-col">
-            <a className="brand" href="/" onClick={(e) => handleNav(e, '/')}>
-              <img className="brand-logo" src="/logo.png" alt="N Solutions" />
-            </a>
-            <p className="footer-tagline">
-              Engineering, Procurement and Construction (EPC) Solar Company with 16+ years of proven experience across 9 states in India.
+      <section
+        className="logo-partners-section"
+        aria-label="Partners, Clients & Certifications"
+      >
+        <div className="wrap">
+          <div className="logo-partners-heading">
+            <p className="eyebrow">
+              <span /> Our ecosystem
             </p>
-            <div className="footer-credentials-badge">
-              <span>PM Surya Ghar Empaneled</span>
-              <span>MNRE Compliant</span>
-              <span>Commercial &amp; Industrial EPC</span>
-            </div>
+
+            <h2>
+              Trusted partners &amp; <em>valued clients.</em>
+            </h2>
           </div>
-          <div className="footer-columns">
-            <div>
-              <strong>Navigation</strong>
-              <a href="/" onClick={(e) => handleNav(e, '/')}>Home</a>
-              <a href="/about" onClick={(e) => handleNav(e, '/about')}>About Us</a>
-              <a href="/services" onClick={(e) => handleNav(e, '/services')}>Services &amp; Solutions</a>
-              <a href="/projects" onClick={(e) => handleNav(e, '/projects')}>Projects Showcase</a>
-              <a href="/products" onClick={(e) => handleNav(e, '/products')}>Solar Products</a>
-              <a href="/media" onClick={(e) => handleNav(e, '/media')}>Media &amp; News</a>
-              <a href="/careers" onClick={(e) => handleNav(e, '/careers')}>Careers</a>
-              <a href="/contact" onClick={(e) => handleNav(e, '/contact')}>Contact Us</a>
-            </div>
-            <div>
-              <strong>Core Services</strong>
-              <a href="/services" onClick={(e) => handleNav(e, '/services')}>Commercial &amp; Industrial</a>
-              <a href="/services" onClick={(e) => handleNav(e, '/services')}>Residential Rooftop</a>
-              <a href="/services" onClick={(e) => handleNav(e, '/services')}>Solar EPC Solutions</a>
-              <a href="/services" onClick={(e) => handleNav(e, '/services')}>PM Surya Ghar Scheme</a>
-              <a href="/services" onClick={(e) => handleNav(e, '/services')}>Operation &amp; Maintenance</a>
-              <a href="/services" onClick={(e) => handleNav(e, '/services')}>Subsidies &amp; Net Metering</a>
-            </div>
-            <div>
-              <strong>Contact &amp; Reach</strong>
-              <span><strong>HQ:</strong> Vizianagaram &amp; Visakhapatnam Cluster, AP</span>
-              <span><strong>Reach:</strong> Operations across 9 States in India</span>
-              <span><strong>Email:</strong> info@nsolutions.in</span>
-              <span><strong>Projects:</strong> projects@nsolutions.in</span>
-              <span><strong>Helpline:</strong> +91 891 278 9400</span>
-              <div className="footer-cta-link">
-                <a href="/contact" onClick={(e) => handleNav(e, '/contact')}>Request Feasibility Study <FiArrowUpRight style={{ display: 'inline', verticalAlign: 'middle', strokeWidth: 2.5 }} /></a>
+        </div>
+
+        <div className="logo-partners-grid">
+          {logoGroups.map((group, gi) => (
+            <div key={gi} className="logo-partners-row">
+              <div className="logo-partners-label">
+                <span>{group.label}</span>
+              </div>
+
+              <div className="logo-strip-viewport">
+                <LogoStrip
+                  logos={group.logos}
+                  reverse={gi % 2 === 1}
+                  speed={22 + gi * 5}
+                />
               </div>
             </div>
-          </div>
+          ))}
         </div>
-        <div className="wrap footer-bottom">
-          <span>© {new Date().getFullYear()} N Solutions. Built on Experience. Driven by Solar. All rights reserved.</span>
-          <span>Managing Partner: Ch. C.S.V. Raju</span>
-        </div>
-      </footer>
+      </section>
+
+      <Credentials />
     </>
   )
 }
 
+
+export function SiteFooter() {
+  const handleNav = (e, path) => {
+    e.preventDefault()
+    navigate(path)
+  }
+
+  return (
+    <footer className="site-footer">
+      <LogoPartnersSection/>
+      {/* ================= MAIN FOOTER ================= */}
+      <section className="footer-main">
+
+        <div className="footer-inner">
+
+          {/* BRAND */}
+          <div className="footer-brand-col">
+
+            <a
+              className="footer-logo-link"
+              href="/"
+              onClick={(e) => handleNav(e, '/')}
+            >
+              <img
+                className="footer-logo"
+                src="/logo.png"
+                alt="N Solutions"
+              />
+            </a>
+
+            <p className="footer-tagline">
+              Engineering, Procurement and Construction (EPC)
+              Solar Company with 16+ years of proven experience
+              across 9 states in India.
+            </p>
+
+            <div className="footer-credentials-badge">
+              <span>PM Surya Ghar Empanelled</span>
+              <span>MNRE Compliant</span>
+              <span>Commercial &amp; Industrial EPC</span>
+            </div>
+
+          </div>
+
+
+          {/* NAVIGATION */}
+          <div className="footer-column">
+
+            <h3>Navigation</h3>
+
+            <div className="footer-heading-line" />
+
+            <a href="/" onClick={(e) => handleNav(e, '/')}>
+              Home
+            </a>
+
+            <a href="/about" onClick={(e) => handleNav(e, '/about')}>
+              About Us
+            </a>
+
+            <a href="/services" onClick={(e) => handleNav(e, '/services')}>
+              Services &amp; Solutions
+            </a>
+
+            <a href="/projects" onClick={(e) => handleNav(e, '/projects')}>
+              Projects Showcase
+            </a>
+
+            <a href="/products" onClick={(e) => handleNav(e, '/products')}>
+              Solar Products
+            </a>
+
+            <a href="/media" onClick={(e) => handleNav(e, '/media')}>
+              Media &amp; News
+            </a>
+
+            <a href="/careers" onClick={(e) => handleNav(e, '/careers')}>
+              Careers
+            </a>
+
+            <a href="/contact" onClick={(e) => handleNav(e, '/contact')}>
+              Contact Us
+            </a>
+
+          </div>
+
+
+          {/* CORE SERVICES */}
+          <div className="footer-column">
+
+            <h3>Core Services</h3>
+
+            <div className="footer-heading-line" />
+
+            <a href="/services" onClick={(e) => handleNav(e, '/services')}>
+              Commercial &amp; Industrial
+            </a>
+
+            <a href="/services" onClick={(e) => handleNav(e, '/services')}>
+              Residential Rooftop
+            </a>
+
+            <a href="/services" onClick={(e) => handleNav(e, '/services')}>
+              Solar EPC Solutions
+            </a>
+
+            <a href="/services" onClick={(e) => handleNav(e, '/services')}>
+              PM Surya Ghar Scheme
+            </a>
+
+            <a href="/services" onClick={(e) => handleNav(e, '/services')}>
+              Operation &amp; Maintenance
+            </a>
+
+            <a href="/services" onClick={(e) => handleNav(e, '/services')}>
+              Subsidies &amp; Net Metering
+            </a>
+
+          </div>
+
+
+          {/* CONTACT */}
+          <div className="footer-column footer-contact">
+
+            <h3>Contact &amp; Reach</h3>
+
+            <div className="footer-heading-line" />
+
+            <div className="footer-contact-item">
+              <span className="footer-contact-icon">
+                <svg viewBox="0 0 24 24">
+                  <path d="M12 21s7-6.1 7-12a7 7 0 1 0-14 0c0 5.9 7 12 7 12z" />
+                  <circle cx="12" cy="9" r="2.3" />
+                </svg>
+              </span>
+
+              <p>
+                <strong>HQ:</strong> Vizianagaram &amp;
+                Visakhapatnam Cluster, AP
+                <br />
+                Operations across 9 States in India
+              </p>
+            </div>
+
+
+            <div className="footer-contact-item">
+              <span className="footer-contact-icon">
+                <svg viewBox="0 0 24 24">
+                  <rect x="3" y="5" width="18" height="14" rx="2" />
+                  <path d="m4 7 8 6 8-6" />
+                </svg>
+              </span>
+
+              <p>info@nsolutions.in</p>
+            </div>
+
+
+            <div className="footer-contact-item">
+              <span className="footer-contact-icon">
+                <svg viewBox="0 0 24 24">
+                  <path d="M7 3h3l2 5-2 2a14 14 0 0 0 4 4l2-2 5 2v3c0 1.1-.9 2-2 2C10.4 19 5 13.6 5 7c0-1.1.9-2 2-2z" />
+                </svg>
+              </span>
+
+              <p>+91 891 278 9400</p>
+            </div>
+
+
+            <div className="footer-contact-item">
+              <span className="footer-contact-icon">
+                <svg viewBox="0 0 24 24">
+                  <path d="M6 3h9l3 3v15H6z" />
+                  <path d="M15 3v4h4" />
+                  <path d="M9 12h6M9 16h6" />
+                </svg>
+              </span>
+
+              <p>projects@nsolutions.in</p>
+            </div>
+
+
+            <a
+              href="/contact"
+              className="footer-feasibility-btn"
+              onClick={(e) => handleNav(e, '/contact')}
+            >
+              Request Feasibility Study
+              <FiArrowUpRight />
+            </a>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      {/* ================= CREDENTIALS ================= */}
+      <section className="footer-credentials">
+
+        <div className="footer-credentials-inner">
+
+          <div className="footer-credentials-title">
+            <span>OUR CREDENTIALS</span>
+            <div />
+          </div>
+
+
+          <div className="footer-credential-list">
+
+            <div className="footer-credential-item">
+              <div className="credential-logo credential-iso-logo">
+                 <img src="/logos/logo_6.png" alt="ISO 9001:2015" />
+              </div>
+              <div>
+                <strong>ISO 9001:2015</strong>
+                <span>Certified Company</span>
+            </div>
+            </div>
+
+
+            <div className="footer-credential-item">
+              <img
+                src="/logos/logo_7 (2).png"
+                alt="PM Surya Ghar"
+                style={{height: '80%',width: '70%'}}
+              />
+
+              <div>
+                <strong>PM Surya Ghar</strong>
+                <span>Muft Bijli Yojana</span>
+              </div>
+            </div>
+
+
+            <div className="footer-credential-item">
+              <img
+                src="/logos/logo_9.png"
+                alt="APEPDCL"
+                style={{width:'60%',height:'20%',margin:'0px',padding:'0px'}}
+              />
+
+                <strong>APEPDCL</strong>
+                <span>Empanelled</span>
+              
+            </div>
+
+
+            <div className="footer-credential-item">
+              <img
+                src="/logos/logo_8.png"
+                alt="NREDCAP"
+                style={{height:'10%',width: '30%'}}
+              />
+
+              <div>
+                <strong>NREDCAP</strong>
+                <span>Registered</span>
+              </div>
+            </div>
+
+
+            <div className="footer-credential-item">
+              <img
+                src="/logos/logo_10.png"
+                alt="Ministry of New and Renewable Energy"
+               style={{height: '90%',width: '70%',objectFit:'contain', marginBottom:'0px'}}/>
+
+              <div>
+                <strong>MNRE</strong>
+                <span>Empanelled</span>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      {/* ================= BOTTOM BAR ================= */}
+      <section className="footer-bottom-bar">
+
+        <div className="footer-bottom-inner">
+
+          <div className="footer-copy">
+            © {new Date().getFullYear()} N Solutions.
+            All rights reserved.
+          </div>
+
+
+          <div className="footer-bottom-links">
+
+            <a href="/privacy">
+              Privacy Policy
+            </a>
+
+            <span>|</span>
+
+            <a href="/terms">
+              Terms &amp; Conditions
+            </a>
+
+            <span>|</span>
+
+            <a href="/">
+              Sitemap
+            </a>
+
+          </div>
+
+
+          <div className="footer-socials">
+
+            <a href="#" aria-label="LinkedIn">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        fill="currentColor"
+        d="M6.5 8.5A1.5 1.5 0 1 0 6.5 5.5a1.5 1.5 0 0 0 0 3ZM5 10h3v9H5v-9Zm5 0h3v1.23c.43-.73 1.35-1.53 2.93-1.53 3.13 0 3.07 2.91 3.07 4.5V19h-3v-4.27c0-1.02-.02-2.33-1.42-2.33-1.42 0-1.64 1.1-1.64 2.25V19h-3v-9Z"
+      />
+    </svg>
+  </a>
+  <a href="#" aria-label="Instagram">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <rect
+        x="3.5"
+        y="3.5"
+        width="17"
+        height="17"
+        rx="5"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+      />
+      <circle
+        cx="12"
+        cy="12"
+        r="4"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+      />
+      <circle
+        cx="17.5"
+        cy="6.5"
+        r="1"
+        fill="currentColor"
+      />
+    </svg>
+  </a>
+
+  <a href="#" aria-label="YouTube">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        fill="currentColor"
+        d="M21.6 7.2a2.8 2.8 0 0 0-2-2C17.8 4.7 12 4.7 12 4.7s-5.8 0-7.6.5a2.8 2.8 0 0 0-2 2C2 9 2 12 2 12s0 3 .4 4.8a2.8 2.8 0 0 0 2 2c1.8.5 7.6.5 7.6.5s5.8 0 7.6-.5a2.8 2.8 0 0 0 2-2c.4-1.8.4-4.8.4-4.8s0-3-.4-4.8ZM10 15.3V8.7l5.5 3.3-5.5 3.3Z"
+      />
+    </svg>
+  </a>
+
+            <span className="footer-social-divider" />
+
+            <span className="footer-developed">
+              Designed &amp; Developed by
+              <strong> Multivisiontrendz</strong>
+            </span>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </footer>
+  )
+}

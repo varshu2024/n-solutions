@@ -38,6 +38,7 @@ export default function AdminPanel({ adminUser, onLogout }) {
 
   const [activeTab, setActiveTab] = useState('overview')
   const [data, setData] = useState(() => getStoredData())
+  const [leads, setLeads] = useState([])
   const [toastMessage, setToastMessage] = useState('')
   const [projects, setProjects] = useState([])
   const [projectsLoading, setProjectsLoading] = useState(false)
@@ -383,13 +384,12 @@ const loadEnquiries = async () => {
   const loadLeads = async () => {
   try {
     const result = await apiGet('/leads')
+
     if (!result.success) {
       throw new Error(result.message || 'Failed to fetch leads')
     }
-    updateData((prev) => ({
-      ...prev,
-      leads: result.data || []
-    }))
+
+    setLeads(result.data || [])
   } catch (error) {
     showToast(error.message || 'Failed to fetch leads')
   }
@@ -420,7 +420,7 @@ const loadEnquiries = async () => {
   }
 }
   // Filtered leads
-const filteredLeads = (Array.isArray(data.leads) ? data.leads : []).filter((lead) => {
+const filteredLeads = leads.filter((lead) => {
   const search = leadSearch.toLowerCase()
 
   const matchesSearch =

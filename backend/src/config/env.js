@@ -43,5 +43,7 @@ export const env = Object.freeze({
   cloudinaryApiKey: process.env.CLOUDINARY_API_KEY || '',
   cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET || '',
   dashboardDefaultLimit: parseInteger(process.env.DASHBOARD_DEFAULT_LIMIT, 10),
-  dashboardMaxLimit: parseInteger(process.env.DASHBOARD_MAX_LIMIT, 50)
+  dashboardMaxLimit: parseInteger(process.env.DASHBOARD_MAX_LIMIT, 50),
+  gmailUser: process.env.GMAIL_USER || '',
+  gmailAppPassword: process.env.GMAIL_APP_PASSWORD || '',
 });

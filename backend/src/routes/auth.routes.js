@@ -1,6 +1,12 @@
 import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
-import { login, logout, register } from '../controllers/auth.controller.js';
+import {
+  login,
+  logout,
+  register,
+  sendOtp,
+  verifyOtp
+} from '../controllers/auth.controller.js';
 import { getProfile, updatePassword, updateProfile } from '../controllers/profile.controller.js';
 import { requireAdmin } from '../middleware/auth.middleware.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
@@ -20,5 +26,7 @@ router.post('/logout', requireAdmin, asyncHandler(logout));
 router.get('/profile', requireAdmin, asyncHandler(getProfile));
 router.patch('/profile', requireAdmin, asyncHandler(updateProfile));
 router.patch('/profile/password', requireAdmin, asyncHandler(updatePassword));
+router.post('/send-otp', authLimiter, asyncHandler(sendOtp));
 
+router.post('/verify-otp', authLimiter, asyncHandler(verifyOtp));
 export default router;
