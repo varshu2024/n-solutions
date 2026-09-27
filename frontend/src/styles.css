@@ -12283,7 +12283,7 @@ button:focus-visible {
   position: absolute;
   inset: 0;
   background: rgba(255, 255, 255, 0.91);
-  background-image: url('/public/solarbackground.jpg');
+  background-image: url('/solarbackground.jpg');
   background-size:cover;
 }
 
