@@ -1,4 +1,4 @@
-import dns from 'node:dns';
+
 import dns from 'node:dns/promises';
 import nodemailer from 'nodemailer';
 import { env } from '../config/env.js';
