@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { SiteHeader, SiteFooter, Arrow, Reveal, navigate } from '../components/Shared'
 import { apiGet } from '../utils/api'
-import { FiPlay, FiMapPin, FiArrowDown, FiArrowUpRight, FiX } from 'react-icons/fi'
+import { FiPlay, FiMapPin, FiX } from 'react-icons/fi'
 
 export const pressArticles = [
   {
@@ -140,91 +140,91 @@ export default function MediaPage() {
   const [articles, setArticles] = useState(pressArticles)
   const [gallery, setGallery] = useState(galleryImages)
   const [videos, setVideos] = useState([])
-const [projectMilestones, setProjectMilestones] = useState([])
+  const [projectMilestones, setProjectMilestones] = useState([])
   useEffect(() => {
-  document.title = 'Media & News Center | N Solutions Solar EPC'
-  window.scrollTo({ top: 0, behavior: 'smooth' })
+    document.title = 'Media & News Center | N Solutions Solar EPC'
+    window.scrollTo({ top: 0, behavior: 'smooth' })
 
-  const loadMedia = async () => {
-    try {
-      const mediaResult = await apiGet('/media')
+    const loadMedia = async () => {
+      try {
+        const mediaResult = await apiGet('/media')
 
-      if (!mediaResult?.success || !mediaResult?.data) {
-        console.error('Failed to retrieve media data')
-        return
-      }
-
-      const {
-        news = [],
-        projectMilestones = [],
-        gallery = [],
-        videos = []
-      } = mediaResult.data
-
-      // NEWS
-      if (Array.isArray(news) && news.length > 0) {
-        setArticles(
-          news.map((item) => ({
-            id: item.id,
-            tag: item.source || item.tag || 'Press Release',
-            date: item.publicationDate || '',
-            readTime: item.readTime || '',
-            title: item.title || '',
-            summary: item.summary || '',
-            fullText: item.fullText || item.summary || '',
-            image: item.image?.url || ''
-          }))
-        )
-      } else {
-        setArticles(pressArticles)
-      }
-
-      // PROJECT MILESTONES
-      if (Array.isArray(projectMilestones)) {
-        setProjectMilestones(projectMilestones)
-      }
-
-      // VIDEOS
-      if (Array.isArray(videos) && videos.length > 0) {
-        const mappedVideos = videos.map((video) => ({
-          id: video.id,
-          title: video.title || '',
-          description: video.description || '',
-          videoUrl: video.videoUrl || '',
-          thumbnail: video.thumbnail?.url || '',
-          category: video.category || ''
-        }))
-
-        setVideos(mappedVideos)
-
-        if (mappedVideos[0]?.videoUrl) {
-          setActiveVideo(mappedVideos[0].videoUrl)
+        if (!mediaResult?.success || !mediaResult?.data) {
+          console.error('Failed to retrieve media data')
+          return
         }
-      } else {
-        setVideos([])
-      }
 
-      // GALLERY
-      if (Array.isArray(gallery) && gallery.length > 0) {
-        setGallery(
-          gallery.map((photo) => ({
-            id: photo.id,
-            title: photo.title || '',
-            location: photo.location || '',
-            category: photo.category || '',
-            src: photo.image?.url || ''
+        const {
+          news = [],
+          projectMilestones = [],
+          gallery = [],
+          videos = []
+        } = mediaResult.data
+
+        // NEWS
+        if (Array.isArray(news) && news.length > 0) {
+          setArticles(
+            news.map((item) => ({
+              id: item.id,
+              tag: item.source || item.tag || 'Press Release',
+              date: item.publicationDate || '',
+              readTime: item.readTime || '',
+              title: item.title || '',
+              summary: item.summary || '',
+              fullText: item.fullText || item.summary || '',
+              image: item.image?.url || ''
+            }))
+          )
+        } else {
+          setArticles(pressArticles)
+        }
+
+        // PROJECT MILESTONES
+        if (Array.isArray(projectMilestones)) {
+          setProjectMilestones(projectMilestones)
+        }
+
+        // VIDEOS
+        if (Array.isArray(videos) && videos.length > 0) {
+          const mappedVideos = videos.map((video) => ({
+            id: video.id,
+            title: video.title || '',
+            description: video.description || '',
+            videoUrl: video.videoUrl || '',
+            thumbnail: video.thumbnail?.url || '',
+            category: video.category || ''
           }))
-        )
-      } else {
-        setGallery(galleryImages)
-      }
-    } catch (error) {
-      console.error('Failed to load media:', error)
-    }
-  }
 
-  loadMedia()
-}, [])
+          setVideos(mappedVideos)
+
+          if (mappedVideos[0]?.videoUrl) {
+            setActiveVideo(mappedVideos[0].videoUrl)
+          }
+        } else {
+          setVideos([])
+        }
+
+        // GALLERY
+        if (Array.isArray(gallery) && gallery.length > 0) {
+          setGallery(
+            gallery.map((photo) => ({
+              id: photo.id,
+              title: photo.title || '',
+              location: photo.location || '',
+              category: photo.category || '',
+              src: photo.image?.url || ''
+            }))
+          )
+        } else {
+          setGallery(galleryImages)
+        }
+      } catch (error) {
+        console.error('Failed to load media:', error)
+      }
+    }
+
+    loadMedia()
+  }, [])
 
   return (
     <div className="media-page">
@@ -268,40 +268,33 @@ const [projectMilestones, setProjectMilestones] = useState([])
         {/* MEDIA TABS */}
         <div className="media-nav-bar wrap">
           <div className="media-tabs-list">
-            <button 
-              type="button" 
-              className={activeTab === 'all' ? 'is-active' : ''} 
+            <button
+              type="button"
+              className={activeTab === 'all' ? 'is-active' : ''}
               onClick={() => setActiveTab('all')}
             >
               All Updates
             </button>
-            <button 
-              type="button" 
-              className={activeTab === 'press' ? 'is-active' : ''} 
+            <button
+              type="button"
+              className={activeTab === 'press' ? 'is-active' : ''}
               onClick={() => setActiveTab('press')}
             >
               Press Releases
             </button>
-            <button 
-              type="button" 
-              className={activeTab === 'videos' ? 'is-active' : ''} 
+            <button
+              type="button"
+              className={activeTab === 'videos' ? 'is-active' : ''}
               onClick={() => setActiveTab('videos')}
             >
               Video Spotlights
             </button>
-            <button 
-              type="button" 
-              className={activeTab === 'gallery' ? 'is-active' : ''} 
+            <button
+              type="button"
+              className={activeTab === 'gallery' ? 'is-active' : ''}
               onClick={() => setActiveTab('gallery')}
             >
               Photo Archive
-            </button>
-            <button 
-              type="button" 
-              className={activeTab === 'kit' ? 'is-active' : ''} 
-              onClick={() => setActiveTab('kit')}
-            >
-              Media Kit & Brand
             </button>
           </div>
         </div>
@@ -317,8 +310,8 @@ const [projectMilestones, setProjectMilestones] = useState([])
               Delivered within 7 months of national portal launch, empowering hundreds of households with zero electricity bills. An additional 250+ sites are currently in execution across the district.
             </p>
             <div className="milestone-footer">
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className="button button-accent"
                 onClick={() => articles.length > 0 && setActiveArticle(articles[0])}
               >
@@ -344,12 +337,12 @@ const [projectMilestones, setProjectMilestones] = useState([])
 
             <div className="media-video-player-container">
               <div className="main-video-screen">
-                <video 
-                  key={activeVideo} 
-                  controls 
-                  autoPlay 
-                  muted 
-                  playsInline 
+                <video
+                  key={activeVideo}
+                  controls
+                  autoPlay
+                  muted
+                  playsInline
                   className="active-video-player"
                 >
                   <source src={activeVideo} type="video/mp4" />
@@ -361,9 +354,8 @@ const [projectMilestones, setProjectMilestones] = useState([])
                   videos.map((video) => (
                     <div
                       key={video.id}
-                      className={`playlist-item ${
-                        activeVideo === video.videoUrl ? 'is-playing' : ''
-                      }`}
+                      className={`playlist-item ${activeVideo === video.videoUrl ? 'is-playing' : ''
+                        }`}
                       onClick={() => setActiveVideo(video.videoUrl)}
                     >
                       <span className="playlist-icon">
@@ -379,9 +371,8 @@ const [projectMilestones, setProjectMilestones] = useState([])
                 ) : (
                   <>
                     <div
-                      className={`playlist-item ${
-                        activeVideo === '/media/hero-solar.mp4' ? 'is-playing' : ''
-                      }`}
+                      className={`playlist-item ${activeVideo === '/media/hero-solar.mp4' ? 'is-playing' : ''
+                        }`}
                       onClick={() => setActiveVideo('/media/hero-solar.mp4')}
                     >
                       <span className="playlist-icon">
@@ -396,9 +387,8 @@ const [projectMilestones, setProjectMilestones] = useState([])
                     </div>
 
                     <div
-                      className={`playlist-item ${
-                        activeVideo === '/media/services.mp4' ? 'is-playing' : ''
-                      }`}
+                      className={`playlist-item ${activeVideo === '/media/services.mp4' ? 'is-playing' : ''
+                        }`}
                       onClick={() => setActiveVideo('/media/services.mp4')}
                     >
                       <span className="playlist-icon">
@@ -413,9 +403,8 @@ const [projectMilestones, setProjectMilestones] = useState([])
                     </div>
 
                     <div
-                      className={`playlist-item ${
-                        activeVideo === '/media/products.mp4' ? 'is-playing' : ''
-                      }`}
+                      className={`playlist-item ${activeVideo === '/media/products.mp4' ? 'is-playing' : ''
+                        }`}
                       onClick={() => setActiveVideo('/media/products.mp4')}
                     >
                       <span className="playlist-icon">
@@ -463,8 +452,8 @@ const [projectMilestones, setProjectMilestones] = useState([])
                     </div>
                     <h3>{article.title}</h3>
                     <p>{article.summary}</p>
-                    <button 
-                      type="button" 
+                    <button
+                      type="button"
                       className="press-read-btn"
                       onClick={() => setActiveArticle(article)}
                     >
@@ -505,97 +494,12 @@ const [projectMilestones, setProjectMilestones] = useState([])
           </section>
         )}
 
-        {/* MEDIA KIT & BRAND ASSETS */}
-        {(activeTab === 'all' || activeTab === 'kit') && (
-          <section className="media-kit-section wrap">
-            <Reveal className="section-heading">
-              <div>
-                <p className="eyebrow"><span /> Media Kit & Resources</p>
-                <h2>Official brand assets &<br /><em>executive resources.</em></h2>
-              </div>
-              <p className="heading-note">
-                Official logos, company backgrounders, executive bios, and brand standards for media publications and partners.
-              </p>
-            </Reveal>
-
-            <div className="media-kit-grid">
-              <div className="kit-card">
-                <div className="kit-icon">SVG</div>
-                <h3>Official N Solutions Logo Pack</h3>
-                <p>High-resolution vector SVG and transparent PNGs of the official brand logo in royal blue gradient, dark mode, and light mode.</p>
-                <a 
-                  className="kit-download-btn" 
-                  href="/cursor-arrow.svg" 
-                  download="n-solutions-brand-assets.zip"
-                  onClick={(e) => {
-                    e.preventDefault()
-                    alert('Brand asset pack: Vector SVG & high-resolution PNG logos are packaged in the project repository.')
-                  }}
-                >
-                  Download Logo Assets (ZIP) <FiArrowDown style={{ verticalAlign: 'middle' }} />
-                </a>
-              </div>
-
-              <div className="kit-card">
-                <div className="kit-icon">PDF</div>
-                <h3>Corporate Profile & EPC Capabilities</h3>
-                <p>Comprehensive factsheet outlining 16+ years of experience, 9-state footprint, MW-scale case studies, and PM Surya Ghar operations.</p>
-                <a 
-                  className="kit-download-btn" 
-                  href="#contact"
-                  onClick={(e) => {
-                    e.preventDefault()
-                    navigate('/contact')
-                  }}
-                >
-                  Request Corporate Deck (PDF) <FiArrowUpRight style={{ verticalAlign: 'middle' }} />
-                </a>
-              </div>
-
-              <div className="kit-card">
-                <div className="kit-icon">BIO</div>
-                <h3>Executive Leadership Biography</h3>
-                <p>Official executive biography and leadership overview of Ch. C.S.V. Raju, Managing Partner of N Solutions.</p>
-                <button 
-                  type="button" 
-                  className="kit-download-btn"
-                  onClick={() => setActiveArticle(articles[3] || articles[0] || null)}
-                >
-                  View Executive Profile <FiArrowUpRight style={{ verticalAlign: 'middle' }} />
-                </button>
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* PRESS CONTACT & INQUIRIES */}
-        <section className="media-contact-bar wrap">
-          <div className="media-contact-inner">
-            <div>
-              <p className="eyebrow light"><span /> Press & Media Relations</p>
-              <h2>Need an executive interview or official solar comment?</h2>
-              <p>
-                Our media relations desk assists journalists, industry analysts, and event organizers with technical solar data, verified facts, and leadership interviews.
-              </p>
-            </div>
-            <div className="media-contact-action">
-              <a 
-                className="button button-accent" 
-                href="mailto:info@nsolutions.in?subject=Media%20Inquiry%20-%20N%20Solutions"
-              >
-                Contact Press Desk <Arrow />
-              </a>
-              <span>Email: info@nsolutions.in · Vizianagaram / Visakhapatnam</span>
-            </div>
-          </div>
-        </section>
-
         {/* ARTICLE FULL MODAL */}
         {activeArticle && (
           <div className="media-article-modal-backdrop" onClick={() => setActiveArticle(null)}>
             <div className="media-article-modal-card" onClick={(e) => e.stopPropagation()}>
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className="modal-close-btn"
                 onClick={() => setActiveArticle(null)}
                 aria-label="Close article"
@@ -624,14 +528,14 @@ const [projectMilestones, setProjectMilestones] = useState([])
               </div>
 
               <div className="article-modal-footer">
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className="button button-ghost-dark"
                   onClick={() => setActiveArticle(null)}
                 >
                   Back to Media Center
                 </button>
-                <a 
+                <a
                   className="button button-accent"
                   href="/contact"
                   onClick={(e) => {
@@ -651,8 +555,8 @@ const [projectMilestones, setProjectMilestones] = useState([])
         {activePhoto && (
           <div className="media-photo-lightbox-backdrop" onClick={() => setActivePhoto(null)}>
             <div className="photo-lightbox-card" onClick={(e) => e.stopPropagation()}>
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className="modal-close-btn"
                 onClick={() => setActivePhoto(null)}
               >
