@@ -1,6 +1,6 @@
 import dns from 'node:dns';
+import dns from 'node:dns/promises';
 import nodemailer from 'nodemailer';
-
 import { env } from '../config/env.js';
 
 dns.setDefaultResultOrder('ipv4first');
@@ -54,3 +54,27 @@ await transporter.sendMail({
 
   console.log(`✅ OTP email sent in ${Date.now() - start}ms`);
 };
+
+
+
+const testGmailDns = async () => {
+  try {
+    const result = await dns.lookup('smtp.gmail.com', {
+      all: true
+    });
+
+    console.log('📡 Gmail DNS:', result);
+  } catch (error) {
+    console.error('❌ Gmail DNS error:', error);
+  }
+};
+
+testGmailDns();
+
+transporter.verify()
+  .then(() => {
+    console.log('✅ Gmail SMTP connection works');
+  })
+  .catch((error) => {
+    console.error('❌ Gmail SMTP connection failed:', error);
+  });
