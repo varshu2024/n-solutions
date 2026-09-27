@@ -1568,7 +1568,7 @@ function App() {
   if (currentPath === '/media') return <MediaPage />
   if (currentPath === '/careers') return <CareersPage />
   if (currentPath === '/contact') return <ContactPage />
-  if (currentPath === '/admin' || currentPath.startsWith('/admin/')) return <AdminPortal />
+  if (currentPath === '/admin' || currentPath.startsWith('/admin')) return <AdminPortal />
   if (currentPath !== '/') return <RouteShell />
 
 
