@@ -1,14 +1,15 @@
-
-import dns from 'node:dns/promises';
 import nodemailer from 'nodemailer';
-import { env } from '../config/env.js';
 
-dns.setDefaultResultOrder('ipv4first');
+import { env } from '../config/env.js';
 
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
-  port: 587,
-  secure: false,
+  port: 465,
+  secure: true,
+  family: 4,
+  connectionTimeout: 10000,
+  greetingTimeout: 10000,
+  socketTimeout: 10000,
   auth: {
     user: env.gmailUser,
     pass: env.gmailAppPassword
@@ -20,8 +21,7 @@ export const sendOtpEmail = async ({ to, otp }) => {
 
   console.log('📧 Starting OTP email:', to);
 
-
-await transporter.sendMail({
+  await transporter.sendMail({
     from: `"N Solutions Admin" <${env.gmailUser}>`,
     to,
     subject: 'N Solutions Admin Login OTP',
@@ -51,30 +51,5 @@ await transporter.sendMail({
     `
   });
 
-
   console.log(`✅ OTP email sent in ${Date.now() - start}ms`);
 };
-
-
-
-const testGmailDns = async () => {
-  try {
-    const result = await dns.lookup('smtp.gmail.com', {
-      all: true
-    });
-
-    console.log('📡 Gmail DNS:', result);
-  } catch (error) {
-    console.error('❌ Gmail DNS error:', error);
-  }
-};
-
-testGmailDns();
-
-transporter.verify()
-  .then(() => {
-    console.log('✅ Gmail SMTP connection works');
-  })
-  .catch((error) => {
-    console.error('❌ Gmail SMTP connection failed:', error);
-  });
