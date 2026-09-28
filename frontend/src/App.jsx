@@ -1061,7 +1061,7 @@ function SiteHeader({ activePath = '' }) {
     navigate(path)
   }
   const items = ['Home', 'About', 'Services', 'Projects', 'Products', 'Media', 'Careers', 'Contact']
-  return <header className={`site-header ${scrolled ? 'is-scrolled' : ''} ${activePath ? 'site-header-page' : ''}`}>
+  return <header className={`site-header`} style={{background:'#ffffff'}}>
     <a className="brand" href="/" onClick={(e) => handleNav(e, '/')} aria-label="N Solutions home"><img className="brand-logo" src="/logo.png" alt="N Solutions" /></a>
     <button className="menu-toggle" aria-label="Toggle navigation" aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}><span /><span /></button>
     <nav className={menuOpen ? 'nav-links is-open' : 'nav-links'}>
