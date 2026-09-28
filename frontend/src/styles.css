@@ -392,9 +392,9 @@ button.nav-cta {
   background: var(--section-alt) !important;
 }
 
-.chairman {
+/* .chairman {
   background: var(--section-alt2) !important;
-}
+} */
 
 /* Journey — light blue tint */
 .journey {
@@ -895,19 +895,19 @@ button.nav-cta {
    ===================================================== */
 .chairman-art {
   background: var(--section-alt2) !important;
-}
+} 
 
 .chairman-art span {
   color: var(--brand-primary) !important;
 }
 
-.chairman-copy blockquote {
+/* .chairman-copy blockquote {
   color: var(--brand-primary-dark) !important;
-}
+} */
 
-.message-ready {
+/* .message-ready {
   color: var(--muted) !important;
-}
+} */
 
 /* =====================================================
    TESTIMONIALS
@@ -2660,9 +2660,9 @@ button:focus-visible {
   color: var(--brand-primary-dark);
 }
 
-.chairman-copy blockquote {
+/* .chairman-copy blockquote {
   color: var(--brand-primary-dark);
-}
+} */
 
 .why {
   background: var(--brand-secondary);

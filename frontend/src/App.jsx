@@ -1243,8 +1243,7 @@ function AboutPage() {
           </div>
         </Reveal>
         <Reveal className="message-placeholder">
-          <span>NS</span>
-          <small>Leadership in Solar EPC<br />Managing Partner</small>
+          <img src='' alt="chairma's image to be added" />
         </Reveal>
       </div>
     </section>
@@ -1733,9 +1732,8 @@ function App() {
             <small>{homeContent.chairmanMessage.role}</small>
           </div>
         </Reveal>
-        <Reveal className="chairman-art">
-          <span>NS</span>
-          <small>Leadership<br />in solar EPC</small>
+        <Reveal>
+          <img src='' alt="chairman's image to be added" />
         </Reveal>
       </section>
 
