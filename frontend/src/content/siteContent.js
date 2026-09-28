@@ -619,7 +619,7 @@ export const servicesAndSolutionsContent = {
       tag: 'Agriculture & Water Supply',
       image: '/assets/services/solar-pump-solutions.png',
       text: 'Solar pumping solutions use solar energy to operate water pumps for suitable agricultural, water-supply, and other pumping requirements.',
-      detail: 'The system can be planned according to water requirement, pumping capacity, available solar resource, installation conditions, and application.',,
+      detail: 'The system can be planned according to water requirement, pumping capacity, available solar resource, installation conditions, and application.',
       benefits: [
         'Solar-powered water pumping',
         'Reduced dependence on conventional electricity',
