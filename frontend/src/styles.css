@@ -1401,6 +1401,14 @@ button {
   margin: 6px;
 }
 
+@media (max-width: 768px) {
+  .menu-toggle {
+    margin-left: 0;
+    margin-left: auto;
+    justify-self: start;
+  }
+}
+
 .hero {
   position: relative;
   min-height: 720px;
