@@ -9,8 +9,6 @@ const API_BASE_URL = (
 export default function AdminLogin({ onLoginSuccess }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [otp, setOtp] = useState('')
-  const [otpSent, setOtpSent] = useState(false)
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -27,7 +25,7 @@ export default function AdminLogin({ onLoginSuccess }) {
     setLoading(true)
 
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/send-otp`, {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -41,116 +39,44 @@ export default function AdminLogin({ onLoginSuccess }) {
       const result = await response.json()
 
       if (!response.ok || !result.success) {
-        setError(result.message || 'Unable to send OTP.')
+        setError(result.message || 'Invalid email or password.')
         return
       }
 
-      setOtpSent(true)
-      setError('')
+      // Store authentication token if the backend returns one
+      if (result.token) {
+        localStorage.setItem('nsolutions_admin_token', result.token)
+      }
+
+      // Notify parent/admin portal that login succeeded
+      if (onLoginSuccess) {
+        onLoginSuccess(result)
+      }
     } catch (error) {
-      console.error('Send OTP error:', error)
-      setError('Unable to send OTP. Please try again.')
+      console.error('Admin login error:', error)
+      setError('Unable to login. Please try again.')
     } finally {
       setLoading(false)
     }
   }
 
-  const handleVerifyOtp = async (e) => {
-    e.preventDefault()
-    setError('')
-
-    const enteredOtp = otp.trim()
-
-    if (!enteredOtp) {
-      setError('Please enter the OTP sent to your email.')
-      return
-    }
-
-    if (!/^\d{6}$/.test(enteredOtp)) {
-      setError('Please enter the 6-digit OTP.')
-      return
-    }
-
-    setLoading(true)
-
-    try {
-      const response = await fetch(`${API_BASE_URL}/auth/verify-otp`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email: email.trim(),
-          otp: enteredOtp
-        })
-      })
-
-      const result = await response.json()
-
-      if (!response.ok || !result.success) {
-        setError(result.message || 'Invalid OTP.')
-        return
-      }
-
-      localStorage.setItem(
-        'nsolutions_admin_token',
-        result.data.token
-      )
-
-      localStorage.setItem(
-        'nsolutions_admin_user',
-        JSON.stringify(result.data.admin)
-      )
-
-      onLoginSuccess(result.data.admin)
-    } catch (error) {
-      console.error('Verify OTP error:', error)
-      setError('Unable to verify OTP. Please try again.')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const fillDemoCreds = async () => {
+  const fillDemoCreds = () => {
     setEmail('admin@nsolutions.com')
     setPassword('Admin@123')
     setError('')
-
-    setLoading(true)
-
-    try {
-      const response = await fetch(`${API_BASE_URL}/auth/send-otp`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email: 'admin@nsolutions.com',
-          password: 'Admin@123'
-        })
-      })
-
-      const result = await response.json()
-
-      if (!response.ok || !result.success) {
-        setError(result.message || 'Unable to send OTP.')
-        return
-      }
-
-      setOtpSent(true)
-    } catch (error) {
-      console.error('Demo OTP error:', error)
-      setError('Unable to send OTP. Please try again.')
-    } finally {
-      setLoading(false)
-    }
   }
 
   return (
     <div className="adm-login-wrapper">
       <div className="adm-login-card">
         <div className="adm-brand-header">
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '14px' }}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              marginBottom: '14px'
+            }}
+          >
             <span
               className="brand-logo"
               style={{
@@ -180,129 +106,78 @@ export default function AdminLogin({ onLoginSuccess }) {
           </div>
         )}
 
-        {!otpSent ? (
-          <form onSubmit={handleSubmit} noValidate>
-            <div className="adm-form-group">
-              <label htmlFor="admin-email">Admin Email</label>
+        <form onSubmit={handleSubmit} noValidate>
+          <div className="adm-form-group">
+            <label htmlFor="admin-email">Admin Email</label>
 
-              <div className="adm-input-wrap">
-                <span className="adm-input-icon">✉</span>
+            <div className="adm-input-wrap">
+              <span className="adm-input-icon">✉</span>
 
-                <input
-                  id="admin-email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@nsolutions.com"
-                  autoComplete="email"
-                  required
-                />
-              </div>
+              <input
+                id="admin-email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="admin@nsolutions.com"
+                autoComplete="email"
+                required
+              />
             </div>
+          </div>
 
-            <div className="adm-form-group">
-              <label htmlFor="admin-password">Password</label>
+          <div className="adm-form-group">
+            <label htmlFor="admin-password">Password</label>
 
-              <div className="adm-input-wrap">
-                <span className="adm-input-icon">🔒</span>
+            <div className="adm-input-wrap">
+              <span className="adm-input-icon">🔒</span>
 
-                <input
-                  id="admin-password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••••••"
-                  autoComplete="current-password"
-                  required
-                />
-              </div>
+              <input
+                id="admin-password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••••••"
+                autoComplete="current-password"
+                required
+              />
             </div>
+          </div>
 
-            <button
-              type="submit"
-              className="adm-btn-primary"
-              disabled={loading}
-            >
-              {loading ? 'Sending OTP...' : 'Send OTP →'}
-            </button>
-          </form>
-        ) : (
-          <form onSubmit={handleVerifyOtp} noValidate>
-            <div className="adm-form-group">
-              <label htmlFor="admin-otp">Enter OTP</label>
+          <button
+            type="submit"
+            className="adm-btn-primary"
+            disabled={loading}
+          >
+            {loading ? 'Signing in...' : 'Sign In →'}
+          </button>
+        </form>
 
-              <div className="adm-input-wrap">
-                <span className="adm-input-icon">🔐</span>
-
-                <input
-                  id="admin-otp"
-                  type="text"
-                  inputMode="numeric"
-                  maxLength={6}
-                  value={otp}
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/\D/g, '')
-                    setOtp(value)
-                  }}
-                  placeholder="Enter 6-digit OTP"
-                  autoComplete="one-time-code"
-                  required
-                />
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              className="adm-btn-primary"
-              disabled={loading}
-            >
-              {loading ? 'Verifying...' : 'Verify OTP →'}
-            </button>
+        <div className="adm-demo-box">
+          <div className="adm-demo-header">
+            <span className="adm-demo-title">
+              Default Admin Credentials
+            </span>
 
             <button
               type="button"
               className="adm-demo-btn"
-              style={{ width: '100%', marginTop: '12px' }}
+              onClick={fillDemoCreds}
               disabled={loading}
-              onClick={() => {
-                setOtpSent(false)
-                setOtp('')
-                setError('')
-              }}
             >
-              ← Change Email / Password
+              Fill Credentials ⚡
             </button>
-          </form>
-        )}
+          </div>
 
-        {!otpSent && (
-          <div className="adm-demo-box">
-            <div className="adm-demo-header">
-              <span className="adm-demo-title">
-                Default Admin Credentials
-              </span>
-
-              <button
-                type="button"
-                className="adm-demo-btn"
-                onClick={fillDemoCreds}
-                disabled={loading}
-              >
-                1-Click Auto Login ⚡
-              </button>
+          <div className="adm-demo-creds">
+            <div>
+              Email: <strong>admin@nsolutions.com</strong>
             </div>
 
-            <div className="adm-demo-creds">
-              <div>
-                Email: <strong>admin@nsolutions.com</strong>
-              </div>
-
-              <div>
-                Pass: <strong>Admin@123</strong>
-              </div>
+            <div>
+              Pass: <strong>Admin@123</strong>
             </div>
           </div>
-        )}
+        </div>
 
         <div className="adm-login-footer">
           <a

@@ -1,9 +1,7 @@
 import { env } from '../config/env.js';
 import {
   registerAdmin,
-  loginAdmin,
-  sendLoginOtp,
-  verifyLoginOtp
+  loginAdmin
 } from '../services/auth.service.js';
 import { revokeToken } from '../utils/jwt.js';
 import { sendSuccess } from '../utils/response.js';
@@ -48,40 +46,3 @@ export const logout = async (request, response) => {
 };
 
 export const getRegistrationConfig = () => ({ mode: env.adminRegistrationMode });
-
-export const sendOtp = async (request, response) => {
-  const { email, password } = request.body || {};
-
-  const details = validateLoginInput({ email, password });
-
-  if (Object.keys(details).length > 0) {
-    throw validationError(details);
-  }
-
-  const data = await sendLoginOtp({ email, password });
-
-  return sendSuccess(response, 200, data.message, data);
-};
-
-export const verifyOtp = async (request, response) => {
-  const { email, otp } = request.body || {};
-
-  if (!email || typeof email !== 'string') {
-    throw validationError({
-      email: 'A valid email is required.'
-    });
-  }
-
-  if (!otp || !/^\d{6}$/.test(String(otp))) {
-    throw validationError({
-      otp: 'OTP must be a 6-digit code.'
-    });
-  }
-
-  const data = await verifyLoginOtp({
-    email,
-    otp: String(otp)
-  });
-
-  return sendSuccess(response, 200, 'OTP verified successfully.', data);
-};

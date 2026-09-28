@@ -22,7 +22,7 @@ X-Admin-Registration-Key: {{$dotenv ADMIN_REGISTRATION_KEY}}
 
 {
   "name": "NSolutions Admin",
-  "email": "bhuvaneswarivishaka@gmail.com",
+  "email": "info@nsol.in",
   "password": "Admin@123"
 }
 
