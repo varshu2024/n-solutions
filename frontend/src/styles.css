@@ -172,6 +172,32 @@ button {
     background: var(--brand-secondary-light);
   }
 
+ .nav-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  margin: 0;
+  line-height: 1;
+}
+
+button.nav-cta {
+  font-family: inherit;
+  font-size: inherit;
+  border: none;
+  cursor: pointer;
+}
+.nav-cta-con {
+  display: flex;
+  align-items: center;
+}
+.nav-cta:hover,
+.nav-cta:focus,
+.nav-cta:active {
+  transform: none !important;
+  top:0 !important;
+}
+
   /* Mobile CTA lives INSIDE burger menu */
   .site-header .nav-links .nav-cta-mobile {
     display: flex !important;

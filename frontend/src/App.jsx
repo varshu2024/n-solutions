@@ -1072,6 +1072,7 @@ function SiteHeader({ activePath = '' }) {
       })}
 
       {/* Mobile / tablet CTA */}
+      
      <button
         type="button"
         className="nav-cta nav-cta-mobile"
@@ -1085,17 +1086,20 @@ function SiteHeader({ activePath = '' }) {
     </nav>
 
     {/* Desktop CTA */}
+    <div className='nav-cta-con'>
     <button
       type="button"
       className="nav-cta nav-cta-desktop"
       onClick={() => setQuoteModalOpen(true)}
+      style={{transform:'none'}}
     >
       Get a Quote <Arrow />
-    </button>
+    </button></div>
     {quoteModalOpen && (
       <LeadQuoteModal
       onClose={() => setQuoteModalOpen(false)}
   />
+
 )}
   </header>
 }
