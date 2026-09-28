@@ -29,37 +29,37 @@ export const homeContent = {
         number: '01',
         title: 'Solar EPC',
         text: 'Complete engineering, procurement, installation, and commissioning for solar projects. We manage every stage with a focus on quality and efficient execution.',
-        image: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=900&q=85'
+        image: '/assets/services/industrial-solar-installation.jpg'
       },
       {
         number: '02',
         title: 'Commercial & Industrial Solar',
         text: 'Customized solar systems designed around business and industrial energy requirements. We help organizations adopt solar through practical, project-focused solutions.',
-        image: 'https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?auto=format&fit=crop&w=900&q=85'
+        image: '/assets/services/commercial-solar-installation.png'
       },
       {
         number: '03',
         title: 'Residential Rooftop Solar',
         text: 'Reliable rooftop solar solutions designed for homes and communities. From system planning to installation, we support the complete implementation process.',
-        image: 'https://images.unsplash.com/photo-1559302504-64aae6ca6b6d?auto=format&fit=crop&w=900&q=85'
+        image: '/assets/services/residential-solar-installation.jpg'
       },
       {
         number: '04',
         title: 'Government Solar Projects',
         text: 'Solar solutions supporting government projects and initiatives. We provide professional engineering and implementation based on project requirements.',
-        image: 'https://images.unsplash.com/photo-1545208942-e1c9e3b7a4b5?auto=format&fit=crop&w=900&q=85'
+        image: '/assets/services/government-solar-projects.jpg'
       },
       {
         number: '05',
         title: 'O&M Services',
         text: 'Ongoing operation and maintenance support for solar installations. Our services help maintain dependable system operation and long-term performance.',
-        image: 'https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&w=900&q=85'
+        image: '/assets/services/operation-and-maintenance.png'
       },
       {
         number: '06',
         title: 'Solar Products & Pumps',
         text: 'Solar panels, inverters, essential system components, and solar pumping solutions. We support projects with the products and systems required for solar implementation.',
-        image: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=900&q=85'
+        image: '/assets/services/solar-product-supply.png'
       }
     ]
   },
@@ -254,14 +254,14 @@ export const aboutContent = {
     number: '02',
     title: 'Commercial & Industrial Solar',
     text: 'Customized solar solutions for commercial and industrial requirements, designed around project needs and energy usage.',
-    image: 'https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?auto=format&fit=crop&w=1000&q=85',
+    image: '/assets/services/commercial-solar-installation.png',
     tag: 'C&I Power'
   },
   {
     number: '03',
     title: 'Residential Rooftop Solar',
     text: 'Rooftop solar solutions for homes, with support for installation and applicable solar scheme requirements.',
-    image: 'https://images.unsplash.com/photo-1559302504-64aae6ca6b6d?auto=format&fit=crop&w=1000&q=85',
+    image: '/assets/services/residential-solar-installation.jpg',
     tag: 'Residential'
   },
   {
@@ -282,7 +282,7 @@ export const aboutContent = {
     number: '06',
     title: 'Operation & Maintenance',
     text: 'Ongoing operation and maintenance support to help solar systems operate reliably.',
-    image: 'https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&w=1000&q=85',
+    image: '/assets/services/operation-and-maintenance.png',
     tag: 'Lifecycle O&M'
   },
   {
@@ -334,7 +334,7 @@ export const servicesAndSolutionsContent = {
       number: '01',
       title: 'Commercial Solar Installation',
       tag: 'Commercial Rooftop & Carports',
-      image: 'https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?auto=format&fit=crop&w=1200&q=85',
+      image: '/assets/services/commercial-solar-installation.png',
       text: 'Turnkey solar installations for commercial establishments, designed to make effective use of available rooftop or project space and support the transition to clean energy.',
       detail: 'Our team supports the project through requirement assessment, site evaluation, system planning, installation, testing, and commissioning.',
       benefits: [
@@ -352,7 +352,7 @@ export const servicesAndSolutionsContent = {
       number: '02',
       title: 'Residential Solar Installation',
       tag: 'Home Solar & Apartments',
-      image: 'https://images.unsplash.com/photo-1559302504-64aae6ca6b6d?auto=format&fit=crop&w=1200&q=85',
+      image: '/assets/services/residential-solar-installation.jpg',
       text: 'Reliable rooftop solar solutions for homes, planned according to household electricity requirements, available roof area, and applicable solar program requirements.',
       detail: 'We support customers from initial consultation and site assessment through system installation and commissioning.',
       benefits: [
@@ -370,7 +370,7 @@ export const servicesAndSolutionsContent = {
       number: '03',
       title: 'Industrial Solar Installation',
       tag: 'Factories & Industrial Parks',
-      image: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=1200&q=85',
+      image: '/assets/services/industrial-solar-installation.jpg',
       text: 'Solar solutions designed for industrial facilities with larger energy requirements and more complex site and electrical conditions.',
       detail: 'Our approach considers the facility, energy requirement, available installation area, electrical infrastructure, and project scope before implementation.',
       benefits: [
@@ -492,7 +492,7 @@ export const servicesAndSolutionsContent = {
       number: '10',
       title: 'Asset Management',
       tag: 'Plant Health & Yield Optimization',
-      image: 'https://images.unsplash.com/photo-1466611653911-95081537e5b7?auto=format&fit=crop&w=1200&q=85',
+      image: '/assets/services/asset-management.jpg',
       text: 'Solar asset management focuses on maintaining visibility and control over the operational condition, performance, maintenance requirements, and overall management of renewable-energy assets.',
       detail: 'Our approach can include operational coordination, performance review, maintenance planning, issue tracking, and reporting.',
       benefits: [
@@ -528,7 +528,7 @@ export const servicesAndSolutionsContent = {
       number: '12',
       title: 'Operation & Maintenance',
       tag: 'Preventive & Corrective O&M',
-      image: 'https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&w=1200&q=85',
+      image: '/assets/services/operation-and-maintenance.png',
       text: 'Professional O&M services to support the reliable operation of solar systems after commissioning.',
       detail: "Maintenance activities can be planned around the system's requirements, helping identify operational issues and maintain the installation in proper working condition.",
       benefits: [
@@ -564,7 +564,7 @@ export const servicesAndSolutionsContent = {
       number: '14',
       title: 'Solar Lighting Solutions',
       tag: 'Streetlights & Outdoor Illumination',
-      image: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=1200&q=85',
+      image: '/assets/services/solar-lighting-solutions.png',
       text: 'Solar lighting solutions use solar energy to provide lighting for suitable outdoor and infrastructure applications.',
       detail: 'Systems can be planned according to the location, lighting requirement, operating conditions, available solar resource, and application.',
       benefits: [
@@ -582,7 +582,7 @@ export const servicesAndSolutionsContent = {
       number: '15',
       title: 'Solar Battery Solutions',
       tag: 'Energy Storage Systems (BESS)',
-      image: 'https://images.unsplash.com/photo-1620714223084-8fcacc6dfd8d?auto=format&fit=crop&w=1200&q=85',
+      image: '/assets/services/solar-battery-solutions.png',
       text: 'Battery-based solar solutions provide energy storage for applications where stored solar energy, backup, or greater flexibility in energy usage is required.',
       detail: 'The appropriate system depends on energy demand, backup requirements, solar generation, storage capacity, and operating conditions.',
       benefits: [
@@ -599,6 +599,8 @@ export const servicesAndSolutionsContent = {
     {
       number: '16',
       title: 'Solar Geyser / Water Heating Solutions',
+      tag: 'Residential & Commercial Heating',
+      image: '/assets/services/solar-geyser-water-heating.png',
       text: 'Solar water-heating systems use solar energy to heat water for suitable residential, commercial, and institutional applications.',
       detail: 'System selection can be based on hot-water demand, available installation space, usage pattern, location, and application requirements.',
       benefits: [
@@ -614,8 +616,10 @@ export const servicesAndSolutionsContent = {
     {
       number: '17',
       title: 'Solar Pump Solutions',
+      tag: 'Agriculture & Water Supply',
+      image: '/assets/services/solar-pump-solutions.png',
       text: 'Solar pumping solutions use solar energy to operate water pumps for suitable agricultural, water-supply, and other pumping requirements.',
-      detail: 'The system can be planned according to water requirement, pumping capacity, available solar resource, installation conditions, and application.',
+      detail: 'The system can be planned according to water requirement, pumping capacity, available solar resource, installation conditions, and application.',,
       benefits: [
         'Solar-powered water pumping',
         'Reduced dependence on conventional electricity',
@@ -631,6 +635,8 @@ export const servicesAndSolutionsContent = {
       number: '18',
       title: 'Energy Efficiency, Subsidies, Financing & Net Metering',
       subtitle: 'Supporting Smarter Solar Adoption',
+      tag: 'Subsidies & Net Metering',
+      image: '/assets/services/energy-efficiency-subsidies.png',
       text: "Beyond installation, customers often need support with energy efficiency, applicable subsidies, financing options, and net-metering requirements. N Solutions' resource specifically identifies subsidies & financing as a service area, alongside solar installation, O&M, and product supply.",
 
       benefits: [
