@@ -72,11 +72,7 @@ export default function AdminLogin({ onLoginSuccess }) {
     }
   }
 
-  const fillDemoCreds = () => {
-    setEmail('admin@nsolutions.com')
-    setPassword('Admin@123')
-    setError('')
-  }
+
 
   return (
     <div className="adm-login-wrapper">
@@ -163,33 +159,6 @@ export default function AdminLogin({ onLoginSuccess }) {
             {loading ? 'Signing in...' : 'Sign In →'}
           </button>
         </form>
-
-        <div className="adm-demo-box">
-          <div className="adm-demo-header">
-            <span className="adm-demo-title">
-              Default Admin Credentials
-            </span>
-
-            <button
-              type="button"
-              className="adm-demo-btn"
-              onClick={fillDemoCreds}
-              disabled={loading}
-            >
-              Fill Credentials ⚡
-            </button>
-          </div>
-
-          <div className="adm-demo-creds">
-            <div>
-              Email: <strong>admin@nsolutions.com</strong>
-            </div>
-
-            <div>
-              Pass: <strong>Admin@123</strong>
-            </div>
-          </div>
-        </div>
 
         <div className="adm-login-footer">
           <a
