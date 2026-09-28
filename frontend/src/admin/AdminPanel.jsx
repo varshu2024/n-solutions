@@ -1215,7 +1215,6 @@ const loadMedia = async () => {
           >
             <span className="adm-nav-icon"><FiBriefcase /></span>
             <span>Projects</span>
-            <span className="adm-badge">{projects.length}</span>
           </button>
           <button
             type="button"
