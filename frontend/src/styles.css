@@ -69,47 +69,83 @@ button {
 /* =====================================================
    NAVBAR
    ===================================================== */
+
 .site-header {
   background: rgba(255, 255, 255, 0.97) !important;
   border-bottom: 1px solid var(--line) !important;
   color: var(--ink) !important;
-  box-shadow: 0 1px 8px rgba(21, 101, 192, .07) !important;
+  position: sticky !important;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
 }
 
 .site-header.is-scrolled {
-  background: #ffffff !important;
-  box-shadow: 0 2px 16px rgba(21, 101, 192, .10) !important;
-  color: var(--ink) !important;
+  background: rgba(255, 255, 255, 0.97) !important;
 }
+/* =====================================================
+   NAV LINKS
+   ===================================================== */
 
-.nav-links>a {
+.nav-links > a {
   color: var(--ink) !important;
   opacity: 0.72;
 }
 
-.nav-links>a:hover,
-.nav-links>a.active {
+.nav-links > a:hover,
+.nav-links > a.active {
   color: var(--brand-primary) !important;
   opacity: 1;
 }
 
-.nav-cta {
+/* =====================================================
+   DESKTOP GET A QUOTE
+   ===================================================== */
+
+.nav-cta-desktop {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+
+  position: absolute;
+  right: 66px;
+  top: 20%;
+  transform: translateY(-50%);
+
   background: var(--brand-primary) !important;
   color: #fff !important;
   border-radius: 6px !important;
+  opacity: 1 !important;
+  white-space: nowrap;
 }
 
-.nav-cta:hover {
+.nav-cta-desktop:hover {
   background: var(--brand-primary-dark) !important;
+  color: #fff !important;
+}
+
+/* Mobile CTA hidden on desktop */
+.nav-cta-mobile {
+  display: none !important;
 }
 
 .menu-toggle {
   color: var(--ink) !important;
 }
 
+/* =====================================================
+   TABLET / MOBILE
+   ===================================================== */
+
 @media (max-width: 900px) {
+
   .site-header {
     z-index: 1000;
+  }
+
+  /* Desktop CTA disappears */
+  .nav-cta-desktop {
+    display: none !important;
   }
 
   .site-header .nav-links {
@@ -120,7 +156,7 @@ button {
     box-shadow: 0 18px 48px rgba(21, 101, 192, 0.16) !important;
   }
 
-  .site-header .nav-links>a:not(.nav-cta) {
+  .site-header .nav-links > a:not(.nav-cta) {
     color: var(--ink) !important;
     opacity: 1 !important;
     font-size: 15px;
@@ -129,20 +165,35 @@ button {
     border-radius: 8px;
   }
 
-  .site-header .nav-links>a:not(.nav-cta):hover,
-  .site-header .nav-links>a.active {
+  .site-header .nav-links > a:not(.nav-cta):hover,
+  .site-header .nav-links > a.active {
     color: var(--brand-primary) !important;
     background: var(--brand-secondary-light);
   }
 
-  .site-header .nav-links .nav-cta {
-    margin-top: 8px;
+  /* Mobile CTA lives INSIDE burger menu */
+  .site-header .nav-links .nav-cta-mobile {
+    display: flex !important;
+    align-items: center;
     justify-content: center;
+    gap: 8px;
+
+    position: static;
+    transform: none;
+
     padding: 14px 18px !important;
+
+    background: var(--brand-primary) !important;
+    color: #fff !important;
+    border-radius: 6px !important;
+    opacity: 1 !important;
+  }
+
+  .site-header .nav-links .nav-cta-mobile:hover {
+    background: var(--brand-primary-dark) !important;
     color: #fff !important;
   }
 }
-
 /* =====================================================
    HERO SECTIONS — light background, dark text
    ===================================================== */
@@ -204,7 +255,6 @@ button {
   color: #ffffff !important;
   min-height: 520px;
   position: relative;
-  overflow: hidden;
 }
 
 .about-hero-video {
@@ -1219,10 +1269,6 @@ button {
   transition: .3s ease;
 }
 
-.site-header.is-scrolled {
-  background: #07121f;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, .15);
-}
 
 .brand {
   display: inline-flex;
@@ -1269,6 +1315,11 @@ button {
   font-weight: 600;
 }
 
+.site-header {
+  position: fixed;
+}
+
+
 .nav-links>a:not(.nav-cta) {
   opacity: .78;
   transition: color .3s ease, opacity .3s ease, transform .3s ease;
@@ -1296,6 +1347,7 @@ button {
   padding: 12px 17px;
   background: var(--acid);
   color: var(--ink);
+  margin-left:auto;
 }
 
 .nav-cta:hover,
@@ -1333,7 +1385,6 @@ button {
   max-height: 900px;
   display: flex;
   align-items: center;
-  overflow: hidden;
   color: var(--white);
   background: var(--forest);
 }
@@ -3389,7 +3440,6 @@ button:focus-visible {
   min-height: 570px;
   display: flex;
   align-items: center;
-  overflow: hidden;
   color: var(--white);
   background: var(--brand-primary-deep);
 }
@@ -4644,7 +4694,6 @@ button:focus-visible {
   display: flex;
   align-items: center;
   min-height: 590px;
-  overflow: hidden;
   color: var(--white);
   background: var(--brand-primary-deep);
 }
@@ -4781,7 +4830,6 @@ button:focus-visible {
   position: relative;
   height: clamp(220px, 29vw, 330px);
   margin: -7px 0 38px;
-  overflow: hidden;
   background: var(--brand-secondary-light);
 }
 
@@ -4808,7 +4856,6 @@ button:focus-visible {
 }
 
 .product-card {
-  overflow: hidden;
   border: 1px solid var(--line);
   background: var(--white);
   transition: transform .35s cubic-bezier(.22, 1, .36, 1), box-shadow .35s ease, border-color .35s ease;
@@ -5308,7 +5355,6 @@ button:focus-visible {
   min-height: 380px;
   height: 100%;
   border-radius: 6px;
-  overflow: hidden;
   border: 1px solid rgba(8, 117, 182, 0.16);
   box-shadow: 0 16px 40px rgba(7, 39, 66, 0.1);
   background: var(--brand-secondary-light);
@@ -5630,20 +5676,11 @@ button:focus-visible {
   left: clamp(24px, 4vw, 56px);
   height: 1px;
   content: '';
-  background: linear-gradient(90deg, transparent, rgba(185, 226, 242, .42), transparent);
   opacity: .65;
   transition: opacity .3s ease;
 }
 
-.site-header.is-scrolled {
-  height: 70px;
-  background: rgba(7, 18, 31, .88);
-  box-shadow: 0 12px 34px rgba(1, 14, 25, .23);
-}
 
-.site-header.is-scrolled::after {
-  opacity: 0;
-}
 
 .nav-links>a:not(.nav-cta) {
   position: relative;
@@ -5775,7 +5812,6 @@ button:focus-visible {
   flex: 0 0 calc((100% - 54px)/4);
   flex-direction: column;
   min-width: 265px;
-  overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 20px;
   background: var(--white);
@@ -5902,7 +5938,6 @@ button:focus-visible {
 .home-page .service-showcase {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  overflow: visible;
   padding: 2px;
 }
 
@@ -6002,9 +6037,6 @@ button:focus-visible {
 }
 
 /* Home page visual refinement: layout and motion only; all existing content remains untouched. */
-.home-page {
-  overflow: hidden;
-}
 
 .home-page .site-header {
   height: 84px;
@@ -6023,15 +6055,8 @@ button:focus-visible {
   transition: opacity .3s ease;
 }
 
-.home-page .site-header.is-scrolled {
-  height: 70px;
-  background: rgba(7, 18, 31, .88);
-  box-shadow: 0 12px 34px rgba(1, 14, 25, .23);
-}
 
-.home-page .site-header.is-scrolled::after {
-  opacity: 0;
-}
+
 
 .home-page .nav-links>a:not(.nav-cta) {
   position: relative;
@@ -6149,7 +6174,6 @@ button:focus-visible {
 
 .home-page .button-accent {
   position: relative;
-  overflow: hidden;
 }
 
 .home-page .button-accent::before {
@@ -6751,7 +6775,6 @@ button:focus-visible {
   display: flex;
   align-items: flex-end;
   min-height: 100svh;
-  overflow: hidden;
   color: var(--white);
   background: var(--brand-primary-deep);
 }
@@ -6898,7 +6921,6 @@ button:focus-visible {
 
 .project-story-image {
   min-height: clamp(330px, 45vw, 530px);
-  overflow: hidden;
   background: var(--brand-secondary-light);
 }
 
@@ -7111,7 +7133,6 @@ button:focus-visible {
   min-height: 660px;
   display: flex;
   align-items: center;
-  overflow: hidden;
   color: var(--white);
   background: var(--brand-primary-deep);
 }

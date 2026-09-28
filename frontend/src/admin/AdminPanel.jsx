@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { getStoredData, saveStoredData, adminLogout } from './adminAuth'
+import { adminLogout } from './adminAuth'
 import { navigate } from '../components/Shared'
 import { apiGet, apiPost, apiPut, apiPatch, apiDelete, apiRequest, apiUpload  } from '../utils/api'
 import {
@@ -37,7 +37,17 @@ export default function AdminPanel({ adminUser, onLogout }) {
   
 
   const [activeTab, setActiveTab] = useState('overview')
-  const [data, setData] = useState(() => getStoredData())
+  const [dashboardStats, setDashboardStats] = useState({
+  totalLeads: 0,
+  activeProjects: 0,
+  productsListed: 0,
+  openPositions: 0,
+  solarCapacityInstalled: 0
+})
+
+const [recentLeads, setRecentLeads] = useState([])
+const [recentEnquiries, setRecentEnquiries] = useState([])
+const [testimonials, setTestimonials] = useState([])
   const [leads, setLeads] = useState([])
   const [toastMessage, setToastMessage] = useState('')
   const [projects, setProjects] = useState([])
@@ -101,32 +111,39 @@ const [newMedia, setNewMedia] = useState({
 const [mediaTab, setMediaTab] = useState('all');
 
   useEffect(() => {
-  if (activeTab === 'projects') {
-    fetchProjects()
-  }
-  if (activeTab === 'products') {
-    fetchProducts()
-  }
-  if (activeTab === 'enquiries') {
-    loadEnquiries()
-  }
-   if (activeTab === 'careers') {
-    loadApplications()
-  }
+    if (activeTab === 'projects') {
+      fetchProjects()
+    }
+
+    if (activeTab === 'products') {
+      fetchProducts()
+    }
+
+    if (activeTab === 'enquiries') {
+      loadEnquiries()
+    }
+
+    if (activeTab === 'careers') {
+      loadApplications()
+    }
+
     if (activeTab === 'leads') {
-    loadLeads()
-  }
-  if (activeTab === 'overview') {
-  loadDashboard()
-  loadRecentLeads()
-   loadRecentEnquiries()
-}
-  if (activeTab === 'media') {
-    loadMedia()
-  }
-  if (activeTab === 'testimonials') {
-  loadTestimonials()
-}
+      loadLeads()
+    }
+
+    if (activeTab === 'media') {
+      loadMedia()
+    }
+
+    if (activeTab === 'testimonials') {
+      loadTestimonials()
+    }
+
+    if (activeTab === 'overview') {
+      loadDashboard()
+      loadRecentLeads()
+      loadRecentEnquiries()
+    }
 }, [activeTab])
 
   // Media state
@@ -156,14 +173,6 @@ const [mediaTab, setMediaTab] = useState('all');
     setTimeout(() => setToastMessage(''), 3000)
   }
 
-  // Persist whenever data changes
-  const updateData = (updater) => {
-    setData((prev) => {
-      const next = typeof updater === 'function' ? updater(prev) : updater
-      saveStoredData(next)
-      return next
-    })
-  }
 
   const loadRecentEnquiries = async () => {
   try {
@@ -177,14 +186,14 @@ const [mediaTab, setMediaTab] = useState('all');
       )
     }
 
-    updateData((prev) => ({
-      ...prev,
-      recentEnquiries: Array.isArray(result.data)
+    setRecentEnquiries(
+      Array.isArray(result.data)
         ? result.data
         : []
-    }))
+    )
   } catch (error) {
     console.error('Failed to load recent enquiries:', error)
+
     showToast(
       error.message || 'Failed to load recent enquiries'
     )
@@ -201,12 +210,12 @@ const [mediaTab, setMediaTab] = useState('all');
       )
     }
 
-    updateData((prev) => ({
-      ...prev,
-      recentLeads: Array.isArray(result.data)
-        ? result.data
-        : []
-    }))
+   setRecentLeads(
+  Array.isArray(result.data)
+    ? result.data
+    : []
+  
+  )
   } catch (error) {
     console.error('Failed to load recent leads:', error)
     showToast(
@@ -225,16 +234,17 @@ const [mediaTab, setMediaTab] = useState('all');
       )
     }
 
-    updateData((prev) => ({
-      ...prev,
-      stats: {
-        ...prev.stats,
-        totalLeads: result.data?.totalLeads ?? 0,
-        activeProjects: result.data?.activeProjects ?? 0,
-        productsListed: result.data?.productsListed ?? 0,
-        openPositions: result.data?.openPositions ?? 0
-      }
-    }))
+    setDashboardStats((prev) => ({
+  ...prev,
+  totalLeads: result.data?.totalLeads ?? 0,
+  activeProjects: result.data?.activeProjects ?? 0,
+  productsListed: result.data?.productsListed ?? 0,
+  openPositions: result.data?.openPositions ?? 0,
+  solarCapacityInstalled:
+    result.data?.solarCapacityInstalled ??
+    prev.solarCapacityInstalled ??
+    0
+}))
   } catch (error) {
     console.error('Failed to load dashboard statistics:', error)
     showToast(
@@ -280,11 +290,7 @@ const loadTestimonials = async () => {
     const testimonials = Array.isArray(result.data)
       ? result.data
       : []
-
-    setData((prev) => ({
-      ...prev,
-      testimonials
-    }))
+    setTestimonials(testimonials)
   } catch (error) {
     console.error('Failed to load testimonials:', error)
   }
@@ -448,9 +454,8 @@ const filteredLeads = leads.filter((lead) => {
       )
     }
 
-    updateData((prev) => ({
-      ...prev,
-      leads: prev.leads.map((lead) =>
+    setLeads((prev) =>
+      prev.map((lead) =>
         lead.id === id
           ? {
               ...lead,
@@ -458,7 +463,7 @@ const filteredLeads = leads.filter((lead) => {
             }
           : lead
       )
-    }))
+    )
 
     showToast(`Lead marked as ${newStatus}`)
   } catch (error) {
@@ -481,13 +486,13 @@ const filteredLeads = leads.filter((lead) => {
       )
     }
 
-    updateData((prev) => ({
+    setLeads((prev) =>
+      prev.filter((lead) => lead.id !== id)
+    )
+
+    setDashboardStats((prev) => ({
       ...prev,
-      leads: prev.leads.filter((lead) => lead.id !== id),
-      stats: {
-        ...prev.stats,
-        totalLeads: Math.max(0, prev.stats.totalLeads - 1)
-      }
+      totalLeads: Math.max(0, prev.totalLeads - 1)
     }))
 
     showToast('Lead deleted successfully')
@@ -523,13 +528,14 @@ const filteredLeads = leads.filter((lead) => {
 
     const createdLead = result.data
 
-    updateData((prev) => ({
+    setLeads((prev) => [
+      createdLead,
+      ...prev
+    ])
+
+    setDashboardStats((prev) => ({
       ...prev,
-      leads: [createdLead, ...prev.leads],
-      stats: {
-        ...prev.stats,
-        totalLeads: prev.stats.totalLeads + 1
-      }
+      totalLeads: prev.totalLeads + 1
     }))
 
     setShowAddLeadModal(false)
@@ -571,7 +577,7 @@ const filteredLeads = leads.filter((lead) => {
       `/projects/${id}/status`,
       { status: newStatus }
     )
-
+    await fetchProjects()
     if (!result.success) {
       showToast(
         result.message || 'Failed to update project status'
@@ -605,7 +611,7 @@ const filteredLeads = leads.filter((lead) => {
 
   try {
     const result = await apiDelete(`/projects/${id}`)
-
+    await fetchProjects()
     if (!result.success) {
       showToast(result.message || 'Failed to delete project')
       return
@@ -776,7 +782,7 @@ const handleDeleteProduct = async (id) => {
     formData.append('image', newProduct.image)
 
     const result = await apiPost('/products', formData)
-
+    await fetchProducts()
     if (!result.success) {
       showToast(result.message || 'Failed to create product')
       return
@@ -828,7 +834,7 @@ const handleCreateMedia = async (e) => {
       formData.append('image', newMedia.photo)
 
       const result = await apiUpload('/gallery', formData)
-
+      await loadMedia()
       if (!result.success) {
         throw new Error(result.message || 'Failed to create gallery item')
       }
@@ -933,7 +939,7 @@ const handleCreateMedia = async (e) => {
           status: newStatus
         }
       )
-
+      await loadApplication()
       if (!result.success) {
         throw new Error(
           result.message || 'Failed to update application status'
@@ -976,7 +982,6 @@ const handleDeleteMedia = async (id) => {
     }
 
     const result = await apiDelete(endpoint)
-
     if (!result.success) {
       throw new Error(result.message || 'Failed to delete media')
     }
@@ -1201,7 +1206,7 @@ const loadMedia = async () => {
           >
             <span className="adm-nav-icon"><FiTrendingUp /></span>
             <span>Leads</span>
-            <span className="adm-badge highlight">{data.stats.totalLeads ?? 0}</span>
+            <span className="adm-badge highlight">{dashboardStats.totalLeads ?? 0}</span>
           </button>
           <button
             type="button"
@@ -1339,7 +1344,7 @@ const loadMedia = async () => {
                       <FiUsers size={20} />
                     </div>
                   </div>
-                  <div className="adm-stat-value">{data.stats.totalLeads ?? 0}</div>
+                  <div className="adm-stat-value">{dashboardStats.totalLeads ?? 0}</div>
                   <div className="adm-stat-meta">
                     <span className="adm-pill-up"><FiTrendingUp size={12} style={{ verticalAlign: 'middle', marginRight: 3 }} /> Active inquiries</span> across AP & Telangana
                   </div>
@@ -1353,7 +1358,7 @@ const loadMedia = async () => {
                     </div>
                   </div>
                   <div className="adm-stat-value">
-                    {data.stats.activeProjects ?? 0}
+                    {dashboardStats.activeProjects ?? 0}
                   </div>
                   <div className="adm-stat-meta">
                   <span> {projects.filter((p) => p.status === 'completed').length} completed portfolio</span>
@@ -1367,7 +1372,7 @@ const loadMedia = async () => {
                       <FaSun size={20} />
                     </div>
                   </div>
-                  <div className="adm-stat-value">{data.stats.solarCapacityInstalled}</div>
+                  <div className="adm-stat-value">{dashboardStats.solarCapacityInstalled ?? 0}</div>
                   <div className="adm-stat-meta">
                     <span className="adm-pill-up">C&I + PM Surya Ghar</span>
                   </div>
@@ -1380,7 +1385,7 @@ const loadMedia = async () => {
                       <FiPackage size={20} />
                     </div>
                   </div>
-                  <div className="adm-stat-value">{data.stats.productsListed ?? 0}</div>
+                  <div className="adm-stat-value">{dashboardStats.productsListed ?? 0}</div>
                   <div className="adm-stat-meta">
                     <span>Panels, Inverters, Pumps</span>
                   </div>
@@ -1413,7 +1418,7 @@ const loadMedia = async () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {data.recentLeads?.map((lead) => (
+                      {recentLeads?.map((lead) => (
                         <tr key={lead.id}>
                           <td>
                             <strong>{lead.name}</strong>
@@ -1449,7 +1454,7 @@ const loadMedia = async () => {
                     className="adm-btn-action"
                     onClick={() => setActiveTab('enquiries')}
                   >
-                    View Enquiries ({data.enquiries.length}) <FiArrowUpRight style={{ verticalAlign: 'middle' }} />
+                    View Enquiries <FiArrowUpRight style={{ verticalAlign: 'middle' }} />
                   </button>
                 </div>
                 <div className="adm-table-wrap">
@@ -1463,7 +1468,7 @@ const loadMedia = async () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {data.recentEnquiries?.map((enq) => (
+                      {recentEnquiries?.map((enq) => (
                         <tr key={enq.id}>
                           <td>
                             <strong>{enq.name}</strong>
@@ -2463,7 +2468,7 @@ const loadMedia = async () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {(data.testimonials || [])
+                    {testimonials
                       .filter((t) => testimonialFilter === 'all' || t.status === testimonialFilter)
                       .map((t) => (
                         <tr key={t.id}>

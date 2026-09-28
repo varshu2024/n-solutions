@@ -532,92 +532,7 @@ export default function ProjectsPage() {
     setDetailStatus('ready')
   }
 
-  const lifecycleStages = [
-    {
-      num: '01',
-      title: 'Feasibility & LIDAR Solar Irradiance Modeling',
-      short: 'Feasibility & 3D LIDAR',
-      objective:
-        'Comprehensive 3D topographical drone LIDAR mapping and PVSyst simulation to forecast generation yield with 99.4% accuracy.',
-      tools:
-        'DJI Enterprise LIDAR Drone, PVSyst Solar Yield Simulation, Meteonorm Climate Database',
-      checklist: [
-        '3D shadow loss trajectory modeled through 365 sun positions',
-        'Structural dead-weight and live-wind load calculations verified',
-        'Financial LCOE, payback schedule, and IRR feasibility analysis'
-      ]
-    },
-    {
-      num: '02',
-      title: 'DISCOM Approvals & High-Voltage Schematics',
-      short: 'DISCOM Net-Metering',
-      objective:
-        'Filing statutory net-metering feasibility with state DISCOMs and developing CEA-compliant single-line electrical schematics.',
-      tools:
-        'AutoCAD Electrical, DISCOM National Portal Integration, CEIG Statutory Audit System',
-      checklist: [
-        'DISCOM technical net-metering feasibility sanction obtained',
-        'Single-line diagram (SLD) and protection relay coordination approved',
-        'Structural engineering certification with PE stamp'
-      ]
-    },
-    {
-      num: '03',
-      title: 'Tier-1 ALMM Hardware Procurement & In-Factory QA',
-      short: 'Tier-1 Procurement',
-      objective:
-        'Procuring verified Grade-A N-Type TOPCon/Mono PERC modules directly from top tier-1 manufacturers with traceable serial numbers.',
-      tools:
-        'Factory Electroluminescence (EL) Defect Testing, Flash Report Telemetry, BIS/ALMM Verification',
-      checklist: [
-        'Every solar panel verified for zero micro-cracks via factory EL imaging',
-        'Class-1 ESE lightning arrestors and heavy-duty GI box pipes inspected',
-        'Dual-certified TUV solar cables with flame-retardant cross-linking'
-      ]
-    },
-    {
-      num: '04',
-      title: 'Precision Mechanical Erection & Electrical Safety',
-      short: 'Precision Erection',
-      objective:
-        'Deploying certified technicians for hot-dip galvanized mounting structure assembly, waterproof chemical anchoring, and DC string routing.',
-      tools:
-        'Calibrated Torque Wrenches, Hilti Chemical Anchor Systems, UV Conduit Trenching',
-      checklist: [
-        'Zero rooftop puncture guarantees with chemical anchor seals',
-        'Galvanized iron hardware torqued to exact engineering Nm tolerances',
-        'String voltages tested for open-circuit parity prior to inverter connection'
-      ]
-    },
-    {
-      num: '05',
-      title: 'Grid Net-Meter Synchronization & Megger Diagnostics',
-      short: 'Grid Net-Meter Sync',
-      objective:
-        'Executing multi-point insulation resistance tests, sub-1 Ohm earth pit audits, and DISCOM bidirectional meter commissioning.',
-      tools:
-        'Fluke 1507 5kV Megger Tester, Fluke 1625 Earth Ground Clamp, CEIG Official Commissioning Kit',
-      checklist: [
-        'Insulation resistance validated (>50 MegaOhms at 1000V DC)',
-        'Earth pit ground resistance audited to strictly sub-1 Ohm (<0.85 Ω)',
-        'Bi-directional 4-quadrant smart net-meter installed with real-time export'
-      ]
-    },
-    {
-      num: '06',
-      title: 'Cloud SCADA Telemetry & 25-Year Performance SLA',
-      short: 'Cloud SCADA & O&M',
-      objective:
-        'Connecting plant inverters to cloud SCADA servers for minute-by-minute generation logging, automated alert dispatch, and robotic wash support.',
-      tools:
-        'Industrial IoT Telemetry Gateways, FLIR Thermal Drone Thermography, Automated Module Washers',
-      checklist: [
-        'Minute-by-minute generation tracking via mobile & web monitoring portals',
-        'Thermographic drone scans detecting hot-spots and micro-soiling',
-        'Guaranteed 24-hour on-site engineering turnaround for any fault code'
-      ]
-    }
-  ]
+
 
   const bomLayers = [
     {
@@ -742,7 +657,7 @@ const filteredProjects = projects.filter((project) => {
 })
 
   return (
-    <div className="projects-page">
+    <div className="projects-page" >
       <SiteHeader activePath="/projects" />
 
       <main>

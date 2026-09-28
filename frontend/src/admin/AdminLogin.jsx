@@ -44,14 +44,26 @@ export default function AdminLogin({ onLoginSuccess }) {
       }
 
       // Store authentication token if the backend returns one
-      if (result.token) {
-        localStorage.setItem('nsolutions_admin_token', result.token)
+     const token = result.token || result.data?.token
+
+    if (token) {
+      localStorage.setItem('nsolutions_admin_token', token)
+
+      const admin = result.admin || result.data?.admin || {
+        name: 'Admin',
+        email: email.trim().toLowerCase(),
+        role: 'admin'
       }
 
-      // Notify parent/admin portal that login succeeded
+      localStorage.setItem(
+        'nsolutions_admin_user',
+        JSON.stringify(admin)
+      )
+
       if (onLoginSuccess) {
-        onLoginSuccess(result)
+        onLoginSuccess(admin)
       }
+    }
     } catch (error) {
       console.error('Admin login error:', error)
       setError('Unable to login. Please try again.')
