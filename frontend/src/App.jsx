@@ -8,11 +8,11 @@ import AdminPortal from './admin/AdminPortal'
 import { navigate, SiteFooter } from './components/Shared'
 import { homeContent, aboutContent, servicesAndSolutionsContent } from './content/siteContent'
 import { apiGet } from './utils/api'
-import { 
+import {
   FiArrowUpRight, FiArrowDown, FiCheck, FiChevronRight, FiChevronLeft,
-  FiZap, FiSun, FiShield, FiTarget, FiTrendingUp, FiGlobe, 
-  FiCompass, FiCpu, FiAward, FiCheckCircle, FiRefreshCw, 
-  FiBriefcase, FiHome, FiTool, FiActivity, FiSliders, 
+  FiZap, FiSun, FiShield, FiTarget, FiTrendingUp, FiGlobe,
+  FiCompass, FiCpu, FiAward, FiCheckCircle, FiRefreshCw,
+  FiBriefcase, FiHome, FiTool, FiActivity, FiSliders,
   FiUsers, FiClock, FiLayers, FiFileText, FiMapPin, FiStar,
   FiPause, FiPlay
 } from 'react-icons/fi'
@@ -127,6 +127,7 @@ function StrengthsOrbitWheel({ items }) {
 
   return (
     <div className="orbit-wheel-wrapper">
+      {/* Mobile/Tablet Header: shown when stacked */}
       <div className="orbit-mobile-header">
         <p className="eyebrow"><span /> {homeContent.whyChooseUs.eyebrow}</p>
         <h2 className="orbit-right-h2">
@@ -550,7 +551,7 @@ function TestimonialsShowcase({ theme = 'light' }) {
               <p className="testimonial-quote-text">
                 “{t.comment}”
               </p>
-              
+
               <div className="testimonial-author-row">
                 <div className="testimonial-author-info">
                   <strong className="testimonial-author-name">
@@ -1058,69 +1059,18 @@ function SiteHeader({ activePath = '' }) {
     navigate(path)
   }
   const items = ['Home', 'About', 'Services', 'Projects', 'Products', 'Media', 'Careers', 'Contact']
-  return (
-  <header
-    className={`site-header ${
-      activePath ? 'site-header-page' : ''
-    }`}
-   style={{background:'#ffffff'}}>
-    <a
-      className="brand"
-      href="/"
-      onClick={(e) => handleNav(e, '/')}
-      aria-label="N Solutions home"
-    >
-      <img className="brand-logo" src="/logo.png" alt="N Solutions" />
-    </a>
-
-    <button
-      className="menu-toggle"
-      aria-label="Toggle navigation"
-      aria-expanded={menuOpen}
-      onClick={() => setMenuOpen(!menuOpen)}
-    >
-      <span />
-      <span />
-    </button>
-
+  return <header className={`site-header ${scrolled ? 'is-scrolled' : ''} ${activePath ? 'site-header-page' : ''}`}>
+    <a className="brand" href="/" onClick={(e) => handleNav(e, '/')} aria-label="N Solutions home"><img className="brand-logo" src="/logo.png" alt="N Solutions" /></a>
+    <button className="menu-toggle" aria-label="Toggle navigation" aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}><span /><span /></button>
     <nav className={menuOpen ? 'nav-links is-open' : 'nav-links'}>
       {items.map((item) => {
         const path = item === 'Home' ? '/' : `/${item.toLowerCase()}`
-        const isCurrent =
-          activePath === path || (path === '/' && activePath === '')
-
-        return (
-          <a
-            className={isCurrent ? 'active' : ''}
-            key={item}
-            href={path}
-            onClick={(e) => handleNav(e, path)}
-          >
-            {item}
-          </a>
-        )
+        const isCurrent = activePath === path || (path === '/' && activePath === '')
+        return <a className={isCurrent ? 'active' : ''} key={item} href={path} onClick={(e) => handleNav(e, path)}>{item}</a>
       })}
-
-      {/* Mobile / tablet CTA */}
-      <a
-        className="nav-cta nav-cta-mobile"
-        href="/contact"
-        onClick={(e) => handleNav(e, '/contact')}
-      >
-        Get a Quote <Arrow />
-      </a>
+      <a className="nav-cta" href="/contact" onClick={(e) => handleNav(e, '/contact')}>Get a quote <Arrow /></a>
     </nav>
-
-    {/* Desktop CTA */}
-    <a
-      className="nav-cta nav-cta-desktop"
-      href="/contact"
-      onClick={(e) => handleNav(e, '/contact')}
-    >
-      Get a Quote <Arrow />
-    </a>
   </header>
-)
 }
 
 
@@ -1693,7 +1643,7 @@ function App() {
   if (currentPath !== '/') return <RouteShell />
 
 
-  return <div className="site-shell home-page" style={{overflow:'visible'}}>
+  return <div className="site-shell home-page">
     <ScrollProgressBar />
     <SiteHeader />
 
@@ -1834,7 +1784,7 @@ function App() {
           </div>
           <p className="heading-note">Real client outcomes from industrial plants, institutions, and residential rooftop clusters.</p>
         </Reveal>
-        
+
         <TestimonialsShowcase theme="light" />
 
 
