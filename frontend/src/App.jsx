@@ -1068,7 +1068,7 @@ function SiteHeader({ activePath = '' }) {
       {items.map((item) => {
         const path = item === 'Home' ? '/' : `/${item.toLowerCase()}`
         const isCurrent = activePath === path || (path === '/' && activePath === '')
-        return <a className={isCurrent ? 'active' : ''} key={item} href={path} onClick={(e) => handleNav(e, path)}>{item}</a>
+        return <a className={isCurrent ? 'active' : ''} key={item} href={path} onClick={(e) => handleNav(e, path)} style={{fontSize:'14px'}}>{item}</a>
       })}
 
       {/* Mobile / tablet CTA */}
