@@ -125,3 +125,32 @@ export const remove = async (request, response) => {
   await deleteLead(request.params.id);
   return response.status(200).json({ success: true, message: 'Lead deleted successfully.' });
 };
+
+export const createPublic = async (request, response) => {
+  const body = request.body || {};
+
+  // Public users cannot choose the lead status.
+  const input = {
+    name: body.name,
+    company: body.company,
+    phone: body.phone,
+    email: body.email,
+    type: body.type,
+    location: body.location,
+    capacity: body.capacity,
+    status: 'new'
+  };
+
+  const details = validateCreateInput(input);
+
+  if (Object.keys(details).length > 0) {
+    throw validationError(details);
+  }
+
+  return sendSuccess(
+    response,
+    201,
+    'Quote request submitted successfully.',
+    await createLead(input)
+  );
+};

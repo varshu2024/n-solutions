@@ -1549,7 +1549,7 @@ const loadMedia = async () => {
                     {filteredLeads.length === 0 ? (
                       <tr>
                         <td colSpan="7" style={{ textAlign: 'center', padding: '32px', color: 'var(--adm-text-dim)' }}>
-                          No matching leads found.
+                           Loading Leads...
                         </td>
                       </tr>
                     ) : (

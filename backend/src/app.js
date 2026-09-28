@@ -3,6 +3,7 @@ import cors from 'cors';
 import authRoutes from './routes/auth.routes.js';
 import dashboardRoutes from './routes/dashboard.routes.js';
 import leadRoutes from './routes/lead.routes.js';
+import publicLeadRoutes from './routes/publicLead.routes.js'
 import productRoutes from './routes/product.routes.js';
 import projectRoutes from './routes/project.routes.js';
 import enquiryRoutes from './routes/enquiry.routes.js';
@@ -36,6 +37,7 @@ app.get('/health', (request, response) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/leads', leadRoutes);
+app.use('/api/public/leads', publicLeadRoutes)
 app.use('/api/products', productRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/enquiries', enquiryRoutes);

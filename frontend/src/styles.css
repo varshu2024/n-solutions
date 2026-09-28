@@ -45,6 +45,7 @@ body {
   color: var(--ink) !important;
   font-family: 'Inter', sans-serif !important;
   margin: 0;
+  overflow-x:hidden;
 }
 
 h1,
@@ -1350,10 +1351,6 @@ button {
   margin-left:auto;
 }
 
-.nav-cta:hover,
-.button:hover {
-  transform: translateY(-2px);
-}
 
 .nav-cta span,
 .button span,
@@ -2225,9 +2222,7 @@ h2 em {
   box-shadow: 0 8px 20px rgba(8, 117, 182, .28);
 }
 
-.button {
-  transition: transform .3s ease, background-color .3s ease, border-color .3s ease, box-shadow .3s ease, color .3s ease;
-}
+
 
 .button-accent:hover {
   box-shadow: 0 10px 26px rgba(8, 117, 182, .32);
@@ -5746,7 +5741,6 @@ button:focus-visible {
 .nav-cta:hover>span {
   color: var(--brand-primary-dark);
   background: var(--white);
-  transform: translateX(3px) rotate(0deg);
 }
 
 .button-ghost:hover>span {
@@ -5776,20 +5770,6 @@ button:focus-visible {
   transform: translate(3px, -3px);
 }
 
-.button:active>span,
-.nav-cta:active>span {
-  transform: translateX(1px) scale(.92);
-}
-
-@media (prefers-reduced-motion:reduce) {
-
-  .button>span,
-  .nav-cta>span,
-  .text-link>span,
-  .service-body a>span {
-    transition: none !important;
-  }
-}
 
 /* Home "What we do" service rail: image-first cards with native swipe/scroll. */
 .home-page .service-showcase {
@@ -6695,18 +6675,16 @@ button:focus-visible {
   transition-timing-function: cubic-bezier(.22, 1, .36, 1);
 }
 
-.home-page .button:active,
-.home-page .nav-cta:active {
+.home-page .button:active{
   transform: translateY(0) scale(.98);
 }
 
-.home-page .button span,
-.home-page .nav-cta span {
-  transition: transform .3s cubic-bezier(.22, 1, .36, 1);
+.home-page .button span{
+    transition: transform .3s cubic-bezier(.22, 1, .36, 1);
 }
 
 .home-page .button:hover span,
-.home-page .nav-cta:hover span {
+.home-page  span {
   transform: translateX(3px);
 }
 

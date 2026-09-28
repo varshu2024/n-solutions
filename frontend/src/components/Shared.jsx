@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { FiArrowUpRight} from 'react-icons/fi';
+import LeadQuoteModal from '../pages/LeadQuoteModel.jsx';
+
 
 export function Arrow() {
   return <FiArrowUpRight aria-hidden="true" style={{ display: 'inline', verticalAlign: 'middle', strokeWidth: 2.5 }} />
@@ -64,6 +66,7 @@ export function EmptyState({ label, text }) {
 }
 
 export function SiteHeader({ activePath = '' }) {
+  const [quoteModalOpen, setQuoteModalOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   useEffect(() => {
@@ -72,28 +75,84 @@ export function SiteHeader({ activePath = '' }) {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
   const closeMenu = () => setMenuOpen(false)
-  const handleNav = (e, path) => { e.preventDefault(); closeMenu(); navigate(path) }
+  const handleNav = (e, path) => {
+    e.preventDefault()
+    closeMenu()
+    navigate(path)
+  }
   const items = ['Home', 'About', 'Services', 'Projects', 'Products', 'Media', 'Careers', 'Contact']
   return (
-    <header className={`site-header ${scrolled ? 'is-scrolled' : ''} ${activePath ? 'site-header-page' : ''}`}>
-      <a className="brand" href="/" onClick={(e) => handleNav(e, '/')} aria-label="N Solutions home">
-        <img className="brand-logo" src="/logo.png" alt="N Solutions" />
-      </a>
-      <button className="menu-toggle" aria-label="Toggle navigation" aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>
-        <span /><span />
-      </button>
-      <nav className={menuOpen ? 'nav-links is-open' : 'nav-links'}>
-        {items.map((item) => {
-          const path = item === 'Home' ? '/' : `/${item.toLowerCase()}`
-          const isCurrent = activePath === path || (path === '/' && activePath === '')
-          return <a className={isCurrent ? 'active' : ''} key={item} href={path} onClick={(e) => handleNav(e, path)}>{item}</a>
-        })}
-        <a className="nav-cta" href="/contact" onClick={(e) => handleNav(e, '/contact')}>Get a Quote <Arrow /></a>
-      </nav>
-    </header>
-  )
-}
+  <header
+    className={`site-header ${
+      activePath ? 'site-header-page' : ''
+    }`}
+   style={{background:'#ffffff'}}>
+    <a
+      className="brand"
+      href="/"
+      onClick={(e) => handleNav(e, '/')}
+      aria-label="N Solutions home"
+    >
+      <img className="brand-logo" src="/logo.png" alt="N Solutions" />
+    </a>
 
+    <button
+      className="menu-toggle"
+      aria-label="Toggle navigation"
+      aria-expanded={menuOpen}
+      onClick={() => setMenuOpen(!menuOpen)}
+    >
+      <span />
+      <span />
+    </button>
+
+    <nav className={menuOpen ? 'nav-links is-open' : 'nav-links'}>
+      {items.map((item) => {
+        const path = item === 'Home' ? '/' : `/${item.toLowerCase()}`
+        const isCurrent =
+          activePath === path || (path === '/' && activePath === '')
+
+        return (
+          <a
+            className={isCurrent ? 'active' : ''}
+            key={item}
+            href={path}
+            onClick={(e) => handleNav(e, path)}
+          >
+            {item}
+          </a>
+        )
+      })}
+
+      {/* Mobile / tablet CTA */}
+     <button
+        type="button"
+        className="nav-cta nav-cta-mobile"
+        onClick={() => {
+          closeMenu()
+          setQuoteModalOpen(true)
+        }}
+      >
+        Get a Quote <Arrow />
+      </button>
+    </nav>
+
+    {/* Desktop CTA */}
+    <button
+      type="button"
+      className="nav-cta nav-cta-desktop"
+      onClick={() => setQuoteModalOpen(true)}
+    >
+      Get a Quote <Arrow />
+    </button>
+    {quoteModalOpen && (
+      <LeadQuoteModal
+      onClose={() => setQuoteModalOpen(false)}
+  />
+)}
+  </header>
+)
+}
 // Each logo: srcs[] = ordered list of image URLs to try. ui-avatars is always last resort.
 const uiAvatar = (name) =>
   `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0875b6&color=fff&size=160&bold=true&format=png`

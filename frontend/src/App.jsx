@@ -3,6 +3,7 @@ import ProjectsPage, { projectsData } from './pages/ProjectsPage'
 import ProductsPage from './pages/ProductsPage'
 import MediaPage from './pages/MediaPage'
 import CareersPage from './pages/CareersPage'
+import LeadQuoteModal from './pages/LeadQuoteModel.jsx'
 import ContactPage from './pages/ContactPage'
 import AdminPortal from './admin/AdminPortal'
 import { navigate, SiteFooter } from './components/Shared'
@@ -1045,6 +1046,7 @@ const solutionCatalog = [
 ]
 
 function SiteHeader({ activePath = '' }) {
+  const [quoteModalOpen, setQuoteModalOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   useEffect(() => {
@@ -1068,8 +1070,33 @@ function SiteHeader({ activePath = '' }) {
         const isCurrent = activePath === path || (path === '/' && activePath === '')
         return <a className={isCurrent ? 'active' : ''} key={item} href={path} onClick={(e) => handleNav(e, path)}>{item}</a>
       })}
-      <a className="nav-cta" href="/contact" onClick={(e) => handleNav(e, '/contact')}>Get a quote <Arrow /></a>
+
+      {/* Mobile / tablet CTA */}
+     <button
+        type="button"
+        className="nav-cta nav-cta-mobile"
+        onClick={() => {
+          closeMenu()
+          setQuoteModalOpen(true)
+        }}
+      >
+        Get a Quote <Arrow />
+      </button>
     </nav>
+
+    {/* Desktop CTA */}
+    <button
+      type="button"
+      className="nav-cta nav-cta-desktop"
+      onClick={() => setQuoteModalOpen(true)}
+    >
+      Get a Quote <Arrow />
+    </button>
+    {quoteModalOpen && (
+      <LeadQuoteModal
+      onClose={() => setQuoteModalOpen(false)}
+  />
+)}
   </header>
 }
 
