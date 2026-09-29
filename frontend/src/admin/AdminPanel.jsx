@@ -110,6 +110,53 @@ const [newMedia, setNewMedia] = useState({
 })
 const [mediaTab, setMediaTab] = useState('all');
 
+  // Media state
+  const [showAddMediaModal, setShowAddMediaModal] = useState(false)
+
+  const [mediaFilter, setMediaFilter] = useState('all')
+
+  // Testimonials state
+  const [showAddTestimonialModal, setShowAddTestimonialModal] = useState(false)
+  const [newTestimonial, setNewTestimonial] = useState({
+    clientName: '',
+    company: '',
+    location: '',
+    rating: 5,
+    comment: '',
+    status: 'approved'
+  })
+  const [testimonialFilter, setTestimonialFilter] = useState('all')
+
+  // Admin Profile state
+  const [profilePassword, setProfilePassword] = useState('')
+  const [profileConfirmPassword, setProfileConfirmPassword] = useState('')
+
+  // Toast helper
+  const showToast = (msg) => {
+    setToastMessage(msg)
+    setTimeout(() => setToastMessage(''), 3000)
+  }
+
+const [jobs, setJobs] = useState([]);
+const [jobsLoading, setJobsLoading] = useState(false);
+
+const [showJobModal, setShowJobModal] = useState(false);
+const [jobSubmitting, setJobSubmitting] = useState(false);
+
+const [jobForm, setJobForm] = useState({
+  jobTitle: '',
+  department: '',
+  location: '',
+  employmentType: '',
+  experienceRequired: '',
+  qualification: '',
+  jobDescription: '',
+  jobResponsibilities: [''],
+  numberOfOpenings: 1,
+  applicationDeadline: '',
+  jobStatus: 'Open'
+});
+
   useEffect(() => {
     if (activeTab === 'projects') {
       fetchProjects()
@@ -138,6 +185,9 @@ const [mediaTab, setMediaTab] = useState('all');
     if (activeTab === 'testimonials') {
       loadTestimonials()
     }
+    if(activeTab === 'jobs'){
+      loadJobs()
+    }
 
     if (activeTab === 'overview') {
       loadDashboard()
@@ -146,33 +196,229 @@ const [mediaTab, setMediaTab] = useState('all');
     }
 }, [activeTab])
 
-  // Media state
-  const [showAddMediaModal, setShowAddMediaModal] = useState(false)
+ const loadJobs = async () => {
+  try {
+    setJobsLoading(true);
 
-  const [mediaFilter, setMediaFilter] = useState('all')
+    const response = await apiGet('/jobs/admin');
 
-  // Testimonials state
-  const [showAddTestimonialModal, setShowAddTestimonialModal] = useState(false)
-  const [newTestimonial, setNewTestimonial] = useState({
-    clientName: '',
-    company: '',
-    location: '',
-    rating: 5,
-    comment: '',
-    status: 'approved'
-  })
-  const [testimonialFilter, setTestimonialFilter] = useState('all')
+    const jobsData = Array.isArray(response)
+      ? response
+      : response?.data || [];
 
-  // Admin Profile state
-  const [profilePassword, setProfilePassword] = useState('')
-  const [profileConfirmPassword, setProfileConfirmPassword] = useState('')
+    setJobs(jobsData);
+  } catch (error) {
+    console.error('Failed to load jobs:', error);
 
-  // Toast helper
-  const showToast = (msg) => {
-    setToastMessage(msg)
-    setTimeout(() => setToastMessage(''), 3000)
+    showToast(
+      error?.message || 'Failed to load jobs',
+      'error'
+    );
+  } finally {
+    setJobsLoading(false);
   }
+};
 
+const handleJobStatusChange = async (jobId, newStatus) => {
+  try {
+    const response = await apiRequest(
+      `/jobs/${jobId}`,
+      {
+        method: 'PATCH',
+        body: JSON.stringify({
+          jobStatus: newStatus
+        })
+      }
+    );
+
+    const updatedJob =
+      response?.data || response;
+
+    setJobs((currentJobs) =>
+      currentJobs.map((job) =>
+        job.id === jobId
+          ? {
+              ...job,
+              jobStatus:
+                updatedJob?.jobStatus ||
+                newStatus
+            }
+          : job
+      )
+    );
+
+    showToast(
+      `Job status changed to ${newStatus}.`,
+      'success'
+    );
+  } catch (error) {
+    console.error(
+      'Failed to update job status:',
+      error
+    );
+
+    showToast(
+      error?.message ||
+        'Failed to update job status.',
+      'error'
+    );
+  }
+};
+
+const handleDeleteJob = async (jobId) => {
+  const confirmed = window.confirm(
+    'Are you sure you want to delete this job?'
+  );
+
+  if (!confirmed) return;
+
+  try {
+    await apiRequest(
+      `/jobs/${jobId}`,
+      {
+        method: 'DELETE'
+      }
+    );
+
+    setJobs((currentJobs) =>
+      currentJobs.filter(
+        (job) => job.id !== jobId
+      )
+    );
+
+    showToast(
+      'Job deleted successfully.',
+      'success'
+    );
+  } catch (error) {
+    console.error(
+      'Failed to delete job:',
+      error
+    );
+    await loadjobs()
+    showToast(
+      error?.message ||
+        'Failed to delete job.',
+      'error'
+    );
+  }
+};
+
+const handleCreateJob = async (e) => {
+  e.preventDefault();
+
+  try {
+    setJobSubmitting(true);
+
+    const payload = {
+      ...jobForm,
+      jobResponsibilities:
+        jobForm.jobResponsibilities
+          .map((item) => item.trim())
+          .filter(Boolean),
+      numberOfOpenings: Number(
+        jobForm.numberOfOpenings
+      )
+    };
+
+    const response = await apiRequest(
+      '/jobs',
+      {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      }
+    );
+
+    const createdJob =
+      response?.data || response;
+
+    setJobs((currentJobs) => [
+      createdJob,
+      ...currentJobs
+    ]);
+
+    setShowJobModal(false);
+
+    setJobForm({
+      jobTitle: '',
+      department: '',
+      location: '',
+      employmentType: '',
+      experienceRequired: '',
+      qualification: '',
+      jobDescription: '',
+      jobResponsibilities: [''],
+      numberOfOpenings: 1,
+      applicationDeadline: '',
+      jobStatus: 'Open'
+    });
+
+    showToast(
+      'Job posted successfully.',
+      'success'
+    );
+  } catch (error) {
+    console.error(
+      'Failed to create job:',
+      error
+    );
+
+    showToast(
+      error?.message ||
+        'Failed to post job.',
+      'error'
+    );
+  } finally {
+    setJobSubmitting(false);
+  }
+};
+
+const handleJobFormChange = (e) => {
+  const { name, value } = e.target;
+
+  setJobForm((current) => ({
+    ...current,
+    [name]:
+      name === 'numberOfOpenings'
+        ? Number(value)
+        : value
+  }));
+};
+
+const handleResponsibilityChange = (index, value) => {
+  setJobForm((current) => {
+    const responsibilities = [
+      ...current.jobResponsibilities
+    ];
+
+    responsibilities[index] = value;
+
+    return {
+      ...current,
+      jobResponsibilities: responsibilities
+    };
+  });
+};
+
+const addResponsibility = () => {
+  setJobForm((current) => ({
+    ...current,
+    jobResponsibilities: [
+      ...current.jobResponsibilities,
+      ''
+    ]
+  }));
+};
+
+const removeResponsibility = (index) => {
+  setJobForm((current) => ({
+    ...current,
+    jobResponsibilities:
+      current.jobResponsibilities.filter(
+        (_, i) => i !== index
+      )
+  }));
+};
 
   const loadRecentEnquiries = async () => {
   try {
@@ -199,6 +445,7 @@ const [mediaTab, setMediaTab] = useState('all');
     )
   }
 }
+
 
   const loadRecentLeads = async () => {
   try {
@@ -1248,7 +1495,14 @@ const loadMedia = async () => {
             <span className="adm-nav-icon"><FiUsers /></span>
             <span>Careers</span>
           </button>
-          
+          <button
+            type="button"
+            className={`adm-nav-item ${activeTab === 'jobs' ? 'active' : ''}`}
+            onClick={() => setActiveTab('jobs')}
+          >
+            <span className="adm-nav-icon"><FiPackage /></span>
+            <span>Jobs</span>
+          </button>
           <span className="adm-nav-heading">Administration</span>
           <button
             type="button"
@@ -2275,6 +2529,228 @@ const loadMedia = async () => {
     <option value="Selected">Selected</option>
     <option value="Rejected">Rejected</option>
   </select>
+</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  </div>
+)}
+
+    {activeTab === 'jobs' && (
+  <div className="adm-panel-card">
+    <div className="adm-card-header">
+      <h3 className="adm-card-title">
+        <span>Current Opportunities</span>
+      </h3>
+      <button
+        type="button"
+        className="adm-btn-action"
+        onClick={() => setShowJobModal(true)}
+      >
+        + Post Job
+      </button>
+
+
+    </div>
+
+    <div className="adm-table-wrap">
+      {jobsLoading ? (
+        <div
+          style={{
+            padding: '40px',
+            textAlign: 'center',
+            color: 'var(--adm-text-muted)'
+          }}
+        >
+          Loading jobs...
+        </div>
+      ) : jobs.length === 0 ? (
+        <div
+          style={{
+            padding: '40px',
+            textAlign: 'center',
+            color: 'var(--adm-text-muted)'
+          }}
+        >
+          No jobs found.
+        </div>
+      ) : (
+        <table className="adm-table">
+          <thead>
+            <tr>
+              <th>Job Title</th>
+              <th>Department</th>
+              <th>Location</th>
+              <th>Employment Type</th>
+              <th>Experience Required</th>
+              <th>Qualification</th>
+              <th>Job Description</th>
+              <th>Job Responsibilities</th>
+              <th>Number of Openings</th>
+              <th>Application Deadline</th>
+              <th>Job Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {jobs.map((job) => (
+              <tr key={job.id}>
+                {/* JOB TITLE */}
+                <td>
+                  <strong>
+                    {job.title ||
+                      job.jobTitle ||
+                      '—'}
+                  </strong>
+                </td>
+
+                {/* DEPARTMENT */}
+                <td>
+                  {job.department || '—'}
+                </td>
+
+                {/* LOCATION */}
+                <td>
+                  {job.location || '—'}
+                </td>
+
+                {/* EMPLOYMENT TYPE */}
+                <td>
+                  <span className="adm-type-badge">
+                    {job.employmentType ||
+                      job.type ||
+                      '—'}
+                  </span>
+                </td>
+
+                {/* EXPERIENCE */}
+                <td>
+                  {job.experienceRequired ||
+                    job.experience ||
+                    '—'}
+                </td>
+
+                {/* QUALIFICATION */}
+                <td>
+                  {job.qualification ||
+                    job.qualifications ||
+                    '—'}
+                </td>
+
+                {/* JOB DESCRIPTION */}
+                <td>
+                  <div
+                    style={{
+                      maxWidth: '280px',
+                      whiteSpace: 'normal',
+                      lineHeight: '1.5'
+                    }}
+                  >
+                    {job.description ||
+                      job.jobDescription ||
+                      '—'}
+                  </div>
+                </td>
+
+                {/* JOB RESPONSIBILITIES */}
+                <td>
+                  <div
+                    style={{
+                      maxWidth: '320px',
+                      whiteSpace: 'normal',
+                      lineHeight: '1.5'
+                    }}
+                  >
+                    {Array.isArray(
+                      job.responsibilities
+                    ) ? (
+                      <ul
+                        style={{
+                          margin: 0,
+                          paddingLeft: '18px'
+                        }}
+                      >
+                        {job.responsibilities.map(
+                          (responsibility, index) => (
+                            <li key={index}>
+                              {responsibility}
+                            </li>
+                          )
+                        )}
+                      </ul>
+                    ) : (
+                      job.responsibilities ||
+                      job.jobResponsibilities ||
+                      '—'
+                    )}
+                  </div>
+                </td>
+
+                {/* NUMBER OF OPENINGS */}
+                <td>
+                  {job.numberOfOpenings ??
+                    job.openings ??
+                    '—'}
+                </td>
+
+                {/* APPLICATION DEADLINE */}
+                <td>
+                  {job.applicationDeadline
+                    ? new Date(
+                        job.applicationDeadline
+                      ).toLocaleDateString(
+                        'en-IN',
+                        {
+                          day: '2-digit',
+                          month: 'short',
+                          year: 'numeric'
+                        }
+                      )
+                    : job.deadline
+                    ? new Date(
+                        job.deadline
+                      ).toLocaleDateString(
+                        'en-IN',
+                        {
+                          day: '2-digit',
+                          month: 'short',
+                          year: 'numeric'
+                        }
+                      )
+                    : '—'}
+                </td>
+
+                {/* JOB STATUS */}
+                <td>
+                 <select
+                  className="adm-status-select"
+                  value={job.jobStatus || 'Open'}
+                  onChange={(e) =>
+                    handleJobStatusChange(
+                      job.id,
+                      e.target.value
+                    )
+                  }
+                >
+                  <option value="Open">Open</option>
+                  <option value="Closed">Closed</option>
+                </select>
+                </td>
+
+                <td>
+  <button
+    type="button"
+    className="adm-btn-tiny danger"
+    onClick={() =>
+      handleDeleteJob(job.id)
+    }
+  >
+    Delete
+  </button>
 </td>
               </tr>
             ))}
@@ -3654,6 +4130,251 @@ const loadMedia = async () => {
         </div>
       )}
 
+ {showJobModal && (
+      <div className="adm-modal-overlay">
+        <div
+          className="adm-modal"
+          style={{
+            width: 'min(900px, 95vw)',
+            maxHeight: '90vh',
+            overflowY: 'auto'
+          }}
+        >
+          <div className="adm-modal-header">
+            <h3>Post New Job</h3>
+
+            <button
+              type="button"
+              className="adm-modal-close"
+              onClick={() => setShowJobModal(false)}
+            >
+              ×
+            </button>
+          </div>
+
+          <form onSubmit={handleCreateJob}>
+            <div className="adm-form-grid">
+
+              {/* JOB TITLE */}
+              <div className="adm-form-group">
+                <label>Job Title *</label>
+                <input
+                  type="text"
+                  name="jobTitle"
+                  value={jobForm.jobTitle}
+                  onChange={handleJobFormChange}
+                  placeholder="e.g. Solar Design Engineer"
+                  required
+                />
+              </div>
+
+              {/* DEPARTMENT */}
+              <div className="adm-form-group">
+                <label>Department *</label>
+                <input
+                  type="text"
+                  name="department"
+                  value={jobForm.department}
+                  onChange={handleJobFormChange}
+                  placeholder="e.g. Engineering"
+                  required
+                />
+              </div>
+
+              {/* LOCATION */}
+              <div className="adm-form-group">
+                <label>Location *</label>
+                <input
+                  type="text"
+                  name="location"
+                  value={jobForm.location}
+                  onChange={handleJobFormChange}
+                  placeholder="e.g. Visakhapatnam"
+                  required
+                />
+              </div>
+
+              {/* EMPLOYMENT TYPE */}
+              <div className="adm-form-group">
+                <label>Employment Type *</label>
+                <select
+                  name="employmentType"
+                  value={jobForm.employmentType}
+                  onChange={handleJobFormChange}
+                  required
+                >
+                  <option value="">
+                    Select employment type
+                  </option>
+                  <option value="Full Time">
+                    Full Time
+                  </option>
+                  <option value="Part Time">
+                    Part Time
+                  </option>
+                  <option value="Internship">
+                    Internship
+                  </option>
+                  <option value="Contract">
+                    Contract
+                  </option>
+                </select>
+              </div>
+
+              {/* EXPERIENCE */}
+              <div className="adm-form-group">
+                <label>Experience Required *</label>
+                <input
+                  type="text"
+                  name="experienceRequired"
+                  value={jobForm.experienceRequired}
+                  onChange={handleJobFormChange}
+                  placeholder="e.g. 2-4 years"
+                  required
+                />
+              </div>
+
+              {/* NUMBER OF OPENINGS */}
+              <div className="adm-form-group">
+                <label>Number of Openings *</label>
+                <input
+                  type="number"
+                  name="numberOfOpenings"
+                  min="1"
+                  value={jobForm.numberOfOpenings}
+                  onChange={handleJobFormChange}
+                  required
+                />
+              </div>
+
+              {/* QUALIFICATION */}
+              <div
+                className="adm-form-group"
+                style={{ gridColumn: '1 / -1' }}
+              >
+                <label>Qualification *</label>
+                <input
+                  type="text"
+                  name="qualification"
+                  value={jobForm.qualification}
+                  onChange={handleJobFormChange}
+                  placeholder="e.g. B.Tech / B.E. in Electrical Engineering"
+                  required
+                />
+              </div>
+
+              {/* DESCRIPTION */}
+              <div
+                className="adm-form-group"
+                style={{ gridColumn: '1 / -1' }}
+              >
+                <label>Job Description *</label>
+                <textarea
+                  name="jobDescription"
+                  value={jobForm.jobDescription}
+                  onChange={handleJobFormChange}
+                  rows="5"
+                  placeholder="Enter the job description..."
+                  required
+                />
+              </div>
+
+              {/* RESPONSIBILITIES */}
+              <div
+                className="adm-form-group"
+                style={{ gridColumn: '1 / -1' }}
+              >
+                <label>Job Responsibilities *</label>
+
+                {jobForm.jobResponsibilities.map(
+                  (responsibility, index) => (
+                    <div className="adm-responsibility-row">
+          <input
+            type="text"
+            value={responsibility}
+            onChange={(e) =>
+              handleResponsibilityChange(
+                index,
+                e.target.value
+              )
+            }
+            placeholder={`Responsibility ${index + 1}`}
+            required
+          />
+
+          {jobForm.jobResponsibilities.length > 1 && (
+            <button
+              type="button"
+              className="adm-responsibility-remove"
+              onClick={() => removeResponsibility(index)}
+            >
+              ×
+            </button>
+          )}
+        </div>
+                          )
+                        )}
+
+                        <button
+  type="button"
+  className="adm-add-responsibility"
+  onClick={addResponsibility}
+>
+  + Add Responsibility
+</button>
+              </div>
+
+              {/* DEADLINE */}
+              <div className="adm-form-group">
+                <label>Application Deadline *</label>
+                <input
+                  type="date"
+                  name="applicationDeadline"
+                  value={jobForm.applicationDeadline}
+                  onChange={handleJobFormChange}
+                  required
+                />
+              </div>
+
+              {/* STATUS */}
+              <div className="adm-form-group">
+                <label>Job Status *</label>
+                <select
+                  name="jobStatus"
+                  value={jobForm.jobStatus}
+                  onChange={handleJobFormChange}
+                  required
+                >
+                  <option value="Open">Open</option>
+                  <option value="Closed">Closed</option>
+                </select>
+              </div>
+
+            </div>
+
+            {/* ACTIONS */}
+            <div className="adm-modal-actions">
+              <button
+                type="button"
+                onClick={() => setShowJobModal(false)}
+              >
+                Cancel
+              </button>
+
+              <button
+                type="submit"
+                className="adm-primary-btn"
+                disabled={jobSubmitting}
+              >
+                {jobSubmitting
+                  ? 'Posting...'
+                  : 'Post Job'}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    )}
 
       {/* Toast Notification */}
       {toastMessage && (
@@ -3663,5 +4384,6 @@ const loadMedia = async () => {
         </div>
       )}
     </div>
-  )
-  }
+)
+}
+
