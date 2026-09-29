@@ -190,11 +190,11 @@ export default function ContactPage() {
             <div className="contact-info-col">
               <Reveal className="section-heading">
                 <div>
-                  <p className="eyebrow"><span /> Contact Matrix</p>
-                  <h2>Get in touch with<br /><em>our solar offices.</em></h2>
+                  <p className="eyebrow"><span /> Contact Us</p>
+                  <h2>Speak directly with<br /><em>our solar engineers.</em></h2>
                 </div>
                 <p className="heading-note">
-                  Reach our engineering desks, project managers, and customer support representatives across our operating regions.
+                  Our project managers and engineering team are available Monday–Saturday to discuss your solar requirements, site conditions, and subsidy eligibility.
                 </p>
               </Reveal>
 
@@ -202,33 +202,34 @@ export default function ContactPage() {
                 <div className="contact-hub-card">
                   <div className="hub-header">
                     <span className="hub-marker">HQ / Registered Office</span>
-                    <h3>M/s N Solutions — Vizianagaram</h3>
+                    <h3>N Solutions — Vizianagaram</h3>
                   </div>
                   <p>
-                    <strong>Address:</strong> D.No. 27-23-27, MIG – 214, A.P.H.B. Colony, Phase II, Babametta, Vizianagaram, Andhra Pradesh, India - 535002.
+                    D.No. 27-23-27, MIG – 214, A.P.H.B. Colony, Phase II,<br />
+                    Babametta, Vizianagaram, Andhra Pradesh – 535002.
                   </p>
-                  <p style={{ marginTop: '6px', fontSize: '13px', color: '#4a5c68' }}>
+                  <p style={{ marginTop: '2px', fontSize: '13px', color: '#4a5c68' }}>
                     <strong>Managing Partner:</strong> Mr. Ch. C. S. V. Raju
                   </p>
                   <div className="hub-links">
-                    <span><FiPhone size={13} style={{ marginRight: 5, verticalAlign: 'middle', color: 'var(--brand-primary-dark, #0875b6)' }} /><strong>Mobile:</strong> +91 7993836424 / +91 9492731212</span>
-                    <span><FiSmartphone size={13} style={{ marginRight: 5, verticalAlign: 'middle', color: 'var(--brand-primary-dark, #0875b6)' }} /><strong>Project Hotline:</strong> +91 9494703452</span>
-                    <span><FiMail size={13} style={{ marginRight: 5, verticalAlign: 'middle', color: 'var(--brand-primary-dark, #0875b6)' }} /><strong>E-Mail:</strong> info@nsol.in / nsolutions@live.com</span>
-                    <span><FiGlobe size={13} style={{ marginRight: 5, verticalAlign: 'middle', color: 'var(--brand-primary-dark, #0875b6)' }} /><strong>Official Portal:</strong> www.nsol.in</span>
+                    <span><FiPhone size={13} style={{ marginRight: 5, verticalAlign: 'middle', color: 'var(--brand-primary-dark, #0875b6)' }} /><strong>Mobile:</strong> +91 79938 36424 &nbsp;/&nbsp; +91 94927 31212</span>
+                    <span><FiSmartphone size={13} style={{ marginRight: 5, verticalAlign: 'middle', color: 'var(--brand-primary-dark, #0875b6)' }} /><strong>Project Hotline:</strong> +91 94947 03452</span>
+                    <span><FiMail size={13} style={{ marginRight: 5, verticalAlign: 'middle', color: 'var(--brand-primary-dark, #0875b6)' }} /><strong>Email:</strong> info@nsol.in &nbsp;/&nbsp; nsolutions@live.com</span>
+                    <span><FiGlobe size={13} style={{ marginRight: 5, verticalAlign: 'middle', color: 'var(--brand-primary-dark, #0875b6)' }} /><strong>Website:</strong> www.nsol.in</span>
                   </div>
                 </div>
 
                 <div className="contact-hub-card">
                   <div className="hub-header">
-                    <span className="hub-marker">Multi-State Reach</span>
-                    <h3>Pan-India Project Operations</h3>
+                    <span className="hub-marker">Pan-India Operations</span>
+                    <h3>Active Across 9 States</h3>
                   </div>
                   <p>
-                    Active project execution teams across 9 states: Andhra Pradesh, Telangana, Tamil Nadu, Karnataka, Maharashtra, Odisha, Gujarat, Madhya Pradesh, and Rajasthan.
+                    Project execution teams operating across Andhra Pradesh, Telangana, Tamil Nadu, Karnataka, Maharashtra, Odisha, Gujarat, Madhya Pradesh, and Rajasthan.
                   </p>
                   <div className="hub-links">
-                    <span><FiClock size={13} style={{ marginRight: 5, verticalAlign: 'middle', color: 'var(--brand-primary-dark, #0875b6)' }} /><strong>Business Hours:</strong> Monday – Saturday: 9:00 AM – 6:30 PM IST</span>
-                    <span><FiZap size={13} style={{ marginRight: 5, verticalAlign: 'middle', color: 'var(--brand-primary-dark, #0875b6)' }} /><strong>24/7 O&M Hotline:</strong> emergency-om@nsolutions.in</span>
+                    <span><FiClock size={13} style={{ marginRight: 5, verticalAlign: 'middle', color: 'var(--brand-primary-dark, #0875b6)' }} /><strong>Office Hours:</strong> Mon – Sat &nbsp;|&nbsp; 9:00 AM – 6:30 PM IST</span>
+                    <span><FiZap size={13} style={{ marginRight: 5, verticalAlign: 'middle', color: 'var(--brand-primary-dark, #0875b6)' }} /><strong>O&M Emergency:</strong> emergency-om@nsolutions.in</span>
                   </div>
                 </div>
               </div>
@@ -238,55 +239,55 @@ export default function ContactPage() {
             <div className="contact-form-col">
               <Reveal className="contact-form-wrapper">
                 <div className="form-header">
-                  <span className="badge-tag">Project Inquiry</span>
-                  <h3>Request a Solar Consultation & Site Audit</h3>
-                  <p>Fill in your details below and a senior solar engineer will contact you within 24 business hours.</p>
+                  <span className="badge-tag">Free Consultation</span>
+                  <h3>Request a Site Audit & Solar Feasibility Study</h3>
+                  <p>Share your project details below — a senior solar engineer will get back to you within 24 business hours.</p>
                 </div>
 
                 {isSubmitted ? (
                   <div className="contact-success-box">
                     <div className="success-check-icon"><FiCheck size={24} strokeWidth={3} /></div>
-                    <h3>Inquiry Received Successfully!</h3>
+                    <h3>Enquiry Submitted Successfully!</h3>
                     <p>
                       Thank you, <strong>{formData.fullName || 'Valued Customer'}</strong>. Your consultation request for <strong>{formData.projectType}</strong> has been logged with our engineering dispatch desk.
                     </p>
                     <p className="success-sub">
-                      A dedicated project engineer will review your site parameters and contact you at <strong>{formData.phone || formData.email}</strong> to schedule a complimentary site audit.
+                      A dedicated project engineer will review your requirements and reach you at <strong>{formData.phone || formData.email}</strong> to schedule a complimentary site audit.
                     </p>
-                    <button 
-                      type="button" 
+                    <button
+                      type="button"
                       className="button button-accent"
                       onClick={() => {
                         setIsSubmitted(false)
                         setSubmitError('')
                       }}
                     >
-                      Submit Another Inquiry <Arrow />
+                      Submit Another Enquiry <Arrow />
                     </button>
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="inquiry-form-grid">
                     <div className="form-two-fields">
                       <div className="form-group">
-                        <label htmlFor="f-name">Your Full Name *</label>
-                        <input 
+                        <label htmlFor="f-name">Full Name *</label>
+                        <input
                           id="f-name"
-                          type="text" 
+                          type="text"
                           name="fullName"
-                          required 
-                          placeholder="e.g. Ch. Venkat Raju"
+                          required
+                          placeholder="Your full name"
                           value={formData.fullName}
                           onChange={handleInputChange}
                         />
                       </div>
 
                       <div className="form-group">
-                        <label htmlFor="f-org">Organization / Residence Name</label>
-                        <input 
+                        <label htmlFor="f-org">Company / Organisation</label>
+                        <input
                           id="f-org"
-                          type="text" 
+                          type="text"
                           name="organization"
-                          placeholder="e.g. Sri Industries / Private Residence"
+                          placeholder="Company or residence name"
                           value={formData.organization}
                           onChange={handleInputChange}
                         />
@@ -295,13 +296,13 @@ export default function ContactPage() {
 
                     <div className="form-two-fields">
                       <div className="form-group">
-                        <label htmlFor="f-phone">Phone / WhatsApp Number *</label>
-                        <input 
+                        <label htmlFor="f-phone">Phone / WhatsApp *</label>
+                        <input
                           id="f-phone"
-                          type="tel" 
+                          type="tel"
                           name="phone"
-                          required 
-                          placeholder="e.g. +91 98480 12345"
+                          required
+                          placeholder="+91 XXXXX XXXXX"
                           value={formData.phone}
                           onChange={handleInputChange}
                         />
@@ -309,12 +310,12 @@ export default function ContactPage() {
 
                       <div className="form-group">
                         <label htmlFor="f-email">Email Address *</label>
-                        <input 
+                        <input
                           id="f-email"
-                          type="email" 
+                          type="email"
                           name="email"
-                          required 
-                          placeholder="e.g. contact@domain.com"
+                          required
+                          placeholder="you@example.com"
                           value={formData.email}
                           onChange={handleInputChange}
                         />
@@ -323,30 +324,30 @@ export default function ContactPage() {
 
                     <div className="form-two-fields">
                       <div className="form-group">
-                        <label htmlFor="f-type">Solar Solution Needed</label>
-                        <select 
+                        <label htmlFor="f-type">Type of Solar Solution</label>
+                        <select
                           id="f-type"
                           name="projectType"
                           value={formData.projectType}
                           onChange={handleInputChange}
                         >
-                          <option value="PM Surya Ghar Residential Rooftop">PM Surya Ghar Residential Rooftop (Subsidy)</option>
-                          <option value="Commercial Solar Installation">Commercial Solar (Offices, Hospitals, Retail)</option>
-                          <option value="Industrial Solar EPC">Industrial Solar EPC (Factories, Warehouses, MW Plants)</option>
-                          <option value="PM-KUSUM Agri Solar Pumps">PM-KUSUM Agri Solar Pumping Solutions</option>
-                          <option value="Solar Operation & Maintenance">Solar O&M & Health Audit Services</option>
-                          <option value="Solar Products & Inverters">Solar Products, Panels & Inverters Supply</option>
+                          <option value="PM Surya Ghar Residential Rooftop">PM Surya Ghar – Residential Rooftop</option>
+                          <option value="Commercial Solar Installation">Commercial Solar – Offices, Hospitals, Retail</option>
+                          <option value="Industrial Solar EPC">Industrial Solar EPC – Factories, MW Plants</option>
+                          <option value="PM-KUSUM Agri Solar Pumps">PM-KUSUM – Agri Solar Pumping</option>
+                          <option value="Solar Operation & Maintenance">Solar O&M & Health Audit</option>
+                          <option value="Solar Products & Inverters">Solar Panels, Inverters & Products Supply</option>
                         </select>
                       </div>
 
                       <div className="form-group">
-                        <label htmlFor="f-loc">Site City, District & State *</label>
-                        <input 
+                        <label htmlFor="f-loc">Project Location *</label>
+                        <input
                           id="f-loc"
-                          type="text" 
+                          type="text"
                           name="location"
-                          required 
-                          placeholder="e.g. Vizianagaram / Visakhapatnam, AP"
+                          required
+                          placeholder="City, District & State"
                           value={formData.location}
                           onChange={handleInputChange}
                         />
@@ -354,12 +355,12 @@ export default function ContactPage() {
                     </div>
 
                     <div className="form-group">
-                      <label htmlFor="f-msg">Project Details / Roof Space / Requirements</label>
-                      <textarea 
+                      <label htmlFor="f-msg">Project Details & Requirements</label>
+                      <textarea
                         id="f-msg"
                         name="message"
-                        rows={4} 
-                        placeholder="Tell us about your current monthly power bill, available roof type (RCC slab or metal shed), or specific project deadlines..."
+                        rows={4}
+                        placeholder="Describe your monthly power bill, available roof area (RCC / metal shed), connected load, or any specific project deadlines..."
                         value={formData.message}
                         onChange={handleInputChange}
                       />
@@ -377,10 +378,10 @@ export default function ContactPage() {
                       disabled={isSubmitting}
                     >
                       {isSubmitting ? (
-                        'Submitting...'
+                        'Submitting…'
                       ) : (
                         <>
-                          Request Solar Feasibility Study & Site Audit <Arrow />
+                          Get Free Solar Feasibility Study <Arrow />
                         </>
                       )}
                     </button>
@@ -390,6 +391,7 @@ export default function ContactPage() {
             </div>
           </div>
         </section>
+
 
         {/* FREQUENTLY ASKED QUESTIONS ACCORDION */}
         <section className="contact-faq-section wrap">
