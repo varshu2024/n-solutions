@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+﻿import { useEffect, useRef, useState } from 'react'
 import ProjectsPage, { projectsData } from './pages/ProjectsPage'
 import ProductsPage from './pages/ProductsPage'
 import MediaPage from './pages/MediaPage'
@@ -1495,7 +1495,7 @@ function ServicesPage() {
           <Reveal className="section-heading">
             <div>
               <p className="eyebrow"><span /> Complete Portfolio</p>
-              <h2>Comprehensive Solar Services<br /><em>& Solutions (01 – 15)</em></h2>
+              <h2>Comprehensive Solar Services<br /><em>& Solutions</em></h2>
             </div>
             <p className="heading-note">
               From turnkey EPC and utility-scale installations to rooftop PM Surya Ghar, O&M, and energy advisory, explore our 15 end-to-end solar solutions.

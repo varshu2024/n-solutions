@@ -2158,6 +2158,7 @@ const loadMedia = async () => {
               <th>Applied Role</th>
               <th>Experience</th>
               <th>Contact</th>
+              <th>Resume</th>
               <th>Status</th>
             </tr>
           </thead>
@@ -2236,6 +2237,24 @@ const loadMedia = async () => {
                   >
                     {app.email}
                   </div>
+                </td>
+
+                {/* RESUME */}
+                <td>
+                  {app.resumeUrl ? (
+                    <a
+                      href={app.resumeUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      download
+                      className="adm-resume-download-btn"
+                      title="Download Resume"
+                    >
+                      ⬇ Download
+                    </a>
+                  ) : (
+                    <span style={{ color: 'var(--adm-text-dim)', fontSize: '0.8rem' }}>No file</span>
+                  )}
                 </td>
 
                 {/* STATUS */}

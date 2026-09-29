@@ -329,23 +329,8 @@ button.nav-cta {
 }
 
 
-/* ---- OTHER HERO PAGES — light gradient ---- */
-.careers-hero,
-.projects-hero,
-.services-hero,
-.media-hero,
-.contact-hero {
-  background: linear-gradient(135deg, #eef4fd 0%, #daeaf8 100%) !important;
-  color: var(--ink) !important;
-  min-height: 480px;
-}
 
-.careers-hero h1,
-.careers-hero p,
-.projects-hero h1,
-.projects-hero p {
-  color: var(--ink) !important;
-}
+
 
 .button-ghost {
   border: 1.5px solid var(--brand-primary) !important;
@@ -746,37 +731,10 @@ button.nav-cta {
 }
 
 /* =====================================================
-   CAREERS PAGE — light
+   CAREERS PAGE
    ===================================================== */
-.careers-hero {
-  background: linear-gradient(135deg, #eef4fd 0%, #daeaf8 100%) !important;
-  color: var(--ink) !important;
-}
 
-.careers-hero h1,
-.careers-hero p,
-.careers-hero .eyebrow {
-  color: var(--ink) !important;
-}
 
-.careers-process {
-  background: var(--section-alt) !important;
-  color: var(--ink) !important;
-}
-
-/* =====================================================
-   PROJECTS PAGE — light
-   ===================================================== */
-.projects-hero {
-  background: linear-gradient(135deg, #eef4fd 0%, #daeaf8 100%) !important;
-  color: var(--ink) !important;
-}
-
-.projects-hero h1,
-.projects-hero p,
-.projects-hero .eyebrow {
-  color: var(--ink) !important;
-}
 
 .projects-cta-section {
   background: var(--paper) !important;
@@ -10476,6 +10434,7 @@ button:focus-visible {
 }
 
 .contact-main-section {
+  padding-top: 80px;
   padding-bottom: 100px;
 }
 
@@ -10483,6 +10442,21 @@ button:focus-visible {
   display: grid;
   grid-template-columns: 1fr 1.2fr;
   gap: 48px;
+  align-items: start;
+}
+
+.contact-info-col {
+  position: sticky;
+  top: 100px;
+  align-self: start;
+}
+
+.contact-form-col {
+  align-self: start;
+}
+
+.contact-form-col .contact-form-wrapper {
+  height: auto;
 }
 
 .contact-cards-stack {
@@ -10693,6 +10667,18 @@ button:focus-visible {
   .calculator-widget-container,
   .contact-two-column-grid {
     grid-template-columns: 1fr !important;
+    gap: 32px !important;
+  }
+
+  .contact-form-col,
+  .contact-info-col {
+    order: unset;
+    position: static;
+    align-self: auto;
+  }
+
+  .contact-form-col {
+    order: -1;
   }
 
   .specs-table-grid,
