@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { navigate } from '../components/Shared'
+import {FiMail, FiLock} from 'react-icons/fi'
 import './admin.css'
 
 const API_BASE_URL = (
@@ -119,7 +120,7 @@ export default function AdminLogin({ onLoginSuccess }) {
             <label htmlFor="admin-email">Admin Email</label>
 
             <div className="adm-input-wrap">
-              <span className="adm-input-icon">✉</span>
+              <span className="adm-input-icon"><FiMail/></span>
 
               <input
                 id="admin-email"
@@ -137,7 +138,7 @@ export default function AdminLogin({ onLoginSuccess }) {
             <label htmlFor="admin-password">Password</label>
 
             <div className="adm-input-wrap">
-              <span className="adm-input-icon">🔒</span>
+              <span className="adm-input-icon"><FiLock/></span>
 
               <input
                 id="admin-password"
