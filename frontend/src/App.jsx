@@ -18,6 +18,7 @@ import {
   FiUsers, FiClock, FiLayers, FiFileText, FiMapPin, FiStar,
   FiPause, FiPlay
 } from 'react-icons/fi'
+import SEO from './components/SEO'
 
 const services = homeContent.whatWeDo.services
 const process = homeContent.howWeWork.steps
@@ -1696,6 +1697,11 @@ function App() {
 
 
   return <div className="site-shell home-page">
+    <SEO
+  title="N Solutions | Solar EPC Company in India"
+  description="N Solutions is a solar EPC company providing residential, commercial, industrial and government solar solutions across India, with 16+ years of experience."
+  canonical="/"
+/>
     <ScrollProgressBar />
     <SiteHeader />
 
@@ -1755,7 +1761,10 @@ function App() {
           </div>
         </Reveal>
         <Reveal>
-          <img src='' alt="chairman's image to be added" />
+          <img
+  src="/media/chairman.jpg"
+  alt="Chairman of N Solutions"
+/>
         </Reveal>
       </section>
 

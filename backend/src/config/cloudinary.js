@@ -9,8 +9,33 @@ const ensureCloudinaryConfig = () => {
   }
 };
 
-const uploadFile = (fileBuffer, folder, resourceType = 'image') => {
+// const uploadFile = (fileBuffer, folder, resourceType = 'image') => {
+//   ensureCloudinaryConfig();
+//   cloudinary.config({
+//     cloud_name: env.cloudinaryCloudName,
+//     api_key: env.cloudinaryApiKey,
+//     api_secret: env.cloudinaryApiSecret
+//   });
+
+//   return new Promise((resolve, reject) => {
+//     const uploadStream = cloudinary.uploader.upload_stream(
+//       { folder, resource_type: resourceType },
+//       (error, result) => (error ? reject(error) : resolve({
+//         url: result.secure_url,
+//         publicId: result.public_id
+//       }))
+//     );
+//     uploadStream.end(fileBuffer);
+//   });
+// };
+const uploadFile = (
+  fileBuffer,
+  folder,
+  resourceType = 'image',
+  originalName = ''
+) => {
   ensureCloudinaryConfig();
+
   cloudinary.config({
     cloud_name: env.cloudinaryCloudName,
     api_key: env.cloudinaryApiKey,
@@ -19,12 +44,25 @@ const uploadFile = (fileBuffer, folder, resourceType = 'image') => {
 
   return new Promise((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
-      { folder, resource_type: resourceType },
-      (error, result) => (error ? reject(error) : resolve({
-        url: result.secure_url,
-        publicId: result.public_id
-      }))
+      {
+        folder,
+        resource_type: resourceType,
+        ...(originalName
+          ? {
+              use_filename: true,
+              unique_filename: true
+            }
+          : {})
+      },
+      (error, result) =>
+        error
+          ? reject(error)
+          : resolve({
+              url: result.secure_url,
+              publicId: result.public_id
+            })
     );
+
     uploadStream.end(fileBuffer);
   });
 };
@@ -34,7 +72,14 @@ export const uploadProductImage = (fileBuffer) => uploadFile(fileBuffer, 'nsolut
 
 export const uploadMediaImage = (fileBuffer) => uploadFile(fileBuffer, 'nsolutions/media/images');
 export const uploadMediaVideo = (fileBuffer) => uploadFile(fileBuffer, 'nsolutions/media/videos', 'video');
-export const uploadResume = (fileBuffer) => uploadFile(fileBuffer, 'nsolutions/resumes', 'raw');
+export const uploadResume = (fileBuffer, originalName) => {
+  return uploadFile(
+    fileBuffer,
+    'nsolutions/resumes',
+    'raw',
+    originalName
+  );
+};
 
 const deleteFile = async (publicId, resourceType = 'image') => {
   if (!publicId) return;

@@ -4,7 +4,8 @@ import {
   findJobForApplication,
   getJobApplicationById,
   listJobApplications,
-  updateJobApplicationStatus
+  updateJobApplicationStatus,
+  getJobApplicationById
 } from '../services/job-application.service.js';
 import { sendSuccess } from '../utils/response.js';
 import { isValidEmail } from '../utils/validation.js';
@@ -74,7 +75,10 @@ export const submit = async (request, response) => {
 
   let resume;
   try {
-    resume = await uploadResume(request.file.buffer);
+    resume = await uploadResume(
+      request.file.buffer,
+      request.file.originalname
+    );
   } catch (error) {
     if (error.statusCode === 503) throw error;
     const uploadError = new Error('Resume upload failed.');

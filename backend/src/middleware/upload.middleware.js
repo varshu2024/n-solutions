@@ -26,7 +26,8 @@ const resumeUploadHandler = multer({
     const extension = file.originalname.toLowerCase().split('.').pop();
     const allowedTypes = {
       pdf: 'application/pdf',
-      doc: 'application/msword'
+      doc: 'application/msword',
+       docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
     };
 
     if (allowedTypes[extension] === file.mimetype) return callback(null, true);

@@ -312,6 +312,34 @@ const handleDeleteJob = async (jobId) => {
   }
 };
 
+const handleDeleteApplication = async (applicationId) => {
+  const confirmed = window.confirm(
+    'Are you sure you want to delete this job application?'
+  );
+
+  if (!confirmed) return;
+
+  try {
+    await apiRequest(`/job-applications/${applicationId}`, {
+      method: 'DELETE'
+    });
+
+    setApplications((currentApplications) =>
+      currentApplications.filter(
+        (application) => application.id !== applicationId
+      )
+    );
+
+    showToast('Job application deleted successfully.', 'success');
+  } catch (error) {
+    console.error('Failed to delete application:', error);
+
+    showToast(
+      error?.message || 'Failed to delete job application.',
+      'error'
+    );
+  }
+};
 const handleCreateJob = async (e) => {
   e.preventDefault();
 
@@ -1205,39 +1233,39 @@ const handleCreateMedia = async (e) => {
 
   // Application status
   const handleApplicationStatusChange = async (applicationId, newStatus) => {
-    try {
-      const result = await apiPatch(
-        `/job-applications/${applicationId}/status`,
-        {
-          status: newStatus
-        }
-      )
-      if (!result.success) {
-        throw new Error(
-          result.message || 'Failed to update application status'
-        )
+  try {
+    const result = await apiPatch(
+      `/job-applications/${applicationId}/status`,
+      {
+        status: newStatus
       }
+    )
 
-      setApplications((prevApplications) =>
-        prevApplications.map((app) =>
-          app.id === applicationId
-            ? {
-                ...app,
-                applicationStatus:
-                  result.data?.applicationStatus || newStatus
-              }
-            : app
-        )
+    if (!result.success) {
+      throw new Error(
+        result.message || 'Failed to update application status'
       )
-      showToast(`Status updated to ${newStatus}`, 'success')
-    } catch (error) {
-      console.error(
-        'Failed to update application status:',
-        error
-      )
-      showToast(error.message || 'Failed to update status', 'error')
     }
+
+    setApplications((prevApplications) =>
+      prevApplications.map((app) =>
+        app.id === applicationId
+          ? {
+              ...app,
+              applicationStatus:
+                result.data?.applicationStatus || newStatus
+            }
+          : app
+      )
+    )
+    showToast(`Status updated to ${newStatus}`, 'success')
+  } catch (error) {
+    console.error(
+      'Failed to update application status:',
+      error
+    )
   }
+}
 
   // Resume Download Handler
   const handleDownloadResume = async (app, e) => {
@@ -1607,7 +1635,7 @@ const loadMedia = async () => {
             className={`adm-nav-item ${activeTab === 'jobs' ? 'active' : ''}`}
             onClick={() => setActiveTab('jobs')}
           >
-            <span className="adm-nav-icon"><FiPackage /></span>
+            <span className="adm-nav-icon"><FiBriefcase /></span>
             <span>Jobs</span>
           </button>
           <span className="adm-nav-heading">Administration</span>

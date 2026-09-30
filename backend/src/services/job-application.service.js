@@ -91,3 +91,41 @@ export const updateJobApplicationStatus = async (id, status) => {
 
   return applicationResponse(application)
 }
+
+export const getJobApplicationById = async (id) => {
+  if (!mongoose.isValidObjectId(id)) {
+    const error = new Error('Invalid application ID.');
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const application = await JobApplication.findById(id);
+
+  if (!application) {
+    const error = new Error('Job application not found.');
+    error.statusCode = 404;
+    throw error;
+  }
+
+  return application;
+};
+
+export const deleteJobApplication = async (id) => {
+  if (!mongoose.isValidObjectId(id)) {
+    const error = new Error('Invalid application ID.');
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const application = await JobApplication.findById(id);
+
+  if (!application) {
+    const error = new Error('Job application not found.');
+    error.statusCode = 404;
+    throw error;
+  }
+
+  await application.deleteOne();
+
+  return applicationResponse(application);
+};
