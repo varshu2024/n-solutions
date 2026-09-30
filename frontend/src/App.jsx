@@ -1695,11 +1695,6 @@ function App() {
 
 
   return <div className="site-shell home-page">
-    <SEO
-  title="N Solutions | Solar EPC Company in India"
-  description="N Solutions is a solar EPC company providing residential, commercial, industrial and government solar solutions across India, with 16+ years of experience."
-  canonical="/"
-/>
     <ScrollProgressBar />
     <SiteHeader />
 
