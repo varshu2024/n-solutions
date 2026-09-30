@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import {
+  downloadResumeFile,
   list,
   submit,
   updateStatus
@@ -12,6 +13,7 @@ const router = Router();
 
 router.post('/', resumeUpload, asyncHandler(submit));
 router.get('/', requireAdmin, asyncHandler(list));
+router.get('/:id/resume/download', requireAdmin, asyncHandler(downloadResumeFile));
 router.patch('/:id/status', requireAdmin, asyncHandler(updateStatus));
 
 export default router;

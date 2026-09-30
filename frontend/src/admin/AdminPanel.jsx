@@ -26,7 +26,12 @@ import {
   FiLock,
   FiShield,
   FiBarChart2,
-  FiInbox
+  FiInbox,
+  FiDownload,
+  FiEye,
+  FiFileText,
+  FiSearch,
+  FiFilter
 } from 'react-icons/fi'
 
 import { FaSun } from 'react-icons/fa'
@@ -58,6 +63,9 @@ const [testimonials, setTestimonials] = useState([])
   const [productsLoading, setProductsLoading] = useState(false)
   const [applications, setApplications] = useState([])
   const [applicationsLoading, setApplicationsLoading] = useState(false)
+  const [applicationSearch, setApplicationSearch] = useState('')
+  const [applicationStatusFilter, setApplicationStatusFilter] = useState('all')
+  const [selectedApplication, setSelectedApplication] = useState(null)
   const [showAddLeadModal, setShowAddLeadModal] = useState(false)
   const [newLead, setNewLead] = useState({
     name: '',
@@ -686,6 +694,24 @@ const filteredLeads = leads.filter((lead) => {
 
   return matchesSearch && matchesStatus
 })
+
+  // Filtered job applications
+  const filteredApplications = applications.filter((app) => {
+    const search = applicationSearch.toLowerCase().trim()
+    const matchesSearch =
+      !search ||
+      (app.fullName || '').toLowerCase().includes(search) ||
+      (app.positionAppliedFor || '').toLowerCase().includes(search) ||
+      (app.jobTitle || '').toLowerCase().includes(search) ||
+      (app.email || '').toLowerCase().includes(search) ||
+      (app.phoneNumber || '').toLowerCase().includes(search)
+
+    const matchesStatus =
+      applicationStatusFilter === 'all' ||
+      (app.applicationStatus || 'Applied').toLowerCase() === applicationStatusFilter.toLowerCase()
+
+    return matchesSearch && matchesStatus
+  })
   // Lead status updater
  const handleLeadStatusChange = async (id, newStatus) => {
   try {
@@ -1186,7 +1212,6 @@ const handleCreateMedia = async (e) => {
           status: newStatus
         }
       )
-      await loadApplication()
       if (!result.success) {
         throw new Error(
           result.message || 'Failed to update application status'
@@ -1204,12 +1229,94 @@ const handleCreateMedia = async (e) => {
             : app
         )
       )
+      showToast(`Status updated to ${newStatus}`, 'success')
     } catch (error) {
       console.error(
         'Failed to update application status:',
         error
       )
+      showToast(error.message || 'Failed to update status', 'error')
     }
+  }
+
+  // Resume Download Handler
+  const handleDownloadResume = async (app, e) => {
+    if (e) {
+      e.stopPropagation()
+      e.preventDefault()
+    }
+    if (!app?.resumeUrl) {
+      showToast('No resume file attached to this application.', 'error')
+      return
+    }
+
+    const candidateName = (app.fullName || 'Candidate').trim()
+    const safeName = candidateName.replace(/[^a-zA-Z0-9_-]/g, '_') || 'Candidate'
+
+    let ext = 'pdf'
+    try {
+      const urlParts = app.resumeUrl.split(/[#?]/)[0].split('.')
+      if (urlParts.length > 1) {
+        const detectedExt = urlParts.pop().toLowerCase()
+        if (['pdf', 'doc', 'docx'].includes(detectedExt)) {
+          ext = detectedExt
+        }
+      }
+    } catch (err) {}
+
+    const filename = `${safeName}_Resume.${ext}`
+    showToast(`Downloading ${candidateName}'s resume...`, 'info')
+
+    try {
+      // 1. Attempt blob fetch for direct browser file save with candidate filename
+      const response = await fetch(app.resumeUrl)
+      if (!response.ok) throw new Error('Fetch failed')
+      const blob = await response.blob()
+      const blobUrl = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = blobUrl
+      link.download = filename
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(blobUrl)
+      showToast(`Downloaded ${filename} successfully!`, 'success')
+    } catch (fetchErr) {
+      // 2. Fallback: Use Cloudinary fl_attachment or backend download endpoint
+      let downloadUrl = app.resumeUrl
+      if (downloadUrl.includes('cloudinary.com') && downloadUrl.includes('/upload/')) {
+        downloadUrl = downloadUrl.replace(
+          '/upload/',
+          `/upload/fl_attachment:${encodeURIComponent(safeName + '_Resume')}/`
+        )
+      } else if (app.id) {
+        const token = localStorage.getItem('nsolutions_admin_token')
+        const apiBase = import.meta.env.VITE_API_BASE_URL || '/api'
+        downloadUrl = `${apiBase}/job-applications/${app.id}/resume/download?token=${encodeURIComponent(token || '')}`
+      }
+      const link = document.createElement('a')
+      link.href = downloadUrl
+      link.target = '_blank'
+      link.rel = 'noopener noreferrer'
+      link.download = filename
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      showToast(`Resume download started for ${candidateName}!`, 'success')
+    }
+  }
+
+  // Resume Preview Handler
+  const handleViewResume = (app, e) => {
+    if (e) {
+      e.stopPropagation()
+      e.preventDefault()
+    }
+    if (!app?.resumeUrl) {
+      showToast('No resume file attached to this application.', 'error')
+      return
+    }
+    window.open(app.resumeUrl, '_blank', 'noopener,noreferrer')
   }
 
 const handleDeleteMedia = async (id) => {
@@ -2375,169 +2482,257 @@ const loadMedia = async () => {
 )}
 
           {/* TAB: CAREERS */}
-         {activeTab === 'careers' && (
-  <div className="adm-panel-card">
-    <div className="adm-card-header">
-      <h3 className="adm-card-title">
-        <span>Job Applications & Candidate Profiles</span>
-      </h3>
-    </div>
+          {activeTab === 'careers' && (
+            <div className="adm-panel-card">
+              <div className="adm-card-header" style={{ flexWrap: 'wrap', gap: '14px', alignItems: 'center' }}>
+                <div>
+                  <h3 className="adm-card-title">
+                    <span>Job Applications & Candidate Resumes</span>
+                  </h3>
+                  <p style={{ margin: '4px 0 0', fontSize: '0.8rem', color: 'var(--adm-text-dim)' }}>
+                    Review candidate submissions, download resumes directly, and update interview/hiring status.
+                  </p>
+                </div>
 
-    <div className="adm-table-wrap">
-      {applicationsLoading ? (
-        <div
-          style={{
-            padding: '40px',
-            textAlign: 'center',
-            color: 'var(--adm-text-muted)'
-          }}
-        >
-          Loading job applications...
-        </div>
-      ) : applications.length === 0 ? (
-        <div
-          style={{
-            padding: '40px',
-            textAlign: 'center',
-            color: 'var(--adm-text-muted)'
-          }}
-        >
-          No job applications found.
-        </div>
-      ) : (
-        <table className="adm-table">
-          <thead>
-            <tr>
-              <th>Candidate Name</th>
-              <th>Applied Role</th>
-              <th>Experience</th>
-              <th>Contact</th>
-              <th>Resume</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {applications.map((app) => (
-              <tr key={app.id}>
-                {/* CANDIDATE */}
-                <td>
-                  <strong>{app.fullName}</strong>
-
-                  <div
-                    style={{
-                      color: 'var(--adm-text-dim)',
-                      fontSize: '0.75rem'
-                    }}
-                  >
-                    Submitted:{' '}
-                    {app.appliedDate
-                      ? new Date(app.appliedDate).toLocaleString(
-                          'en-IN',
-                          {
-                            day: '2-digit',
-                            month: 'short',
-                            year: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                          }
-                        )
-                      : '—'}
-                  </div>
-                </td>
-
-                {/* ROLE */}
-                <td>
-                  <span className="adm-type-badge">
-                    {app.positionAppliedFor || app.jobTitle || '—'}
-                  </span>
-
-                  {app.jobTitle &&
-                    app.positionAppliedFor &&
-                    app.jobTitle !== app.positionAppliedFor && (
-                      <div
-                        style={{
-                          color: 'var(--adm-text-dim)',
-                          fontSize: '0.72rem',
-                          marginTop: '5px'
-                        }}
+                <div className="adm-app-toolbar">
+                  <div className="adm-search-box">
+                    <FiSearch size={14} className="adm-search-icon" />
+                    <input
+                      type="text"
+                      placeholder="Search candidate, role, phone..."
+                      value={applicationSearch}
+                      onChange={(e) => setApplicationSearch(e.target.value)}
+                      className="adm-search-input"
+                    />
+                    {applicationSearch && (
+                      <button
+                        type="button"
+                        onClick={() => setApplicationSearch('')}
+                        className="adm-search-clear"
+                        title="Clear search"
                       >
-                        Job: {app.jobTitle}
-                      </div>
+                        <FiX size={12} />
+                      </button>
                     )}
-                </td>
+                  </div>
 
-                {/* EXPERIENCE */}
-                <td>
-                  {app.yearsOfExperience !== null &&
-                  app.yearsOfExperience !== undefined
-                    ? `${app.yearsOfExperience} ${
-                        app.yearsOfExperience === 1
-                          ? 'year'
-                          : 'years'
-                      }`
-                    : 'Not specified'}
-                </td>
+                  <select
+                    className="adm-status-select"
+                    value={applicationStatusFilter}
+                    onChange={(e) => setApplicationStatusFilter(e.target.value)}
+                    style={{ minWidth: '150px' }}
+                  >
+                    <option value="all">All Statuses ({applications.length})</option>
+                    <option value="Applied">Applied ({applications.filter(a => (a.applicationStatus || 'Applied') === 'Applied').length})</option>
+                    <option value="Shortlisted">Shortlisted ({applications.filter(a => a.applicationStatus === 'Shortlisted').length})</option>
+                    <option value="Interview">Interview ({applications.filter(a => a.applicationStatus === 'Interview').length})</option>
+                    <option value="Selected">Selected ({applications.filter(a => a.applicationStatus === 'Selected').length})</option>
+                    <option value="Rejected">Rejected ({applications.filter(a => a.applicationStatus === 'Rejected').length})</option>
+                  </select>
+                </div>
+              </div>
 
-                {/* CONTACT */}
-                <td>
-                  <div>{app.phoneNumber}</div>
+              {/* Status summary pills */}
+              <div className="adm-app-stats-bar">
+                <span className="adm-app-stat-pill total">
+                  Total: <strong>{applications.length}</strong>
+                </span>
+                <span className="adm-app-stat-pill applied">
+                  New: <strong>{applications.filter(a => (a.applicationStatus || 'Applied') === 'Applied').length}</strong>
+                </span>
+                <span className="adm-app-stat-pill shortlisted">
+                  Shortlisted: <strong>{applications.filter(a => a.applicationStatus === 'Shortlisted').length}</strong>
+                </span>
+                <span className="adm-app-stat-pill interview">
+                  Interview: <strong>{applications.filter(a => a.applicationStatus === 'Interview').length}</strong>
+                </span>
+                <span className="adm-app-stat-pill selected">
+                  Selected: <strong>{applications.filter(a => a.applicationStatus === 'Selected').length}</strong>
+                </span>
+                <span className="adm-app-stat-pill resumes">
+                  Resumes Available: <strong>{applications.filter(a => !!a.resumeUrl).length}</strong>
+                </span>
+              </div>
 
+              <div className="adm-table-wrap">
+                {applicationsLoading ? (
                   <div
                     style={{
-                      color: 'var(--adm-text-dim)',
-                      fontSize: '0.75rem'
+                      padding: '40px',
+                      textAlign: 'center',
+                      color: 'var(--adm-text-muted)'
                     }}
                   >
-                    {app.email}
+                    Loading job applications...
                   </div>
-                </td>
+                ) : filteredApplications.length === 0 ? (
+                  <div
+                    style={{
+                      padding: '40px',
+                      textAlign: 'center',
+                      color: 'var(--adm-text-muted)'
+                    }}
+                  >
+                    {applicationSearch || applicationStatusFilter !== 'all'
+                      ? 'No applications match your search filter.'
+                      : 'No job applications found.'}
+                  </div>
+                ) : (
+                  <table className="adm-table">
+                    <thead>
+                      <tr>
+                        <th>Candidate Name</th>
+                        <th>Applied Role</th>
+                        <th>Experience</th>
+                        <th>Contact</th>
+                        <th>Resume</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
 
-                {/* RESUME */}
-                <td>
-                  {app.resumeUrl ? (
-                    <a
-                      href={app.resumeUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      download
-                      className="adm-resume-download-btn"
-                      title="Download Resume"
-                    >
-                      ⬇ Download
-                    </a>
-                  ) : (
-                    <span style={{ color: 'var(--adm-text-dim)', fontSize: '0.8rem' }}>No file</span>
-                  )}
-                </td>
+                    <tbody>
+                      {filteredApplications.map((app) => (
+                        <tr key={app.id}>
+                          {/* CANDIDATE */}
+                          <td>
+                            <strong
+                              style={{ cursor: 'pointer', color: 'var(--adm-primary)' }}
+                              onClick={() => setSelectedApplication(app)}
+                              title="Click to view candidate details"
+                            >
+                              {app.fullName}
+                            </strong>
 
-                {/* STATUS */}
-                <td>
-  <select
-    className="adm-status-select"
-    value={app.applicationStatus || 'Applied'}
-    onChange={(e) =>
-      handleApplicationStatusChange(
-        app.id,
-        e.target.value
-      )
-    }
-  >
-    <option value="Applied">Applied</option>
-    <option value="Shortlisted">Shortlisted</option>
-    <option value="Interview">Interview</option>
-    <option value="Selected">Selected</option>
-    <option value="Rejected">Rejected</option>
-  </select>
-</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-    </div>
-  </div>
-)}
+                            <div
+                              style={{
+                                color: 'var(--adm-text-dim)',
+                                fontSize: '0.75rem'
+                              }}
+                            >
+                              Submitted:{' '}
+                              {app.appliedDate
+                                ? new Date(app.appliedDate).toLocaleString('en-IN', {
+                                    day: '2-digit',
+                                    month: 'short',
+                                    year: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                  })
+                                : '—'}
+                            </div>
+                          </td>
+
+                          {/* ROLE */}
+                          <td>
+                            <span className="adm-type-badge">
+                              {app.positionAppliedFor || app.jobTitle || '—'}
+                            </span>
+
+                            {app.jobTitle &&
+                              app.positionAppliedFor &&
+                              app.jobTitle !== app.positionAppliedFor && (
+                                <div
+                                  style={{
+                                    color: 'var(--adm-text-dim)',
+                                    fontSize: '0.72rem',
+                                    marginTop: '5px'
+                                  }}
+                                >
+                                  Job: {app.jobTitle}
+                                </div>
+                              )}
+                          </td>
+
+                          {/* EXPERIENCE */}
+                          <td>
+                            {app.yearsOfExperience !== null && app.yearsOfExperience !== undefined
+                              ? `${app.yearsOfExperience} ${app.yearsOfExperience === 1 ? 'year' : 'years'}`
+                              : 'Not specified'}
+                          </td>
+
+                          {/* CONTACT */}
+                          <td>
+                            <div>
+                              <a href={`tel:${app.phoneNumber}`} style={{ color: 'inherit', textDecoration: 'none' }}>
+                                {app.phoneNumber}
+                              </a>
+                            </div>
+
+                            <div
+                              style={{
+                                color: 'var(--adm-text-dim)',
+                                fontSize: '0.75rem'
+                              }}
+                            >
+                              <a href={`mailto:${app.email}`} style={{ color: 'inherit', textDecoration: 'none' }}>
+                                {app.email}
+                              </a>
+                            </div>
+                          </td>
+
+                          {/* RESUME DOWNLOAD & PREVIEW */}
+                          <td>
+                            {app.resumeUrl ? (
+                              <div className="adm-resume-cell">
+                                <button
+                                  type="button"
+                                  onClick={(e) => handleDownloadResume(app, e)}
+                                  className="adm-resume-download-btn"
+                                  title={`Download ${app.fullName}'s resume directly`}
+                                >
+                                  <FiDownload size={13} /> Download
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={(e) => handleViewResume(app, e)}
+                                  className="adm-resume-view-btn"
+                                  title="Preview resume in new tab"
+                                >
+                                  <FiEye size={13} /> View
+                                </button>
+                              </div>
+                            ) : (
+                              <span className="adm-no-file-pill">No file</span>
+                            )}
+                          </td>
+
+                          {/* STATUS */}
+                          <td>
+                            <select
+                              className="adm-status-select"
+                              value={app.applicationStatus || 'Applied'}
+                              onChange={(e) => handleApplicationStatusChange(app.id, e.target.value)}
+                            >
+                              <option value="Applied">Applied</option>
+                              <option value="Shortlisted">Shortlisted</option>
+                              <option value="Interview">Interview</option>
+                              <option value="Selected">Selected</option>
+                              <option value="Rejected">Rejected</option>
+                            </select>
+                          </td>
+
+                          {/* ACTIONS */}
+                          <td>
+                            <div className="adm-actions-cell">
+                              <button
+                                type="button"
+                                className="adm-btn-tiny"
+                                onClick={() => setSelectedApplication(app)}
+                                title="View candidate profile and cover message"
+                              >
+                                View Details
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+              </div>
+            </div>
+          )}
 
     {activeTab === 'jobs' && (
   <div className="adm-panel-card">
@@ -4375,6 +4570,158 @@ const loadMedia = async () => {
         </div>
       </div>
     )}
+
+      {/* CANDIDATE PROFILE MODAL */}
+      {selectedApplication && (
+        <div className="adm-modal-overlay" onClick={() => setSelectedApplication(null)}>
+          <div className="adm-modal adm-candidate-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="adm-modal-header">
+              <div>
+                <h3 className="adm-modal-title">{selectedApplication.fullName}</h3>
+                <span className="adm-type-badge" style={{ marginTop: '4px' }}>
+                  {selectedApplication.positionAppliedFor || selectedApplication.jobTitle || 'Applicant'}
+                </span>
+              </div>
+              <button
+                type="button"
+                className="adm-modal-close"
+                onClick={() => setSelectedApplication(null)}
+                title="Close modal"
+              >
+                <FiX size={18} />
+              </button>
+            </div>
+
+            <div className="adm-modal-body">
+              {/* Candidate Info Grid */}
+              <div className="adm-candidate-grid">
+                <div className="adm-candidate-field">
+                  <label>Email Address</label>
+                  <div>
+                    <a href={`mailto:${selectedApplication.email}`} className="adm-candidate-link">
+                      <FiMail size={13} style={{ marginRight: 5 }} />
+                      {selectedApplication.email}
+                    </a>
+                  </div>
+                </div>
+
+                <div className="adm-candidate-field">
+                  <label>Phone Number</label>
+                  <div>
+                    <a href={`tel:${selectedApplication.phoneNumber}`} className="adm-candidate-link">
+                      <FiPhone size={13} style={{ marginRight: 5 }} />
+                      {selectedApplication.phoneNumber}
+                    </a>
+                  </div>
+                </div>
+
+                <div className="adm-candidate-field">
+                  <label>Experience</label>
+                  <div>
+                    {selectedApplication.yearsOfExperience !== null && selectedApplication.yearsOfExperience !== undefined
+                      ? `${selectedApplication.yearsOfExperience} ${selectedApplication.yearsOfExperience === 1 ? 'year' : 'years'}`
+                      : 'Not specified'}
+                  </div>
+                </div>
+
+                <div className="adm-candidate-field">
+                  <label>Applied Date</label>
+                  <div>
+                    {selectedApplication.appliedDate
+                      ? new Date(selectedApplication.appliedDate).toLocaleString('en-IN', {
+                          day: '2-digit',
+                          month: 'short',
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })
+                      : '—'}
+                  </div>
+                </div>
+              </div>
+
+              {/* Cover Note / Candidate Message */}
+              {selectedApplication.message && (
+                <div className="adm-candidate-message-box">
+                  <label><FiFileText size={13} style={{ marginRight: 4 }} /> Cover Note / Candidate Message</label>
+                  <p>{selectedApplication.message}</p>
+                </div>
+              )}
+
+              {/* Resume Download & Preview Box */}
+              <div className="adm-candidate-resume-box">
+                <div className="adm-resume-box-header">
+                  <div>
+                    <strong style={{ fontSize: '0.95rem' }}>Curriculum Vitae / Resume</strong>
+                    <p style={{ margin: '2px 0 0', fontSize: '0.8rem', color: 'var(--adm-text-dim)' }}>
+                      {selectedApplication.resumeUrl
+                        ? 'Candidate has provided an official resume document'
+                        : 'No resume attached to this application'}
+                    </p>
+                  </div>
+
+                  {selectedApplication.resumeUrl && (
+                    <div className="adm-resume-box-actions">
+                      <button
+                        type="button"
+                        className="adm-resume-download-btn"
+                        onClick={(e) => handleDownloadResume(selectedApplication, e)}
+                        title="Download resume file directly to computer"
+                      >
+                        <FiDownload size={14} /> Download Resume
+                      </button>
+                      <button
+                        type="button"
+                        className="adm-resume-view-btn"
+                        onClick={(e) => handleViewResume(selectedApplication, e)}
+                        title="Preview resume in new tab"
+                      >
+                        <FiEye size={14} /> Preview
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Hiring Status Selector */}
+              <div className="adm-candidate-status-box">
+                <label>Update Candidate Status:</label>
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                  <select
+                    className="adm-status-select"
+                    value={selectedApplication.applicationStatus || 'Applied'}
+                    onChange={(e) => {
+                      const newStatus = e.target.value
+                      handleApplicationStatusChange(selectedApplication.id, newStatus)
+                      setSelectedApplication(prev => ({ ...prev, applicationStatus: newStatus }))
+                    }}
+                    style={{ minWidth: '160px' }}
+                  >
+                    <option value="Applied">Applied</option>
+                    <option value="Shortlisted">Shortlisted</option>
+                    <option value="Interview">Interview</option>
+                    <option value="Selected">Selected</option>
+                    <option value="Rejected">Rejected</option>
+                  </select>
+                  <span className={`adm-status-tag ${selectedApplication.applicationStatus || 'Applied'}`}>
+                    {selectedApplication.applicationStatus || 'Applied'}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="adm-modal-actions">
+              <button
+                type="button"
+                className="adm-btn-secondary"
+                onClick={() => setSelectedApplication(null)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Toast Notification */}
       {toastMessage && (

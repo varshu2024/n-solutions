@@ -3,11 +3,12 @@ import { verifyToken } from '../utils/jwt.js';
 
 export const requireAdmin = (request, response, next) => {
   const authorization = request.get('Authorization');
-  if (!authorization || !authorization.startsWith('Bearer ')) {
-    return response.status(401).json({ success: false, message: 'Authentication token is required.' });
+  let token = null;
+  if (authorization && authorization.startsWith('Bearer ')) {
+    token = authorization.slice(7).trim();
+  } else if (request.query && request.query.token) {
+    token = String(request.query.token).trim();
   }
-
-  const token = authorization.slice(7).trim();
   if (!token) {
     return response.status(401).json({ success: false, message: 'Authentication token is required.' });
   }

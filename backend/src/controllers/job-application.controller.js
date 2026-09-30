@@ -2,6 +2,7 @@ import { deleteResume, uploadResume } from '../config/cloudinary.js';
 import {
   createJobApplication,
   findJobForApplication,
+  getJobApplicationById,
   listJobApplications,
   updateJobApplicationStatus
 } from '../services/job-application.service.js';
@@ -129,4 +130,24 @@ export const updateStatus = async (request, response) => {
     'Application status updated successfully.',
     application
   )
-}
+};
+
+export const downloadResumeFile = async (request, response) => {
+  const application = await getJobApplicationById(request.params.id);
+  const resumeUrl = application.resume?.url || application.resumeUrl || (typeof application.resume === 'string' ? application.resume : null);
+  if (!resumeUrl) {
+    const error = new Error('No resume file found for this applicant.');
+    error.statusCode = 404;
+    throw error;
+  }
+
+  const safeName = (application.fullName || 'Candidate').replace(/[^a-zA-Z0-9_-]/g, '_');
+  let attachmentUrl = resumeUrl;
+  if (attachmentUrl.includes('cloudinary.com') && attachmentUrl.includes('/upload/')) {
+    attachmentUrl = attachmentUrl.replace(
+      '/upload/',
+      `/upload/fl_attachment:${encodeURIComponent(safeName + '_Resume')}/`
+    );
+  }
+  return response.redirect(attachmentUrl);
+};

@@ -93,31 +93,261 @@
   outline: none;
   min-width: 125px;
 }
-/* ===== RESUME DOWNLOAD BUTTON ===== */
+/* ===== RESUME DOWNLOAD & CAREERS MANAGEMENT ===== */
+.adm-resume-cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
 .adm-resume-download-btn {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 6px 13px;
-  background: var(--adm-secondary-light);
-  border: 1px solid rgba(8, 117, 182, 0.28);
-  border-radius: 100px;
-  color: var(--adm-primary-hover);
-  font-size: 0.78rem;
+  gap: 6px;
+  padding: 6px 12px;
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  border: 1px solid rgba(2, 132, 199, 0.4);
+  border-radius: 8px;
+  color: #ffffff !important;
+  font-size: 0.76rem;
   font-weight: 700;
   font-family: var(--adm-font);
   text-decoration: none;
   white-space: nowrap;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25);
 }
 
 .adm-resume-download-btn:hover {
-  background: var(--adm-primary);
-  color: #ffffff;
-  border-color: var(--adm-primary);
+  background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(8, 117, 182, 0.25);
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+}
+
+.adm-resume-download-btn:active {
+  transform: translateY(0);
+}
+
+.adm-resume-view-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  background: var(--adm-surface, #ffffff);
+  border: 1px solid var(--adm-border, #cbd5e1);
+  border-radius: 8px;
+  color: var(--adm-text, #1e293b);
+  font-size: 0.74rem;
+  font-weight: 600;
+  font-family: var(--adm-font);
+  cursor: pointer;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+}
+
+.adm-resume-view-btn:hover {
+  background: rgba(2, 132, 199, 0.08);
+  border-color: #0284c7;
+  color: #0284c7;
+  transform: translateY(-1px);
+}
+
+.adm-no-file-pill {
+  display: inline-block;
+  padding: 3px 8px;
+  background: rgba(148, 163, 184, 0.12);
+  color: #94a3b8;
+  font-size: 0.75rem;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+/* Toolbar & search */
+.adm-app-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.adm-search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.adm-search-icon {
+  position: absolute;
+  left: 10px;
+  color: var(--adm-text-dim, #94a3b8);
+  pointer-events: none;
+}
+
+.adm-search-input {
+  padding: 8px 30px 8px 32px;
+  background: var(--adm-surface, #ffffff);
+  border: 1px solid var(--adm-border, #cbd5e1);
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-family: var(--adm-font);
+  color: var(--adm-text, #0f172a);
+  min-width: 250px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.adm-search-input:focus {
+  border-color: #0284c7;
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+}
+
+.adm-search-clear {
+  position: absolute;
+  right: 8px;
+  background: none;
+  border: none;
+  color: var(--adm-text-dim, #94a3b8);
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.adm-app-stats-bar {
+  display: flex;
+  gap: 8px;
+  padding: 12px 20px;
+  background: rgba(241, 245, 249, 0.6);
+  border-bottom: 1px solid var(--adm-border, #e2e8f0);
+  flex-wrap: wrap;
+}
+
+.adm-app-stat-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  color: #475569;
+}
+
+.adm-app-stat-pill.total { border-color: #cbd5e1; }
+.adm-app-stat-pill.applied { background: rgba(59, 130, 246, 0.08); border-color: rgba(59, 130, 246, 0.3); color: #2563eb; }
+.adm-app-stat-pill.shortlisted { background: rgba(147, 51, 234, 0.08); border-color: rgba(147, 51, 234, 0.3); color: #7c3aed; }
+.adm-app-stat-pill.interview { background: rgba(245, 158, 11, 0.08); border-color: rgba(245, 158, 11, 0.3); color: #d97706; }
+.adm-app-stat-pill.selected { background: rgba(16, 185, 129, 0.08); border-color: rgba(16, 185, 129, 0.3); color: #059669; }
+.adm-app-stat-pill.resumes { background: rgba(2, 132, 199, 0.08); border-color: rgba(2, 132, 199, 0.3); color: #0284c7; }
+
+/* Candidate Profile Modal */
+.adm-candidate-modal {
+  max-width: 600px !important;
+  width: 92% !important;
+}
+
+.adm-candidate-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.adm-candidate-field label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--adm-text-dim, #94a3b8);
+  margin-bottom: 4px;
+}
+
+.adm-candidate-field div {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--adm-text, #0f172a);
+}
+
+.adm-candidate-link {
+  color: #0284c7;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+.adm-candidate-link:hover {
+  text-decoration: underline;
+}
+
+.adm-candidate-message-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+}
+
+.adm-candidate-message-box label {
+  display: flex;
+  align-items: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #64748b;
+  margin-bottom: 8px;
+}
+
+.adm-candidate-message-box p {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: #334155;
+  white-space: pre-wrap;
+}
+
+.adm-candidate-resume-box {
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.04) 0%, rgba(3, 105, 161, 0.08) 100%);
+  border: 1.5px solid rgba(2, 132, 199, 0.22);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+}
+
+.adm-resume-box-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.adm-resume-box-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.adm-candidate-status-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 14px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.adm-candidate-status-box label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--adm-text, #0f172a);
 }
 
 .adm-media-video-placeholder {
