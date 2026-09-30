@@ -15,8 +15,7 @@ import {
   FiZap, FiSun, FiShield, FiTarget, FiTrendingUp, FiGlobe,
   FiCompass, FiCpu, FiAward, FiCheckCircle, FiRefreshCw,
   FiBriefcase, FiHome, FiTool, FiActivity, FiSliders,
-  FiUsers, FiClock, FiLayers, FiFileText, FiMapPin, FiStar,
-  FiPause, FiPlay
+  FiUsers, FiClock, FiLayers, FiFileText, FiMapPin, FiStar
 } from 'react-icons/fi'
 
 const services = homeContent.whatWeDo.services
