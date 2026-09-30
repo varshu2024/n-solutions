@@ -18,7 +18,6 @@ import {
   FiUsers, FiClock, FiLayers, FiFileText, FiMapPin, FiStar,
   FiPause, FiPlay
 } from 'react-icons/fi'
-import SEO from './components/SEO'
 
 const services = homeContent.whatWeDo.services
 const process = homeContent.howWeWork.steps
