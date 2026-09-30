@@ -1,577 +1,513 @@
-import { useState, useEffect } from 'react'
-import { SiteHeader, SiteFooter, Arrow, Reveal, navigate } from '../components/Shared'
+import { useState, useEffect, useRef } from 'react'
+import { SiteHeader, SiteFooter, Arrow, navigate } from '../components/Shared'
 import { apiGet } from '../utils/api'
-import { FiPlay, FiMapPin, FiX } from 'react-icons/fi'
+import { useSEO } from '../utils/useSEO'
+import {
+  FiPlay, FiMapPin, FiX, FiArrowRight, FiCamera, FiVideo,
+  FiBriefcase, FiUsers, FiFileText, FiChevronRight, FiEye,
+  FiCalendar, FiClock, FiExternalLink
+} from 'react-icons/fi'
 
-export const pressArticles = [
+/* ─────────────────────────────────────────────
+   STATIC DATA
+───────────────────────────────────────────── */
+
+const videoItems = [
   {
-    id: 'press-500-sites',
-    tag: 'Milestone Release',
-    date: 'August 2024',
-    readTime: '4 min read',
-    title: 'N Solutions Achieves Landmark 500+ PM Surya Ghar Rooftop Installations in Vizianagaram District',
-    summary: 'Within seven months of portal empanelment, N Solutions has completed over 500 residential solar installations in Vizianagaram with 250+ further sites in the pipeline, catalyzing household clean energy adoption.',
-    fullText: `Vizianagaram, Andhra Pradesh — N Solutions, a premier solar Engineering, Procurement and Construction (EPC) company with 16+ years of operational excellence, has achieved a critical milestone under the Government of India's PM Surya Ghar Muft Bijli Yojana by successfully commissioning over 500 residential solar rooftop systems across Vizianagaram district in just seven months.
-
-The initiative has transformed urban and semi-urban households by reducing monthly electricity bills to virtually zero while contributing clean power back to the APEPDCL regional grid through state-of-the-art bi-directional net metering.
-
-"Our mission has always been to make solar adoption simple, transparent, and technically dependable for homeowners," stated Ch. C.S.V. Raju, Managing Partner of N Solutions. "Reaching 500+ households in seven months demonstrates our ground-level execution speed, rigorous engineering quality, and seamless coordination with government subsidy portals. With 250+ additional sites currently in the execution pipeline, we are proud to lead the regional clean energy movement."
-
-Every installation is equipped with ALMM-listed high-efficiency DCR modules, IP65 smart string inverters with Wi-Fi telemetry, and certified chemical earthing protection, accompanied by 5 years of complimentary on-site maintenance.`,
-    image: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=900&q=85'
+    id: 'v1',
+    title: 'Company Overview',
+    desc: 'Our vision, mission and impact across India.',
+    duration: '3:24',
+    thumb: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=600&q=80',
+    src: '/media/hero-solar.mp4',
+    category: 'Corporate'
   },
   {
-    id: 'press-mw-expansion',
-    tag: 'Corporate Growth',
-    date: 'June 2024',
-    readTime: '5 min read',
-    title: 'Expanding MW-Scale Commercial & Industrial Solar Portfolio Across 9 States in India',
-    summary: 'With over 16 years of solar engineering expertise, N Solutions expands its Commercial & Industrial footprint, delivering captive ground-mounted solar plants and high-voltage grid synchronizations for major manufacturing hubs.',
-    fullText: `Hyderabad / Visakhapatnam — As Indian industrial enterprises face rising commercial grid tariffs and stringent carbon compliance requirements, N Solutions has announced the expansion of its multi-megawatt captive solar EPC operations across nine Indian states, including Andhra Pradesh, Telangana, Tamil Nadu, Karnataka, Maharashtra, and Odisha.
-
-N Solutions provides complete turnkey EPC services—spanning initial solar resource estimation and shadow analysis to civil piling, HT transmission evacuation, and automated SCADA integration.
-
-Recent industrial milestones include a 1.2 MWp ground-mounted solar plant for Lakshmi Textiles, a 250 kWp metal rooftop installation for Sri Industries, and a 500 kWp cold-chain solar facility for Coastal Mega Food Park.
-
-"Commercial and industrial consumers account for over 50% of India's power consumption. Transitioning these energy-intensive facilities to captive solar delivers extraordinary financial returns with payback periods as short as 3 to 4 years," added Ch. C.S.V. Raju.`,
-    image: 'https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&w=900&q=85'
+    id: 'v2',
+    title: 'EPC Installation Process',
+    desc: 'Step-by-step journey from design to commissioning.',
+    duration: '1:48',
+    thumb: 'https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&w=600&q=80',
+    src: '/media/services.mp4',
+    category: 'Technical'
   },
   {
-    id: 'press-agri-pumps',
-    tag: 'Agricultural Innovation',
-    date: 'March 2024',
-    readTime: '3 min read',
-    title: 'Deployment of 75 Solar Pumping Systems Under PM-KUSUM Powers Rural Irrigation',
-    summary: 'Replacing polluting diesel irrigation pumps with automated 5HP and 7.5HP solar variable frequency drives, ensuring consistent daytime water supply for agricultural communities.',
-    fullText: `Anakapalli / Vizianagaram — Strengthening agricultural water security in non-electrified farming pockets, N Solutions has completed the deployment of 75 solar water pumping installations under the PM-KUSUM initiative across agricultural belts in Andhra Pradesh.
-
-The solar pumps feature automated solar MPPT variable frequency drives, dry-run protection sensors, and seasonal tilt mounting structures. Farmers now have dependable irrigation power during daytime sunlight hours, completely free from costly diesel purchases or irregular rural grid schedules.
-
-N Solutions provides a 5-year comprehensive service guarantee backed by regional mobile maintenance teams to ensure zero irrigation downtime during critical agricultural crop seasons.`,
-    image: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=900&q=85'
+    id: 'v3',
+    title: 'Client Story – Farmer',
+    desc: 'How solar transformed irrigation and livelihood.',
+    duration: '2:20',
+    thumb: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=600&q=80',
+    src: '/media/proof-solar.mp4',
+    category: 'Client Story'
   },
   {
-    id: 'press-chairman-message',
-    tag: 'Leadership Editorial',
-    date: 'January 2024',
-    readTime: '4 min read',
-    title: 'Managing Partner Ch. C.S.V. Raju on Engineering a Resilient Clean Energy Future',
-    summary: '“The future of energy is not only about generating power — it is about generating it smarter.” An executive perspective on solar reliability, quality engineering, and responsible project execution.',
-    fullText: `In an exclusive editorial, Ch. C.S.V. Raju, Managing Partner of N Solutions, reflects on 16+ years of navigating India's renewable energy landscape:
-
-"Solar energy in India has reached an inflection point. Where once the conversation was solely around installation costs, today the primary focus is on long-term plant yield, engineering durability, and safety standards. A solar plant is a 25-year infrastructure commitment. Cutting corners on mounting structures, DC cabling, or inverters undermines the asset's lifetime value.
-
-At N Solutions, we have always prioritized engineering integrity. Whether designing a 3kW residential rooftop under PM Surya Ghar or an 11kV evacuation switchyard for a multi-megawatt industrial client, our approach remains rooted in deep technical understanding and responsible execution. We look forward to powering the next chapter of India's green growth."`,
-    image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=900&q=85'
-  },
-  {
-    id: 'press-topcon-tech',
-    tag: 'Technology Spotlight',
-    date: 'November 2023',
-    readTime: '4 min read',
-    title: 'Adopting N-Type TOPCon & Bi-Facial Solar Modules for Maximum Rooftop Energy Density',
-    summary: 'How advanced tunnel oxide passivated contact (TOPCon) modules are delivering up to 22.5% efficiency and superior temperature coefficients for Indian commercial facilities.',
-    fullText: `Visakhapatnam — N Solutions has integrated latest-generation N-Type TOPCon (Tunnel Oxide Passivated Contact) and bi-facial solar modules across its C&I and premium residential projects.
-
-With a lower temperature coefficient (-0.30%/°C) compared to traditional p-type modules, TOPCon technology generates significantly higher power output during intense Indian summer midday temperatures, delivering 4% to 7% higher annual energy yield on the same rooftop surface area.
-
-Paired with intelligent multi-MPPT inverters and smart shade optimization, commercial facilities maximize energy generation even on restricted rooftop footprints.`,
-    image: 'https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?auto=format&fit=crop&w=900&q=85'
-  },
-  {
-    id: 'press-om-standards',
-    tag: 'Operations & Maintenance',
-    date: 'September 2023',
-    readTime: '3 min read',
-    title: 'The Vital Role of Preventative Solar O&M: Protecting 25-Year Asset Performance',
-    summary: 'Thermal drone thermography, string-level electrical audits, and regular robotic module de-soiling can increase solar plant generation by up to 15% annually.',
-    fullText: `Visakhapatnam — While solar PV systems have no moving parts in their primary generation array, dust accumulation, hot spots, loose terminations, and environmental weathering can degrade system output over time.
-
-N Solutions offers comprehensive Operation & Maintenance (O&M) programs across commercial, industrial, and utility portfolios. Utilizing thermal imaging cameras to identify micro-cracks and hot-spotting before inverter tripping occurs, N Solutions guarantees high performance ratio (PR) standards and maximum financial returns for plant owners.`,
-    image: 'https://images.unsplash.com/photo-1613665813446-82a78c468a1d?auto=format&fit=crop&w=900&q=85'
+    id: 'v4',
+    title: 'Industrial Plant Walkthrough',
+    desc: 'Inside a 250 kWp rooftop installation.',
+    duration: '7:32',
+    thumb: 'https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?auto=format&fit=crop&w=600&q=80',
+    src: '/media/products.mp4',
+    category: 'Project'
   }
 ]
 
-export const galleryImages = [
+const projectItems = [
   {
-    title: 'PM Surya Ghar Residential Cluster',
+    id: 'p1',
+    title: '5 kW Rooftop Solar System',
+    location: 'Vizianagaram, Andhra Pradesh',
+    category: 'Residential',
+    desc: 'Clean, affordable energy for a modern home.',
+    img: 'https://images.unsplash.com/photo-1559302504-64aae6ca6b6d?auto=format&fit=crop&w=700&q=80',
+    catColor: '#2563eb'
+  },
+  {
+    id: 'p2',
+    title: '250 kW Solar Installation',
+    location: 'Hyderabad, Telangana',
+    category: 'Commercial',
+    desc: 'Supporting sustainable business operations.',
+    img: 'https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&w=700&q=80',
+    catColor: '#0284c7'
+  },
+  {
+    id: 'p3',
+    title: '10 MW Solar Power Plant',
+    location: 'Kurnool, Andhra Pradesh',
+    category: 'Industrial',
+    desc: 'Large-scale clean energy for a greener tomorrow.',
+    img: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=700&q=80',
+    catColor: '#7c3aed'
+  },
+  {
+    id: 'p4',
+    title: '15 HP Solar Pump System',
+    location: 'Anakapalli, Andhra Pradesh',
+    category: 'Agriculture',
+    desc: 'Helping farmers irrigate their fields with clean energy.',
+    img: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=700&q=80',
+    catColor: '#059669'
+  }
+]
+
+const clientItems = [
+  {
+    id: 'c1',
+    name: 'K. Srinivasa Rao',
+    role: 'Homeowner',
     location: 'Vizianagaram, AP',
-    category: 'Residential Rooftop',
-    src: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=1000&q=85'
+    quote: '"Our electricity bill reduced significantly. Great service and professional team!"'
   },
   {
-    title: '1.2 MWp Captive Solar Power Plant',
-    location: 'Guntur Corridor, AP',
-    category: 'MW-Scale Ground Mount',
-    src: 'https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&w=1000&q=85'
+    id: 'c2',
+    name: 'V. Ramakrishna Murthy',
+    role: 'Business Owner',
+    location: 'Hyderabad, TG',
+    quote: '"Professional team and excellent execution across our entire facility."'
   },
   {
-    title: 'Industrial Metal Rooftop 250 kWp',
-    location: 'Auto Nagar, Visakhapatnam',
-    category: 'Industrial Rooftop',
-    src: 'https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?auto=format&fit=crop&w=1000&q=85'
+    id: 'c3',
+    name: 'M. Anand Reddy',
+    role: 'Factory Manager',
+    location: 'Kurnool, AP',
+    quote: '"Reliable and efficient industrial solution. ROI achieved in under 4 years."'
   },
   {
-    title: 'Institutional Healthcare Solar Array',
-    location: 'Medical College Campus',
-    category: 'Government Solar',
-    src: 'https://images.unsplash.com/photo-1545208942-e1c9e3b7a4b5?auto=format&fit=crop&w=1000&q=85'
-  },
-  {
-    title: 'Solar Pumping Irrigation Array',
-    location: 'Anakapalli Agri Belt',
-    category: 'Agri Solar Pumps',
-    src: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=1000&q=85'
-  },
-  {
-    title: 'High-Voltage Inverter & Switchyard',
-    location: 'Captive Solar Substation',
-    category: 'Infrastructure & EPC',
-    src: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1000&q=85'
+    id: 'c4',
+    name: 'Ch. Venkata Narayana',
+    role: 'Farmer',
+    location: 'Anakapalli, AP',
+    quote: '"Solar pump changed our farming life. We water our crops every day now."'
   }
 ]
 
+const teamPhotos = [
+  {
+    id: 't1',
+    label: 'Site Inspection',
+    img: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=500&q=80'
+  },
+  {
+    id: 't2',
+    label: 'Project Discussion',
+    img: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=500&q=80'
+  },
+  {
+    id: 't3',
+    label: 'Installation Team',
+    img: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=500&q=80'
+  },
+  {
+    id: 't4',
+    label: 'Our Team',
+    img: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=500&q=80'
+  }
+]
+
+const pressItems = [
+  {
+    id: 'pr1',
+    publication: 'The Hindu',
+    logo: 'THE HINDU',
+    logoStyle: { fontFamily: 'Georgia, serif', color: '#b91c1c', fontSize: '18px', fontWeight: '700' },
+    date: '12 Mar 2025',
+    title: 'Solar Irrigation Changing Farmers Lives in Andhra Pradesh',
+    url: '#'
+  },
+  {
+    id: 'pr2',
+    publication: 'BusinessLine',
+    logo: 'BusinessLine',
+    logoStyle: { fontFamily: 'Georgia, serif', color: '#1e3a8a', fontSize: '17px', fontWeight: '700' },
+    date: '18 July 2024',
+    title: 'Expanding Renewable Energy Access in Rural and Semi-Urban Areas',
+    url: '#'
+  },
+  {
+    id: 'pr3',
+    publication: 'Times of India',
+    logo: 'Times of India',
+    logoStyle: { fontFamily: 'Georgia, serif', color: '#cc0000', fontSize: '16px', fontWeight: '700' },
+    date: '05 Jan 2025',
+    title: 'Driving Sustainable Growth Through Solar Solutions Across India',
+    url: '#'
+  }
+]
+
+const caseStudySteps = [
+  { num: '01', title: 'Planning & Survey', desc: 'Site analysis, design and approvals.' },
+  { num: '02', title: 'Installation', desc: 'Expert execution with quality and safety.' },
+  { num: '03', title: 'Completed Project', desc: 'Clean energy for a brighter tomorrow.' }
+]
+
+const TABS = [
+  { id: 'all',     label: 'All',          icon: <FiCamera size={14}/> },
+  { id: 'videos',  label: 'Videos',       icon: <FiVideo size={14}/> },
+  { id: 'projects',label: 'Projects',     icon: <FiBriefcase size={14}/> },
+  { id: 'clients', label: 'Clients',      icon: <FiUsers size={14}/> },
+  { id: 'team',    label: 'Team',         icon: <FiUsers size={14}/> },
+  { id: 'press',   label: 'Press & News', icon: <FiFileText size={14}/> },
+]
+
+/* ─────────────────────────────────────────────
+   MAIN COMPONENT
+───────────────────────────────────────────── */
 export default function MediaPage() {
-  const [activeTab, setActiveTab] = useState('all')
-  const [activeArticle, setActiveArticle] = useState(null)
-  const [activePhoto, setActivePhoto] = useState(null)
-  const [activeVideo, setActiveVideo] = useState('/media/hero-solar.mp4')
+  const [activeTab, setActiveTab]       = useState('all')
+  const [playingVideo, setPlayingVideo] = useState(null)
+  const [lightbox, setLightbox]         = useState(null)
+  const videoRef = useRef(null)
 
-  const [articles, setArticles] = useState(pressArticles)
-  const [gallery, setGallery] = useState(galleryImages)
-  const [videos, setVideos] = useState([])
-  const [projectMilestones, setProjectMilestones] = useState([])
+  useSEO({
+    title: 'Media & Gallery – Solar Projects, Videos, Press & Team',
+    description: "Explore N Solutions' media gallery: project photos, installation videos, client stories, team moments and press coverage of our solar EPC work across India.",
+    keywords: 'N Solutions media, solar project gallery, solar videos, solar press, client testimonials, solar team, solar EPC gallery India',
+    canonical: 'https://nsolutions.in/media',
+  })
+
   useEffect(() => {
-    document.title = 'Media & News Center | N Solutions Solar EPC'
     window.scrollTo({ top: 0, behavior: 'smooth' })
-
-    const loadMedia = async () => {
-      try {
-        const mediaResult = await apiGet('/media')
-
-        if (!mediaResult?.success || !mediaResult?.data) {
-          console.error('Failed to retrieve media data')
-          return
-        }
-
-        const {
-          news = [],
-          projectMilestones = [],
-          gallery = [],
-          videos = []
-        } = mediaResult.data
-
-        // NEWS
-        if (Array.isArray(news) && news.length > 0) {
-          setArticles(
-            news.map((item) => ({
-              id: item.id,
-              tag: item.source || item.tag || 'Press Release',
-              date: item.publicationDate || '',
-              readTime: item.readTime || '',
-              title: item.title || '',
-              summary: item.summary || '',
-              fullText: item.fullText || item.summary || '',
-              image: item.image?.url || ''
-            }))
-          )
-        } else {
-          setArticles(pressArticles)
-        }
-
-        // PROJECT MILESTONES
-        if (Array.isArray(projectMilestones)) {
-          setProjectMilestones(projectMilestones)
-        }
-
-        // VIDEOS
-        if (Array.isArray(videos) && videos.length > 0) {
-          const mappedVideos = videos.map((video) => ({
-            id: video.id,
-            title: video.title || '',
-            description: video.description || '',
-            videoUrl: video.videoUrl || '',
-            thumbnail: video.thumbnail?.url || '',
-            category: video.category || ''
-          }))
-
-          setVideos(mappedVideos)
-
-          if (mappedVideos[0]?.videoUrl) {
-            setActiveVideo(mappedVideos[0].videoUrl)
-          }
-        } else {
-          setVideos([])
-        }
-
-        // GALLERY
-        if (Array.isArray(gallery) && gallery.length > 0) {
-          setGallery(
-            gallery.map((photo) => ({
-              id: photo.id,
-              title: photo.title || '',
-              location: photo.location || '',
-              category: photo.category || '',
-              src: photo.image?.url || ''
-            }))
-          )
-        } else {
-          setGallery(galleryImages)
-        }
-      } catch (error) {
-        console.error('Failed to load media:', error)
-      }
-    }
-
-    loadMedia()
   }, [])
 
+  const show = (tab) => activeTab === 'all' || activeTab === tab
+
   return (
-    <div className="media-page">
+    <div className="mg-page">
       <SiteHeader activePath="/media" />
 
       <main>
-        {/* HERO SECTION */}
-        <section className="media-hero">
-          <div className="media-hero-bg" />
-          <div className="media-hero-shade" />
-
-          <div className="wrap media-hero-content">
-            <p className="eyebrow light">
-              <span /> News, Insights & Media Center
-            </p>
-            <h1>
-              Documenting India’s<br />
-              <em>Clean Energy Transition.</em>
+        {/* ── HERO ── */}
+        <section className="mg-hero">
+          <div className="mg-hero-img" aria-hidden="true" />
+          <div className="mg-hero-shade" />
+          <div className="mg-hero-content wrap">
+            <p className="mg-eyebrow"><span className="mg-eyebrow-line" /> MEDIA &amp; GALLERY</p>
+            <h1 className="mg-hero-h1">
+              Our Journey,<br />
+              Captured in <em>Every Moment</em>
             </h1>
-            <p className="media-hero-lead">
-              Official press releases, project commissioning stories, video walkthroughs, and editorial perspectives from N Solutions across 16+ years of solar operations and 9 Indian states.
+            <p className="mg-hero-sub">
+              A glimpse of our projects, people, clients and milestones in building a cleaner and sustainable tomorrow.
             </p>
+            <button
+              type="button"
+              className="mg-hero-play-btn"
+              onClick={() => setPlayingVideo(videoItems[0])}
+            >
+              <span className="mg-play-circle"><FiPlay size={18} /></span>
+              <span>
+                <strong>Watch Our Story</strong>
+                <small>1:48 · Company Overview</small>
+              </span>
+            </button>
+          </div>
 
-            <div className="media-hero-stats">
-              <div>
-                <strong>500+</strong>
-                <small>PM Surya Ghar Sites Documented</small>
-              </div>
-              <div>
-                <strong>9 States</strong>
-                <small>Operational Reach Covered</small>
-              </div>
-              <div>
-                <strong>16+ Years</strong>
-                <small>Solar Operations History</small>
-              </div>
-            </div>
+          {/* stats strip */}
+          <div className="mg-stats-strip">
+            <div className="mg-stat"><FiCamera size={16}/><strong>150+</strong><small>Project Photos</small></div>
+            <div className="mg-stat"><FiVideo size={16}/><strong>50+</strong><small>Video Highlights</small></div>
+            <div className="mg-stat"><FiUsers size={16}/><strong>25+</strong><small>Clients with Projects</small></div>
+            <div className="mg-stat"><FiFileText size={16}/><strong>20+</strong><small>Press Mentions</small></div>
           </div>
         </section>
 
-        {/* MEDIA TABS */}
-        <div className="media-nav-bar wrap">
-          <div className="media-tabs-list">
-            <button
-              type="button"
-              className={activeTab === 'all' ? 'is-active' : ''}
-              onClick={() => setActiveTab('all')}
-            >
-              All Updates
-            </button>
-            <button
-              type="button"
-              className={activeTab === 'press' ? 'is-active' : ''}
-              onClick={() => setActiveTab('press')}
-            >
-              Press Releases
-            </button>
-            <button
-              type="button"
-              className={activeTab === 'videos' ? 'is-active' : ''}
-              onClick={() => setActiveTab('videos')}
-            >
-              Video Spotlights
-            </button>
-            <button
-              type="button"
-              className={activeTab === 'gallery' ? 'is-active' : ''}
-              onClick={() => setActiveTab('gallery')}
-            >
-              Photo Archive
-            </button>
+        {/* ── TABS ── */}
+        <div className="mg-tabs-bar">
+          <div className="mg-tabs-inner wrap">
+            {TABS.map(t => (
+              <button
+                key={t.id}
+                type="button"
+                className={`mg-tab${activeTab === t.id ? ' is-active' : ''}`}
+                onClick={() => setActiveTab(t.id)}
+              >
+                {t.icon} {t.label}
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* BREAKING MILESTONE BANNER */}
-        <section className="media-milestone-banner wrap">
-          <div className="milestone-card">
-            <div className="milestone-pill">Featured Milestone Release</div>
-            <h2>
-              N Solutions Completes 500+ PM Surya Ghar Residential Rooftops in Vizianagaram
-            </h2>
-            <p>
-              Delivered within 7 months of national portal launch, empowering hundreds of households with zero electricity bills. An additional 250+ sites are currently in execution across the district.
-            </p>
-            <div className="milestone-footer">
-              <button
-                type="button"
-                className="button button-accent"
-                onClick={() => articles.length > 0 && setActiveArticle(articles[0])}
-              >
-                Read Official Announcement <Arrow />
+        {/* ── VIDEOS ── */}
+        {show('videos') && (
+          <section className="mg-section wrap">
+            <div className="mg-section-head">
+              <div>
+                <p className="mg-sec-eyebrow"><span className="mg-eyebrow-line" /> VIDEOS</p>
+                <h2 className="mg-sec-h2">Watch <em>Our Story</em></h2>
+                <p className="mg-sec-sub">Project highlights, installation process, client stories and our journey towards clean energy.</p>
+              </div>
+              <button type="button" className="mg-view-all-btn" onClick={() => setActiveTab('videos')}>
+                View All Videos <FiArrowRight size={14}/>
               </button>
-              <span className="milestone-date">August 2024 · Verified Milestone</span>
             </div>
-          </div>
-        </section>
 
-        {/* VIDEO SPOTLIGHTS SECTION */}
-        {(activeTab === 'all' || activeTab === 'videos') && (
-          <section className="media-videos-section wrap">
-            <Reveal className="section-heading">
-              <div>
-                <p className="eyebrow"><span /> High-Definition Video Center</p>
-                <h2>Solar engineering<br /><em>in motion.</em></h2>
-              </div>
-              <p className="heading-note">
-                Visual walkthroughs of our solar installations, EPC project stages, and solar component infrastructure.
-              </p>
-            </Reveal>
-
-            <div className="media-video-player-container">
-              <div className="main-video-screen">
-                <video
-                  key={activeVideo}
-                  controls
-                  autoPlay
-                  muted
-                  playsInline
-                  className="active-video-player"
-                >
-                  <source src={activeVideo} type="video/mp4" />
-                </video>
-              </div>
-
-              <div className="video-playlist-sidebar">
-                {videos.length > 0 ? (
-                  videos.map((video) => (
-                    <div
-                      key={video.id}
-                      className={`playlist-item ${activeVideo === video.videoUrl ? 'is-playing' : ''
-                        }`}
-                      onClick={() => setActiveVideo(video.videoUrl)}
-                    >
-                      <span className="playlist-icon">
-                        <FiPlay size={14} />
-                      </span>
-
-                      <div>
-                        <strong>{video.title}</strong>
-                        <small>{video.description}</small>
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <>
-                    <div
-                      className={`playlist-item ${activeVideo === '/media/hero-solar.mp4' ? 'is-playing' : ''
-                        }`}
-                      onClick={() => setActiveVideo('/media/hero-solar.mp4')}
-                    >
-                      <span className="playlist-icon">
-                        <FiPlay size={14} />
-                      </span>
-                      <div>
-                        <strong>N Solutions Solar EPC Overview</strong>
-                        <small>
-                          High-yield MW plants to residential rooftop networks
-                        </small>
-                      </div>
-                    </div>
-
-                    <div
-                      className={`playlist-item ${activeVideo === '/media/services.mp4' ? 'is-playing' : ''
-                        }`}
-                      onClick={() => setActiveVideo('/media/services.mp4')}
-                    >
-                      <span className="playlist-icon">
-                        <FiPlay size={14} />
-                      </span>
-                      <div>
-                        <strong>Turnkey EPC Execution Services</strong>
-                        <small>
-                          From feasibility and design to testing and net-metering
-                        </small>
-                      </div>
-                    </div>
-
-                    <div
-                      className={`playlist-item ${activeVideo === '/media/products.mp4' ? 'is-playing' : ''
-                        }`}
-                      onClick={() => setActiveVideo('/media/products.mp4')}
-                    >
-                      <span className="playlist-icon">
-                        <FiPlay size={14} />
-                      </span>
-                      <div>
-                        <strong>Solar Products & System Equipment</strong>
-                        <small>
-                          Tier-1 PV modules, smart string inverters & protection gear
-                        </small>
-                      </div>
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* PRESS RELEASES & NEWS GRID */}
-        {(activeTab === 'all' || activeTab === 'press') && (
-          <section className="media-news-section wrap">
-            <Reveal className="section-heading">
-              <div>
-                <p className="eyebrow"><span /> Press & Articles</p>
-                <h2>Official announcements<br /><em>& solar insights.</em></h2>
-              </div>
-              <p className="heading-note">
-                Stay updated on company milestones, technical whitepapers, and regulatory updates across India.
-              </p>
-            </Reveal>
-
-            <div className="press-articles-grid">
-              {articles.map((article) => (
-                <Reveal key={article.id} className="press-article-card">
-                  <div className="press-card-image">
-                    <img src={article.image} alt={article.title} loading="lazy" />
-                    <span className="press-card-tag">{article.tag}</span>
+            <div className="mg-videos-grid">
+              {videoItems.map(v => (
+                <div key={v.id} className="mg-video-card" onClick={() => setPlayingVideo(v)}>
+                  <div className="mg-vc-thumb">
+                    <img src={v.thumb} alt={v.title} loading="lazy" />
+                    <span className="mg-vc-duration">{v.duration}</span>
+                    <div className="mg-vc-play"><FiPlay size={20}/></div>
                   </div>
-                  <div className="press-card-body">
-                    <div className="press-card-meta">
-                      <span>{article.date}</span>
-                      <span>·</span>
-                      <span>{article.readTime}</span>
-                    </div>
-                    <h3>{article.title}</h3>
-                    <p>{article.summary}</p>
-                    <button
-                      type="button"
-                      className="press-read-btn"
-                      onClick={() => setActiveArticle(article)}
-                    >
-                      Read Full Story <Arrow />
-                    </button>
+                  <div className="mg-vc-body">
+                    <span className="mg-vc-cat">{v.category}</span>
+                    <strong className="mg-vc-title">{v.title}</strong>
+                    <p className="mg-vc-desc">{v.desc}</p>
                   </div>
-                </Reveal>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* PHOTO ARCHIVE / FIELD GALLERY */}
-        {(activeTab === 'all' || activeTab === 'gallery') && (
-          <section className="media-gallery-section wrap">
-            <Reveal className="section-heading">
-              <div>
-                <p className="eyebrow"><span /> Visual Archive</p>
-                <h2>Field photography &<br /><em>commissioned sites.</em></h2>
-              </div>
-              <p className="heading-note">
-                Authentic field documentation of our residential clusters, commercial rooftops, and MW-scale installations.
-              </p>
-            </Reveal>
-
-            <div className="photo-archive-grid">
-              {gallery.map((photo, i) => (
-                <Reveal key={i} className="gallery-card" onClick={() => setActivePhoto(photo)}>
-                  <img src={photo.src} alt={photo.title} loading="lazy" />
-                  <div className="gallery-card-overlay">
-                    <span className="gallery-category">{photo.category}</span>
-                    <h4>{photo.title}</h4>
-                    <small><FiMapPin size={12} style={{ verticalAlign: 'middle', marginRight: 2 }} />{photo.location}</small>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* ARTICLE FULL MODAL */}
-        {activeArticle && (
-          <div className="media-article-modal-backdrop" onClick={() => setActiveArticle(null)}>
-            <div className="media-article-modal-card" onClick={(e) => e.stopPropagation()}>
-              <button
-                type="button"
-                className="modal-close-btn"
-                onClick={() => setActiveArticle(null)}
-                aria-label="Close article"
-              >
-                <FiX size={20} />
-              </button>
-
-              <div className="article-modal-header">
-                <div className="article-modal-meta">
-                  <span className="badge-tag">{activeArticle.tag}</span>
-                  <span>{activeArticle.date}</span>
-                  <span>·</span>
-                  <span>{activeArticle.readTime}</span>
                 </div>
-                <h2>{activeArticle.title}</h2>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* ── PROJECT GALLERY ── */}
+        {show('projects') && (
+          <section className="mg-section mg-section-alt">
+            <div className="wrap">
+              <div className="mg-section-head">
+                <div>
+                  <p className="mg-sec-eyebrow"><span className="mg-eyebrow-line" /> PROJECT GALLERY</p>
+                  <h2 className="mg-sec-h2">Our Projects <em>in Action</em></h2>
+                  <p className="mg-sec-sub">Explore our solar installations across residential, commercial, industrial and agricultural sectors.</p>
+                </div>
+                <button type="button" className="mg-view-all-btn" onClick={() => navigate('/projects')}>
+                  View All Projects <FiArrowRight size={14}/>
+                </button>
               </div>
 
-              <div className="article-modal-image">
-                <img src={activeArticle.image} alt={activeArticle.title} />
-              </div>
-
-              <div className="article-modal-body">
-                {activeArticle.fullText.split('\n\n').map((paragraph, index) => (
-                  <p key={index}>{paragraph}</p>
+              <div className="mg-projects-grid">
+                {projectItems.map(p => (
+                  <div key={p.id} className="mg-proj-card" onClick={() => setLightbox({ type: 'photo', src: p.img, title: p.title, sub: p.location })}>
+                    <div className="mg-proj-img">
+                      <img src={p.img} alt={p.title} loading="lazy"/>
+                      <span className="mg-proj-cat" style={{ background: p.catColor }}>{p.category}</span>
+                    </div>
+                    <div className="mg-proj-body">
+                      <strong>{p.title}</strong>
+                      <p className="mg-proj-loc"><FiMapPin size={11}/> {p.location}</p>
+                      <p className="mg-proj-desc">{p.desc}</p>
+                      <span className="mg-proj-link">Explore <FiChevronRight size={12}/></span>
+                    </div>
+                  </div>
                 ))}
               </div>
-
-              <div className="article-modal-footer">
-                <button
-                  type="button"
-                  className="button button-ghost-dark"
-                  onClick={() => setActiveArticle(null)}
-                >
-                  Back to Media Center
-                </button>
-                <a
-                  className="button button-accent"
-                  href="/contact"
-                  onClick={(e) => {
-                    e.preventDefault()
-                    setActiveArticle(null)
-                    navigate('/contact')
-                  }}
-                >
-                  Contact N Solutions <Arrow />
-                </a>
-              </div>
             </div>
-          </div>
+          </section>
         )}
 
-        {/* PHOTO LIGHTBOX MODAL */}
-        {activePhoto && (
-          <div className="media-photo-lightbox-backdrop" onClick={() => setActivePhoto(null)}>
-            <div className="photo-lightbox-card" onClick={(e) => e.stopPropagation()}>
-              <button
-                type="button"
-                className="modal-close-btn"
-                onClick={() => setActivePhoto(null)}
-              >
-                <FiX size={20} />
+        {/* ── CLIENTS ── */}
+        {show('clients') && (
+          <section className="mg-section wrap">
+            <div className="mg-section-head">
+              <div>
+                <p className="mg-sec-eyebrow"><span className="mg-eyebrow-line" /> OUR CLIENTS</p>
+                <h2 className="mg-sec-h2">Clients with <em>Real Impact</em></h2>
+                <p className="mg-sec-sub">Partnering with homes, businesses, industries and farms for a sustainable future.</p>
+              </div>
+              <button type="button" className="mg-view-all-btn" onClick={() => navigate('/projects')}>
+                View All Clients <FiArrowRight size={14}/>
               </button>
-              <img src={activePhoto.src} alt={activePhoto.title} />
-              <div className="photo-lightbox-caption">
-                <span className="badge-tag">{activePhoto.category}</span>
-                <h3>{activePhoto.title}</h3>
-                <p><FiMapPin size={14} style={{ verticalAlign: 'middle', marginRight: 3 }} />{activePhoto.location}</p>
+            </div>
+
+            <div className="mg-clients-grid">
+              {clientItems.map(c => (
+                <div key={c.id} className="mg-client-card">
+                  <div className="mg-client-top">
+                    <div className="mg-client-initial">{c.name.charAt(0)}</div>
+                    <div>
+                      <strong className="mg-client-name">{c.name}</strong>
+                      <span className="mg-client-role">{c.role}</span>
+                      <p className="mg-client-loc"><FiMapPin size={11}/> {c.location}</p>
+                    </div>
+                  </div>
+                  <p className="mg-client-quote">{c.quote}</p>
+                  <span className="mg-client-arrow"><FiChevronRight size={14}/></span>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* ── TEAM ── */}
+        {show('team') && (
+          <section className="mg-section mg-section-alt">
+            <div className="wrap">
+              <div className="mg-section-head">
+                <div>
+                  <p className="mg-sec-eyebrow"><span className="mg-eyebrow-line" /> OUR TEAM</p>
+                  <h2 className="mg-sec-h2">People Behind <em>the Progress</em></h2>
+                  <p className="mg-sec-sub">Our dedicated team working together to create a cleaner and brighter tomorrow.</p>
+                </div>
+                <button type="button" className="mg-view-all-btn">
+                  View All Moments <FiArrowRight size={14}/>
+                </button>
+              </div>
+
+              <div className="mg-team-grid">
+                {teamPhotos.map(t => (
+                  <div key={t.id} className="mg-team-card" onClick={() => setLightbox({ type: 'photo', src: t.img, title: t.label, sub: 'N Solutions Team' })}>
+                    <img src={t.img} alt={t.label} loading="lazy"/>
+                    <span className="mg-team-label">{t.label}</span>
+                  </div>
+                ))}
               </div>
             </div>
-          </div>
+          </section>
+        )}
+
+        {/* ── PRESS & NEWS ── */}
+        {show('press') && (
+          <section className="mg-section wrap">
+            <div className="mg-section-head">
+              <div>
+                <p className="mg-sec-eyebrow"><span className="mg-eyebrow-line" /> PRESS &amp; NEWS</p>
+                <h2 className="mg-sec-h2">In the <em>News</em></h2>
+                <p className="mg-sec-sub">Latest media coverage, announcements and updates about our projects and impact.</p>
+              </div>
+              <button type="button" className="mg-view-all-btn" onClick={() => setActiveTab('press')}>
+                View All Press &amp; News <FiArrowRight size={14}/>
+              </button>
+            </div>
+
+            <div className="mg-press-grid">
+              {pressItems.map(pr => (
+                <a key={pr.id} className="mg-press-card" href={pr.url} target="_blank" rel="noopener noreferrer">
+                  <div className="mg-press-pub">
+                    <span style={pr.logoStyle}>{pr.logo}</span>
+                  </div>
+                  <div className="mg-press-body">
+                    <span className="mg-press-date"><FiCalendar size={11}/> {pr.date}</span>
+                    <p className="mg-press-title">{pr.title}</p>
+                    <span className="mg-press-link">Read More <FiExternalLink size={11}/></span>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* ── FEATURED CASE STUDY ── */}
+        {(activeTab === 'all' || activeTab === 'projects') && (
+          <section className="mg-case-section">
+            <div className="wrap mg-case-inner">
+              <div className="mg-case-left">
+                <p className="mg-sec-eyebrow light-eyebrow"><span className="mg-eyebrow-line light" /> FEATURED STORY</p>
+                <h2 className="mg-case-h2">
+                  From Planning to<br /><em>Power Generation</em>
+                </h2>
+                <p className="mg-case-desc">
+                  A real project story showcasing our end-to-end execution from design to clean energy delivery.
+                </p>
+                <button type="button" className="mg-case-cta" onClick={() => navigate('/projects')}>
+                  View Full Case Study <FiArrowRight size={14}/>
+                </button>
+              </div>
+
+              <div className="mg-case-steps">
+                {caseStudySteps.map((s, i) => (
+                  <div key={s.num} className="mg-case-step">
+                    <span className="mg-case-num">{s.num}</span>
+                    <div className="mg-case-step-img">
+                      <img
+                        src={[
+                          'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=300&q=80',
+                          'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=300&q=80',
+                          'https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=300&q=80'
+                        ][i]}
+                        alt={s.title}
+                        loading="lazy"
+                      />
+                    </div>
+                    <strong className="mg-case-step-title">{s.title}</strong>
+                    <p className="mg-case-step-desc">{s.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
         )}
       </main>
+
+      {/* ── VIDEO MODAL ── */}
+      {playingVideo && (
+        <div className="mg-modal-backdrop" onClick={() => setPlayingVideo(null)}>
+          <div className="mg-video-modal" onClick={e => e.stopPropagation()}>
+            <button type="button" className="mg-modal-close" onClick={() => setPlayingVideo(null)} aria-label="Close">
+              <FiX size={20}/>
+            </button>
+            <div className="mg-video-modal-meta">
+              <span className="mg-vc-cat">{playingVideo.category}</span>
+              <strong>{playingVideo.title}</strong>
+            </div>
+            <video
+              ref={videoRef}
+              key={playingVideo.src}
+              controls
+              autoPlay
+              playsInline
+              className="mg-video-player"
+            >
+              <source src={playingVideo.src} type="video/mp4" />
+            </video>
+          </div>
+        </div>
+      )}
+
+      {/* ── PHOTO LIGHTBOX ── */}
+      {lightbox && lightbox.type === 'photo' && (
+        <div className="mg-modal-backdrop" onClick={() => setLightbox(null)}>
+          <div className="mg-photo-modal" onClick={e => e.stopPropagation()}>
+            <button type="button" className="mg-modal-close" onClick={() => setLightbox(null)} aria-label="Close">
+              <FiX size={20}/>
+            </button>
+            <img src={lightbox.src} alt={lightbox.title} />
+            <div className="mg-photo-modal-caption">
+              <strong>{lightbox.title}</strong>
+              {lightbox.sub && <span><FiMapPin size={12}/> {lightbox.sub}</span>}
+            </div>
+          </div>
+        </div>
+      )}
 
       <SiteFooter />
     </div>

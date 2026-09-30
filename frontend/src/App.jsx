@@ -9,6 +9,7 @@ import AdminPortal from './admin/AdminPortal'
 import { navigate, SiteFooter } from './components/Shared'
 import { homeContent, aboutContent, servicesAndSolutionsContent } from './content/siteContent'
 import { apiGet } from './utils/api'
+import { useSEO } from './utils/useSEO'
 import {
   FiArrowUpRight, FiArrowDown, FiCheck, FiChevronRight, FiChevronLeft,
   FiZap, FiSun, FiShield, FiTarget, FiTrendingUp, FiGlobe,
@@ -1114,6 +1115,13 @@ function AboutPage() {
   const [horizonTab, setHorizonTab] = useState('vision')
   const { companyOverview, chairmanMessage, visionAndMission, journey, whatWeDo, howWeWork } = aboutContent
 
+  useSEO({
+    title: 'About Us – Solar EPC Company with 16+ Years Experience',
+    description: 'Learn about N Solutions – an ISO 9001:2015 certified Solar EPC company with 16+ years of experience delivering commercial, industrial, and residential solar projects across 9 states in India.',
+    keywords: 'about N Solutions, solar EPC company, solar company India, ISO certified solar, MNRE empanelled, NREDCAP registered, solar experience India',
+    canonical: 'https://nsolutions.in/about',
+  })
+
   return <div className="about-page"><ScrollProgressBar /><SiteHeader activePath="/about" /><main>
 
     <section className="about-hero">
@@ -1453,10 +1461,12 @@ function AboutPage() {
 function ServicesPage() {
   const { header, services, cta } = servicesAndSolutionsContent
 
-  useEffect(() => {
-    document.title = 'Services & Solutions | N Solutions'
-    return () => { document.title = 'N Solutions | Solar EPC' }
-  }, [])
+  useSEO({
+    title: 'Solar Services & Solutions – EPC, O&M, Subsidy & Net Metering',
+    description: 'N Solutions offers end-to-end solar services: commercial & industrial EPC, residential rooftop installation, PM Surya Ghar subsidy assistance, net metering, operation & maintenance across Andhra Pradesh and 9 states.',
+    keywords: 'solar EPC services, commercial solar installation, industrial solar, residential solar, PM Surya Ghar subsidy, net metering, solar O&M, solar solutions India',
+    canonical: 'https://nsolutions.in/services',
+  })
 
   return (
     <div className="services-page">
@@ -1633,6 +1643,13 @@ function RouteShell() {
 
 function App() {
   const [currentPath, setCurrentPath] = useState(window.location.pathname)
+
+  useSEO({
+    title: 'N Solutions – Solar EPC Company | Built on Experience, Driven by Solar',
+    description: 'N Solutions is an ISO 9001:2015 certified Solar EPC company with 16+ years delivering residential, commercial & industrial solar projects across 9 states in India. MNRE empanelled. PM Surya Ghar registered.',
+    keywords: 'N Solutions solar, solar EPC India, solar installation Vizianagaram, solar company Andhra Pradesh, residential solar, commercial solar EPC, PM Surya Ghar, APEPDCL empanelled',
+    canonical: 'https://nsolutions.in/',
+  })
 
   useEffect(() => {
     const onPopState = () => setCurrentPath(window.location.pathname)
