@@ -4,8 +4,7 @@ import {
   findJobForApplication,
   getJobApplicationById,
   listJobApplications,
-  updateJobApplicationStatus,
-  getJobApplicationById
+  updateJobApplicationStatus
 } from '../services/job-application.service.js';
 import { sendSuccess } from '../utils/response.js';
 import { isValidEmail } from '../utils/validation.js';

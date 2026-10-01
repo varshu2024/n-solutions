@@ -12,84 +12,6 @@ import {
    STATIC DATA
 ───────────────────────────────────────────── */
 
-const videoItems = [
-  {
-    id: 'v1',
-    title: 'Company Overview',
-    desc: 'Our vision, mission and impact across India.',
-    duration: '3:24',
-    thumb: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=600&q=80',
-    src: '/media/hero-solar.mp4',
-    category: 'Corporate'
-  },
-  {
-    id: 'v2',
-    title: 'EPC Installation Process',
-    desc: 'Step-by-step journey from design to commissioning.',
-    duration: '1:48',
-    thumb: 'https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&w=600&q=80',
-    src: '/media/services.mp4',
-    category: 'Technical'
-  },
-  {
-    id: 'v3',
-    title: 'Client Story – Farmer',
-    desc: 'How solar transformed irrigation and livelihood.',
-    duration: '2:20',
-    thumb: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=600&q=80',
-    src: '/media/proof-solar.mp4',
-    category: 'Client Story'
-  },
-  {
-    id: 'v4',
-    title: 'Industrial Plant Walkthrough',
-    desc: 'Inside a 250 kWp rooftop installation.',
-    duration: '7:32',
-    thumb: 'https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?auto=format&fit=crop&w=600&q=80',
-    src: '/media/products.mp4',
-    category: 'Project'
-  }
-]
-
-const projectItems = [
-  {
-    id: 'p1',
-    title: '5 kW Rooftop Solar System',
-    location: 'Vizianagaram, Andhra Pradesh',
-    category: 'Residential',
-    desc: 'Clean, affordable energy for a modern home.',
-    img: 'https://images.unsplash.com/photo-1559302504-64aae6ca6b6d?auto=format&fit=crop&w=700&q=80',
-    catColor: '#2563eb'
-  },
-  {
-    id: 'p2',
-    title: '250 kW Solar Installation',
-    location: 'Hyderabad, Telangana',
-    category: 'Commercial',
-    desc: 'Supporting sustainable business operations.',
-    img: 'https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&w=700&q=80',
-    catColor: '#0284c7'
-  },
-  {
-    id: 'p3',
-    title: '10 MW Solar Power Plant',
-    location: 'Kurnool, Andhra Pradesh',
-    category: 'Industrial',
-    desc: 'Large-scale clean energy for a greener tomorrow.',
-    img: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=700&q=80',
-    catColor: '#7c3aed'
-  },
-  {
-    id: 'p4',
-    title: '15 HP Solar Pump System',
-    location: 'Anakapalli, Andhra Pradesh',
-    category: 'Agriculture',
-    desc: 'Helping farmers irrigate their fields with clean energy.',
-    img: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=700&q=80',
-    catColor: '#059669'
-  }
-]
-
 const clientItems = [
   {
     id: 'c1',
@@ -144,35 +66,35 @@ const teamPhotos = [
   }
 ]
 
-const pressItems = [
-  {
-    id: 'pr1',
-    publication: 'The Hindu',
-    logo: 'THE HINDU',
-    logoStyle: { fontFamily: 'Georgia, serif', color: '#b91c1c', fontSize: '18px', fontWeight: '700' },
-    date: '12 Mar 2025',
-    title: 'Solar Irrigation Changing Farmers Lives in Andhra Pradesh',
-    url: '#'
-  },
-  {
-    id: 'pr2',
-    publication: 'BusinessLine',
-    logo: 'BusinessLine',
-    logoStyle: { fontFamily: 'Georgia, serif', color: '#1e3a8a', fontSize: '17px', fontWeight: '700' },
-    date: '18 July 2024',
-    title: 'Expanding Renewable Energy Access in Rural and Semi-Urban Areas',
-    url: '#'
-  },
-  {
-    id: 'pr3',
-    publication: 'Times of India',
-    logo: 'Times of India',
-    logoStyle: { fontFamily: 'Georgia, serif', color: '#cc0000', fontSize: '16px', fontWeight: '700' },
-    date: '05 Jan 2025',
-    title: 'Driving Sustainable Growth Through Solar Solutions Across India',
-    url: '#'
-  }
-]
+// const pressItems = [
+//   {
+//     id: 'pr1',
+//     publication: 'The Hindu',
+//     logo: 'THE HINDU',
+//     logoStyle: { fontFamily: 'Georgia, serif', color: '#b91c1c', fontSize: '18px', fontWeight: '700' },
+//     date: '12 Mar 2025',
+//     title: 'Solar Irrigation Changing Farmers Lives in Andhra Pradesh',
+//     url: '#'
+//   },
+//   {
+//     id: 'pr2',
+//     publication: 'BusinessLine',
+//     logo: 'BusinessLine',
+//     logoStyle: { fontFamily: 'Georgia, serif', color: '#1e3a8a', fontSize: '17px', fontWeight: '700' },
+//     date: '18 July 2024',
+//     title: 'Expanding Renewable Energy Access in Rural and Semi-Urban Areas',
+//     url: '#'
+//   },
+//   {
+//     id: 'pr3',
+//     publication: 'Times of India',
+//     logo: 'Times of India',
+//     logoStyle: { fontFamily: 'Georgia, serif', color: '#cc0000', fontSize: '16px', fontWeight: '700' },
+//     date: '05 Jan 2025',
+//     title: 'Driving Sustainable Growth Through Solar Solutions Across India',
+//     url: '#'
+//   }
+// ]
 
 const caseStudySteps = [
   { num: '01', title: 'Planning & Survey', desc: 'Site analysis, design and approvals.' },
@@ -183,11 +105,12 @@ const caseStudySteps = [
 const TABS = [
   { id: 'all',     label: 'All',          icon: <FiCamera size={14}/> },
   { id: 'videos',  label: 'Videos',       icon: <FiVideo size={14}/> },
-  { id: 'projects',label: 'Projects',     icon: <FiBriefcase size={14}/> },
   { id: 'clients', label: 'Clients',      icon: <FiUsers size={14}/> },
   { id: 'team',    label: 'Team',         icon: <FiUsers size={14}/> },
   { id: 'press',   label: 'Press & News', icon: <FiFileText size={14}/> },
 ]
+
+
 
 /* ─────────────────────────────────────────────
    MAIN COMPONENT
@@ -197,7 +120,10 @@ export default function MediaPage() {
   const [playingVideo, setPlayingVideo] = useState(null)
   const [lightbox, setLightbox]         = useState(null)
   const videoRef = useRef(null)
-
+  const [galleryItems, setGalleryItems] = useState([])
+  const [videoItems, setVideoItems] = useState([])
+  const [pressItems, setPressItems] = useState([])
+  const [mediaLoading, setMediaLoading] = useState(true)
   useSEO({
     title: 'Media & Gallery – Solar Projects, Videos, Press & Team',
     description: "Explore N Solutions' media gallery: project photos, installation videos, client stories, team moments and press coverage of our solar EPC work across India.",
@@ -208,6 +134,40 @@ export default function MediaPage() {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [])
+  useEffect(() => {
+  const loadMedia = async () => {
+    try {
+      const result = await apiGet('/public/media')
+
+      console.log('MEDIA API RESULT:', result)
+      console.log('VIDEOS FROM API:', result?.data?.videos)
+
+      if (result.success) {
+        setGalleryItems(result.data.gallery || [])
+        setVideoItems(result.data.videos || [])
+        setPressItems(result.data.news || [])
+      }
+    } catch (error) {
+      console.error('Failed to load media:', error)
+    } finally {
+      setMediaLoading(false)
+    }
+  }
+
+  loadMedia()
+}, [])
+
+  const projectItems = galleryItems
+  .filter((item) => item.category === 'Projects')
+  .map((item) => ({
+    id: item.id,
+    title: item.title,
+    img: item.image?.url,
+    category: item.category,
+    location: '',
+    desc: item.description || '',
+    catColor: '#2563eb'
+  }))
 
   const show = (tab) => activeTab === 'all' || activeTab === tab
 
@@ -232,7 +192,7 @@ export default function MediaPage() {
             <button
               type="button"
               className="mg-hero-play-btn"
-              onClick={() => setPlayingVideo(videoItems[0])}
+              onClick={() => videoItems.length > 0 && setPlayingVideo(videoItems[0])}
             >
               <span className="mg-play-circle"><FiPlay size={18} /></span>
               <span>
@@ -285,14 +245,18 @@ export default function MediaPage() {
               {videoItems.map(v => (
                 <div key={v.id} className="mg-video-card" onClick={() => setPlayingVideo(v)}>
                   <div className="mg-vc-thumb">
-                    <img src={v.thumb} alt={v.title} loading="lazy" />
-                    <span className="mg-vc-duration">{v.duration}</span>
+                    <img
+                      src={v.thumbnail?.url}
+                      alt={v.title}
+                      loading="lazy"
+                    />
+
                     <div className="mg-vc-play"><FiPlay size={20}/></div>
                   </div>
                   <div className="mg-vc-body">
                     <span className="mg-vc-cat">{v.category}</span>
                     <strong className="mg-vc-title">{v.title}</strong>
-                    <p className="mg-vc-desc">{v.desc}</p>
+                    <p className="mg-vc-desc">{v.description}</p>
                   </div>
                 </div>
               ))}
@@ -300,42 +264,7 @@ export default function MediaPage() {
           </section>
         )}
 
-        {/* ── PROJECT GALLERY ── */}
-        {show('projects') && (
-          <section className="mg-section mg-section-alt">
-            <div className="wrap">
-              <div className="mg-section-head">
-                <div>
-                  <p className="mg-sec-eyebrow"><span className="mg-eyebrow-line" /> PROJECT GALLERY</p>
-                  <h2 className="mg-sec-h2">Our Projects <em>in Action</em></h2>
-                  <p className="mg-sec-sub">Explore our solar installations across residential, commercial, industrial and agricultural sectors.</p>
-                </div>
-                <button type="button" className="mg-view-all-btn" onClick={() => navigate('/projects')}>
-                  View All Projects <FiArrowRight size={14}/>
-                </button>
-              </div>
-
-              <div className="mg-projects-grid">
-                {projectItems.map(p => (
-                  <div key={p.id} className="mg-proj-card" onClick={() => setLightbox({ type: 'photo', src: p.img, title: p.title, sub: p.location })}>
-                    <div className="mg-proj-img">
-                      <img src={p.img} alt={p.title} loading="lazy"/>
-                      <span className="mg-proj-cat" style={{ background: p.catColor }}>{p.category}</span>
-                    </div>
-                    <div className="mg-proj-body">
-                      <strong>{p.title}</strong>
-                      <p className="mg-proj-loc"><FiMapPin size={11}/> {p.location}</p>
-                      <p className="mg-proj-desc">{p.desc}</p>
-                      <span className="mg-proj-link">Explore <FiChevronRight size={12}/></span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* ── CLIENTS ── */}
+          {/* ── CLIENTS ── */}
         {show('clients') && (
           <section className="mg-section wrap">
             <div className="mg-section-head">
@@ -415,6 +344,7 @@ export default function MediaPage() {
                   <div className="mg-press-pub">
                     <span style={pr.logoStyle}>{pr.logo}</span>
                   </div>
+                  <img src={pr.image} alt={pr.title}/>
                   <div className="mg-press-body">
                     <span className="mg-press-date"><FiCalendar size={11}/> {pr.date}</span>
                     <p className="mg-press-title">{pr.title}</p>
@@ -427,7 +357,7 @@ export default function MediaPage() {
         )}
 
         {/* ── FEATURED CASE STUDY ── */}
-        {(activeTab === 'all' || activeTab === 'projects') && (
+        {(activeTab === 'all') && (
           <section className="mg-case-section">
             <div className="wrap mg-case-inner">
               <div className="mg-case-left">
@@ -481,13 +411,13 @@ export default function MediaPage() {
             </div>
             <video
               ref={videoRef}
-              key={playingVideo.src}
+              key={playingVideo.videoUrl}
               controls
               autoPlay
               playsInline
               className="mg-video-player"
             >
-              <source src={playingVideo.src} type="video/mp4" />
+              <source src={playingVideo.videoUrl} type="video/mp4" />
             </video>
           </div>
         </div>

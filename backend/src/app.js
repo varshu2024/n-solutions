@@ -49,6 +49,7 @@ app.use('/api/gallery', publicGalleryRoutes);
 app.use('/api/admin/gallery', galleryRoutes);
 app.use('/api/videos', videoRoutes);
 app.use('/api/media', publicMediaRoutes);
+app.use('/api/public/media', publicMediaRoutes)
 app.use('/api/jobs', jobRoutes);
 app.use('/api/job-applications', jobApplicationRoutes);
 app.use('/api/testimonials', testimonialRoutes);

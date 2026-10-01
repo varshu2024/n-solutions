@@ -47,12 +47,6 @@ const applicationResponse = (application) => ({
   updatedAt: application.updatedAt
 });
 
-export const getJobApplicationById = async (id) => {
-  if (!mongoose.isValidObjectId(id)) throw invalidJobId();
-  const application = await JobApplication.findById(id).populate('jobId', 'jobTitle');
-  if (!application) throw jobNotFound();
-  return application;
-};
 
 export const listJobApplications = async () => {
   const applications = await JobApplication.find({})
