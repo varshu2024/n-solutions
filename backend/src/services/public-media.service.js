@@ -2,12 +2,14 @@ import { Gallery } from '../models/Gallery.js';
 import { News } from '../models/News.js';
 import { ProjectMilestone } from '../models/ProjectMilestone.js';
 import { Video } from '../models/Video.js';
+import { Client } from '../models/Client.js';
 
 export const PUBLIC_MEDIA_TYPES = {
   NEWS: 'News & Media Coverage',
   MILESTONES: 'Project Milestones',
   GALLERY: 'Image Gallery',
-  VIDEOS: 'Videos'
+  VIDEOS: 'Videos',
+  CLIENTS: 'Clients'
 };
 
 const publicImage = (image) => ({ url: image?.url });
@@ -50,6 +52,18 @@ const publicVideo = (video) => ({
   createdAt: video.createdAt
 });
 
+const publicClient = (client) => ({
+  id: client._id.toString(),
+  name: client.name,
+  role: client.role,
+  company: client.company,
+  location: client.location,
+  description: client.description,
+  quote: client.quote,
+  image: publicImage(client.image),
+  createdAt: client.createdAt
+});
+
 const newsQuery = () => News.find({})
   .select('title summary image publicationDate source articleUrl createdAt')
   .sort({ publicationDate: -1, createdAt: -1 })
@@ -67,6 +81,11 @@ const galleryQuery = (filter = {}) => Gallery.find(filter)
 
 const videoQuery = () => Video.find({})
   .select('title description thumbnail videoUrl category createdAt')
+  .sort({ createdAt: -1 })
+  .lean();
+
+const clientQuery = () => Client.find({ status: 'active' })
+  .select('name role company location description quote image createdAt')
   .sort({ createdAt: -1 })
   .lean();
 
@@ -100,18 +119,21 @@ export const listPublicMedia = async (type) => {
   if (type === PUBLIC_MEDIA_TYPES.MILESTONES) return (await milestoneQuery()).map(publicMilestone);
   if (type === PUBLIC_MEDIA_TYPES.GALLERY) return listPublicGallery();
   if (type === PUBLIC_MEDIA_TYPES.VIDEOS) return (await videoQuery()).map(publicVideo);
+  if (type === PUBLIC_MEDIA_TYPES.CLIENTS) return (await clientQuery()).map(publicClient);
 
-  const [news, projectMilestones, gallery, videos] = await Promise.all([
+  const [news, projectMilestones, gallery, videos, clients] = await Promise.all([
     newsQuery(),
     milestoneQuery(),
     galleryQuery(),
-    videoQuery()
+    videoQuery(),
+    clientQuery()
   ]);
 
   return {
     news: news.map(publicNews),
     projectMilestones: projectMilestones.map(publicMilestone),
     gallery: gallery.map(publicGallery),
-    videos: videos.map(publicVideo)
+    videos: videos.map(publicVideo),
+    clients: clients.map(publicClient)
   };
 };

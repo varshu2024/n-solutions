@@ -37,11 +37,17 @@ const cleanup = async (asset) => { try { await deleteMediaImage(asset?.publicId)
 export const create = async (request, response) => {
   const input = { ...request.body };
   const details = validate(input);
-  if (!request.file) details.image = 'News image is required.';
   if (Object.keys(details).length) throw validationError(details);
-  const image = await uploadMediaImage(request.file.buffer);
-  try { return sendSuccess(response, 201, 'News publication created successfully.', await createNews({ ...input, image })); }
-  catch (error) { await cleanup(image); throw error; }
+  let image = { url: '', publicId: '' };
+  if (request.file) {
+    image = await uploadMediaImage(request.file.buffer);
+  }
+  try {
+    return sendSuccess(response, 201, 'News publication created successfully.', await createNews({ ...input, image }));
+  } catch (error) {
+    if (image?.publicId) await cleanup(image);
+    throw error;
+  }
 };
 
 export const list = async (request, response) => sendSuccess(response, 200, 'News publications fetched successfully.', await listNews());

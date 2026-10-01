@@ -18,6 +18,7 @@ import publicGalleryRoutes from './routes/public-gallery.routes.js';
 import jobRoutes from './routes/job.routes.js';
 import testimonialRoutes from './routes/testimonial.routes.js';
 import jobApplicationRoutes from './routes/job-application.routes.js';
+import clientRoutes from './routes/client.routes.js';
 import { env } from './config/env.js';
 import { errorHandler, notFoundHandler } from './middleware/error.middleware.js';
 
@@ -52,6 +53,7 @@ app.use('/api/media', publicMediaRoutes);
 app.use('/api/jobs', jobRoutes);
 app.use('/api/job-applications', jobApplicationRoutes);
 app.use('/api/testimonials', testimonialRoutes);
+app.use('/api/clients', clientRoutes);
 app.use(notFoundHandler);
 app.use(errorHandler);
 

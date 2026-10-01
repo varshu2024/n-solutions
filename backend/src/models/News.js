@@ -27,11 +27,11 @@ const newsSchema = new mongoose.Schema(
     image: {
       url: {
         type: String,
-        required: [true, 'Image URL is required']
+        default: ''
       },
       publicId: {
         type: String,
-        required: [true, 'Image public ID is required']
+        default: ''
       }
     },
 
