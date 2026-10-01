@@ -119,6 +119,10 @@ export default function MediaPage() {
   const [activeTab, setActiveTab]       = useState('all')
   const [playingVideo, setPlayingVideo] = useState(null)
   const [lightbox, setLightbox]         = useState(null)
+  const [projects, setProjects]         = useState(projectItems)
+  const [videos, setVideos]             = useState(videoItems)
+  const [clients, setClients]           = useState(clientItems)
+  const [press, setPress]               = useState(pressItems)
   const videoRef = useRef(null)
   const [galleryItems, setGalleryItems] = useState([])
   const [videoItems, setVideoItems] = useState([])
@@ -133,6 +137,111 @@ export default function MediaPage() {
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
+
+    const fetchAllMedia = async () => {
+      try {
+        const [galleryResult, videosResult, newsResult, clientsResult] = await Promise.allSettled([
+          apiGet('/gallery/'),
+          apiGet('/videos'),
+          apiGet('/news'),
+          apiGet('/clients')
+        ])
+
+        // 1. Projects / Photos
+        if (galleryResult.status === 'fulfilled' && galleryResult.value?.success && Array.isArray(galleryResult.value.data)) {
+          const apiProjects = galleryResult.value.data.map(p => ({
+            id: p.id || p._id,
+            title: p.title || '',
+            location: p.location || '',
+            category: p.category || 'Residential',
+            desc: p.description || '',
+            img: p.image?.url || '',
+            catColor: '#2563eb'
+          }))
+          if (apiProjects.length > 0) {
+            const pMap = new Map()
+            projectItems.forEach(item => pMap.set(item.id, item))
+            apiProjects.forEach(item => pMap.set(item.id, item))
+            setProjects(Array.from(pMap.values()))
+          }
+        }
+
+        // 2. Videos
+        if (videosResult.status === 'fulfilled' && videosResult.value?.success && Array.isArray(videosResult.value.data)) {
+          const apiVideos = videosResult.value.data.map(v => ({
+            id: v.id || v._id,
+            title: v.title || '',
+            desc: v.description || '',
+            duration: v.duration || '2:30',
+            thumb: v.thumbnail?.url || '',
+            src: v.videoUrl || '',
+            category: v.category || 'Corporate'
+          }))
+          if (apiVideos.length > 0) {
+            const vMap = new Map()
+            videoItems.forEach(item => vMap.set(item.id, item))
+            apiVideos.forEach(item => vMap.set(item.id, item))
+            setVideos(Array.from(vMap.values()))
+          }
+        }
+
+        // 3. Press & News
+        if (newsResult.status === 'fulfilled' && newsResult.value?.success && Array.isArray(newsResult.value.data)) {
+          const apiPress = newsResult.value.data.map(n => ({
+            id: n.id || n._id,
+            publication: n.source || 'N Solutions',
+            logo: n.source || 'N Solutions',
+            logoStyle: { fontFamily: 'Georgia, serif', color: '#1e3a8a', fontSize: '17px', fontWeight: '700' },
+            date: n.publicationDate ? new Date(n.publicationDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '',
+            title: n.title || '',
+            url: n.articleUrl || '#',
+            image: n.image?.url || ''
+          }))
+          if (apiPress.length > 0) {
+            const prMap = new Map()
+            pressItems.forEach(item => prMap.set(item.id, item))
+            apiPress.forEach(item => prMap.set(item.id, item))
+            setPress(Array.from(prMap.values()))
+          }
+        }
+
+        // 4. Clients
+        let dynamicClients = []
+        if (clientsResult.status === 'fulfilled' && clientsResult.value?.success && Array.isArray(clientsResult.value.data)) {
+          dynamicClients = clientsResult.value.data.map(item => ({
+            id: item.id || item._id,
+            name: item.name || '',
+            role: item.role || 'Client',
+            location: item.location || '',
+            quote: item.quote || item.description || '',
+            image: item.image?.url || ''
+          }))
+        }
+
+        let localClients = []
+        try {
+          const stored = JSON.parse(localStorage.getItem('nsolutions_media_clients') || '[]')
+          localClients = stored.map(item => ({
+            id: item.id,
+            name: item.title || item.name || '',
+            role: item.role || item.category || 'Client',
+            location: item.location || '',
+            quote: item.quote || item.description || '',
+            image: item.imageUrl || ''
+          }))
+        } catch (e) {}
+
+        const mergedMap = new Map()
+        clientItems.forEach(c => mergedMap.set(c.id, c))
+        dynamicClients.forEach(c => mergedMap.set(c.id, c))
+        localClients.forEach(c => mergedMap.set(c.id, c))
+
+        setClients(Array.from(mergedMap.values()))
+      } catch (err) {
+        // fallback to default items
+      }
+    }
+    fetchAllMedia()
   }, [])
   useEffect(() => {
   const loadMedia = async () => {
@@ -192,7 +301,10 @@ export default function MediaPage() {
             <button
               type="button"
               className="mg-hero-play-btn"
-              onClick={() => videoItems.length > 0 && setPlayingVideo(videoItems[0])}
+              onClick={() => {
+                const firstVideo = videos?.[0] || videoItems?.[0];
+                if (firstVideo) setPlayingVideo(firstVideo);
+              }}
             >
               <span className="mg-play-circle"><FiPlay size={18} /></span>
               <span>
@@ -242,7 +354,7 @@ export default function MediaPage() {
             </div>
 
             <div className="mg-videos-grid">
-              {videoItems.map(v => (
+              {videos.map(v => (
                 <div key={v.id} className="mg-video-card" onClick={() => setPlayingVideo(v)}>
                   <div className="mg-vc-thumb">
                     <img
@@ -264,7 +376,6 @@ export default function MediaPage() {
           </section>
         )}
 
-          {/* ── CLIENTS ── */}
         {show('clients') && (
           <section className="mg-section wrap">
             <div className="mg-section-head">
@@ -279,14 +390,30 @@ export default function MediaPage() {
             </div>
 
             <div className="mg-clients-grid">
-              {clientItems.map(c => (
+              {clients.map(c => (
                 <div key={c.id} className="mg-client-card">
                   <div className="mg-client-top">
-                    <div className="mg-client-initial">{c.name.charAt(0)}</div>
+                    {c.image ? (
+                      <img
+                        src={c.image}
+                        alt={c.name}
+                        style={{
+                          width: '44px',
+                          height: '44px',
+                          borderRadius: '50%',
+                          objectFit: 'cover',
+                          border: '2px solid rgba(23,105,194,0.2)'
+                        }}
+                      />
+                    ) : (
+                      <div className="mg-client-initial">{c.name ? c.name.charAt(0) : 'C'}</div>
+                    )}
                     <div>
                       <strong className="mg-client-name">{c.name}</strong>
                       <span className="mg-client-role">{c.role}</span>
-                      <p className="mg-client-loc"><FiMapPin size={11}/> {c.location}</p>
+                      {c.location && (
+                        <p className="mg-client-loc"><FiMapPin size={11}/> {c.location}</p>
+                      )}
                     </div>
                   </div>
                   <p className="mg-client-quote">{c.quote}</p>
@@ -339,10 +466,16 @@ export default function MediaPage() {
             </div>
 
             <div className="mg-press-grid">
-              {pressItems.map(pr => (
+              {press.map(pr => (
                 <a key={pr.id} className="mg-press-card" href={pr.url} target="_blank" rel="noopener noreferrer">
                   <div className="mg-press-pub">
-                    <span style={pr.logoStyle}>{pr.logo}</span>
+                    {pr.image ? (
+                      <img src={pr.image} alt={pr.publication} style={{ maxHeight: '28px', maxWidth: '140px', objectFit: 'contain' }} />
+                    ) : (
+                      <span style={pr.logoStyle || { fontFamily: 'Georgia, serif', color: '#1e3a8a', fontSize: '17px', fontWeight: '700' }}>
+                        {pr.logo || pr.publication}
+                      </span>
+                    )}
                   </div>
                   <img src={pr.image} alt={pr.title}/>
                   <div className="mg-press-body">
