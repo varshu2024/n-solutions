@@ -197,21 +197,14 @@ export default function MediaPage() {
             <div className="mg-clients-grid">
               {clients.map(c => (
                 <div key={c.id} className="mg-client-card">
-                  <div className="mg-client-top">
+                  <div className="mg-team-card">
                     {c.image ? (
                       <img
                         src={c.image}
                         alt={c.name}
-                        style={{
-                          width: '44px',
-                          height: '44px',
-                          borderRadius: '50%',
-                          objectFit: 'cover',
-                          flexShrink: 0
-                        }}
                       />
                     ) : (
-                      <div className="mg-client-initial">{c.name ? c.name.charAt(0) : 'C'}</div>
+                      <div className="mg-client-initial">{c.name.charAt(0)}</div>
                     )}
                     <div>
                       <strong className="mg-client-name">{c.name}</strong>
