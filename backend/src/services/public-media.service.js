@@ -37,6 +37,7 @@ const publicMilestone = (milestone) => ({
 const publicGallery = (gallery) => ({
   id: gallery._id.toString(),
   title: gallery.title,
+  description: gallery.description || '',
   category: gallery.category,
   image: publicImage(gallery.image),
   createdAt: gallery.createdAt
@@ -75,7 +76,7 @@ const milestoneQuery = () => ProjectMilestone.find({})
   .lean();
 
 const galleryQuery = (filter = {}) => Gallery.find(filter)
-  .select('title category image createdAt')
+  .select('title description category image createdAt')
   .sort({ createdAt: -1 })
   .lean();
 

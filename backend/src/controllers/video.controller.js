@@ -7,7 +7,7 @@ const validationError = (details) => { const error = new Error('Request validati
 const isUrl = (value) => { try { return Boolean(new URL(value)); } catch (error) { return false; } };
 const validate = (input, partial = false) => {
   const details = {};
-  ['title', 'description', 'category'].forEach((field) => { 
+  ['title', 'description'].forEach((field) => {
     if ((!partial && (!input[field] || typeof input[field] !== 'string' || !input[field].trim())) || (partial && input[field] !== undefined && (typeof input[field] !== 'string' || !input[field].trim()))) details[field] = `${field} is required.`; });
   if (!partial && !input.videoUrl) {
   details.videoUrl = 'Video URL or video file is required.'
@@ -28,10 +28,32 @@ const cleanupImage = async (asset) => { try { await deleteMediaImage(asset?.publ
 const cleanupVideo = async (publicId) => { try { await deleteMediaVideo(publicId); } catch (error) { console.error(`Media video cleanup failed: ${error.message}`); } };
 
 export const create = async (request, response) => {
-  const files = request.files || {}; const thumbnailFile = files.thumbnail?.[0]; const videoFile = files.video?.[0]; const input = { ...request.body }; const details = validate({ ...input, videoUrl: input.videoUrl || (videoFile ? 'uploaded-video' : undefined) }); if (!thumbnailFile) details.thumbnail = 'Video thumbnail is required.'; if (!input.videoUrl && !videoFile) details.videoUrl = 'Video URL or video file is required.'; if (Object.keys(details).length) throw validationError(details);
-  const thumbnail = await uploadMediaImage(thumbnailFile.buffer); let uploadedVideo;
-  try { if (videoFile) { uploadedVideo = await uploadMediaVideo(videoFile.buffer); input.videoUrl = uploadedVideo.url; input.videoPublicId = uploadedVideo.publicId; } return sendSuccess(response, 201, 'Video created successfully.', await createVideo({ ...input, thumbnail })); }
-  catch (error) { await cleanupImage(thumbnail); if (uploadedVideo) await cleanupVideo(uploadedVideo.publicId); throw error; }
+  const files = request.files || {};
+  const thumbnailFile = files.thumbnail?.[0];
+  const videoFile = files.video?.[0];
+  const input = { ...request.body };
+  const details = validate({ ...input, videoUrl: input.videoUrl || (videoFile ? 'uploaded-video' : undefined) });
+  if (!input.videoUrl && !videoFile) details.videoUrl = 'Video URL or video file is required.';
+  if (Object.keys(details).length) throw validationError(details);
+
+  let thumbnail;
+  let uploadedVideo;
+  try {
+    if (thumbnailFile) thumbnail = await uploadMediaImage(thumbnailFile.buffer);
+    if (videoFile) {
+      uploadedVideo = await uploadMediaVideo(videoFile.buffer);
+      input.videoUrl = uploadedVideo.url;
+      input.videoPublicId = uploadedVideo.publicId;
+    }
+    return sendSuccess(response, 201, 'Video created successfully.', await createVideo({
+      ...input,
+      ...(thumbnail ? { thumbnail } : {})
+    }));
+  } catch (error) {
+    if (thumbnail) await cleanupImage(thumbnail);
+    if (uploadedVideo) await cleanupVideo(uploadedVideo.publicId);
+    throw error;
+  }
 };
 export const list = async (request, response) => sendSuccess(response, 200, 'Videos fetched successfully.', await listVideos());
 export const get = async (request, response) => sendSuccess(response, 200, 'Video fetched successfully.', await getVideo(request.params.id));

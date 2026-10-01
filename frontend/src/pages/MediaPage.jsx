@@ -3,98 +3,10 @@ import { SiteHeader, SiteFooter, Arrow, navigate } from '../components/Shared'
 import { apiGet } from '../utils/api'
 import { useSEO } from '../utils/useSEO'
 import {
-  FiPlay, FiMapPin, FiX, FiArrowRight, FiCamera, FiVideo,
+  FiPlay, FiX, FiArrowRight, FiCamera, FiVideo,
   FiBriefcase, FiUsers, FiFileText, FiChevronRight, FiEye,
   FiCalendar, FiClock, FiExternalLink
 } from 'react-icons/fi'
-
-/* ─────────────────────────────────────────────
-   STATIC DATA
-───────────────────────────────────────────── */
-
-const clientItems = [
-  {
-    id: 'c1',
-    name: 'K. Srinivasa Rao',
-    role: 'Homeowner',
-    location: 'Vizianagaram, AP',
-    quote: '"Our electricity bill reduced significantly. Great service and professional team!"'
-  },
-  {
-    id: 'c2',
-    name: 'V. Ramakrishna Murthy',
-    role: 'Business Owner',
-    location: 'Hyderabad, TG',
-    quote: '"Professional team and excellent execution across our entire facility."'
-  },
-  {
-    id: 'c3',
-    name: 'M. Anand Reddy',
-    role: 'Factory Manager',
-    location: 'Kurnool, AP',
-    quote: '"Reliable and efficient industrial solution. ROI achieved in under 4 years."'
-  },
-  {
-    id: 'c4',
-    name: 'Ch. Venkata Narayana',
-    role: 'Farmer',
-    location: 'Anakapalli, AP',
-    quote: '"Solar pump changed our farming life. We water our crops every day now."'
-  }
-]
-
-const teamPhotos = [
-  {
-    id: 't1',
-    label: 'Site Inspection',
-    img: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=500&q=80'
-  },
-  {
-    id: 't2',
-    label: 'Project Discussion',
-    img: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=500&q=80'
-  },
-  {
-    id: 't3',
-    label: 'Installation Team',
-    img: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=500&q=80'
-  },
-  {
-    id: 't4',
-    label: 'Our Team',
-    img: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=500&q=80'
-  }
-]
-
-// const pressItems = [
-//   {
-//     id: 'pr1',
-//     publication: 'The Hindu',
-//     logo: 'THE HINDU',
-//     logoStyle: { fontFamily: 'Georgia, serif', color: '#b91c1c', fontSize: '18px', fontWeight: '700' },
-//     date: '12 Mar 2025',
-//     title: 'Solar Irrigation Changing Farmers Lives in Andhra Pradesh',
-//     url: '#'
-//   },
-//   {
-//     id: 'pr2',
-//     publication: 'BusinessLine',
-//     logo: 'BusinessLine',
-//     logoStyle: { fontFamily: 'Georgia, serif', color: '#1e3a8a', fontSize: '17px', fontWeight: '700' },
-//     date: '18 July 2024',
-//     title: 'Expanding Renewable Energy Access in Rural and Semi-Urban Areas',
-//     url: '#'
-//   },
-//   {
-//     id: 'pr3',
-//     publication: 'Times of India',
-//     logo: 'Times of India',
-//     logoStyle: { fontFamily: 'Georgia, serif', color: '#cc0000', fontSize: '16px', fontWeight: '700' },
-//     date: '05 Jan 2025',
-//     title: 'Driving Sustainable Growth Through Solar Solutions Across India',
-//     url: '#'
-//   }
-// ]
 
 const caseStudySteps = [
   { num: '01', title: 'Planning & Survey', desc: 'Site analysis, design and approvals.' },
@@ -106,7 +18,7 @@ const TABS = [
   { id: 'all',     label: 'All',          icon: <FiCamera size={14}/> },
   { id: 'videos',  label: 'Videos',       icon: <FiVideo size={14}/> },
   { id: 'clients', label: 'Clients',      icon: <FiUsers size={14}/> },
-  { id: 'team',    label: 'Team',         icon: <FiUsers size={14}/> },
+  { id: 'team',    label: 'Team / Photos',         icon: <FiUsers size={14}/> },
   { id: 'press',   label: 'Press & News', icon: <FiFileText size={14}/> },
 ]
 
@@ -119,15 +31,11 @@ export default function MediaPage() {
   const [activeTab, setActiveTab]       = useState('all')
   const [playingVideo, setPlayingVideo] = useState(null)
   const [lightbox, setLightbox]         = useState(null)
-  const [projects, setProjects]         = useState(projectItems)
-  const [videos, setVideos]             = useState(videoItems)
-  const [clients, setClients]           = useState(clientItems)
-  const [press, setPress]               = useState(pressItems)
+  const [videos, setVideos]             = useState([])
+  const [clients, setClients]           = useState([])
+  const [press, setPress]               = useState([])
+  const [teamPhotos, setTeamPhotos]     = useState([])
   const videoRef = useRef(null)
-  const [galleryItems, setGalleryItems] = useState([])
-  const [videoItems, setVideoItems] = useState([])
-  const [pressItems, setPressItems] = useState([])
-  const [mediaLoading, setMediaLoading] = useState(true)
   useSEO({
     title: 'Media & Gallery – Solar Projects, Videos, Press & Team',
     description: "Explore N Solutions' media gallery: project photos, installation videos, client stories, team moments and press coverage of our solar EPC work across India.",
@@ -138,145 +46,44 @@ export default function MediaPage() {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
 
-    const fetchAllMedia = async () => {
+    const loadMedia = async () => {
       try {
-        const [galleryResult, videosResult, newsResult, clientsResult] = await Promise.allSettled([
-          apiGet('/gallery/'),
-          apiGet('/videos'),
-          apiGet('/news'),
-          apiGet('/clients')
-        ])
+        const result = await apiGet('/public/media')
+        if (!result?.success) return
 
-        // 1. Projects / Photos
-        if (galleryResult.status === 'fulfilled' && galleryResult.value?.success && Array.isArray(galleryResult.value.data)) {
-          const apiProjects = galleryResult.value.data.map(p => ({
-            id: p.id || p._id,
-            title: p.title || '',
-            location: p.location || '',
-            category: p.category || 'Residential',
-            desc: p.description || '',
-            img: p.image?.url || '',
-            catColor: '#2563eb'
-          }))
-          if (apiProjects.length > 0) {
-            const pMap = new Map()
-            projectItems.forEach(item => pMap.set(item.id, item))
-            apiProjects.forEach(item => pMap.set(item.id, item))
-            setProjects(Array.from(pMap.values()))
-          }
-        }
-
-        // 2. Videos
-        if (videosResult.status === 'fulfilled' && videosResult.value?.success && Array.isArray(videosResult.value.data)) {
-          const apiVideos = videosResult.value.data.map(v => ({
-            id: v.id || v._id,
-            title: v.title || '',
-            desc: v.description || '',
-            duration: v.duration || '2:30',
-            thumb: v.thumbnail?.url || '',
-            src: v.videoUrl || '',
-            category: v.category || 'Corporate'
-          }))
-          if (apiVideos.length > 0) {
-            const vMap = new Map()
-            videoItems.forEach(item => vMap.set(item.id, item))
-            apiVideos.forEach(item => vMap.set(item.id, item))
-            setVideos(Array.from(vMap.values()))
-          }
-        }
-
-        // 3. Press & News
-        if (newsResult.status === 'fulfilled' && newsResult.value?.success && Array.isArray(newsResult.value.data)) {
-          const apiPress = newsResult.value.data.map(n => ({
-            id: n.id || n._id,
-            publication: n.source || 'N Solutions',
-            logo: n.source || 'N Solutions',
-            logoStyle: { fontFamily: 'Georgia, serif', color: '#1e3a8a', fontSize: '17px', fontWeight: '700' },
-            date: n.publicationDate ? new Date(n.publicationDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '',
-            title: n.title || '',
-            url: n.articleUrl || '#',
-            image: n.image?.url || ''
-          }))
-          if (apiPress.length > 0) {
-            const prMap = new Map()
-            pressItems.forEach(item => prMap.set(item.id, item))
-            apiPress.forEach(item => prMap.set(item.id, item))
-            setPress(Array.from(prMap.values()))
-          }
-        }
-
-        // 4. Clients
-        let dynamicClients = []
-        if (clientsResult.status === 'fulfilled' && clientsResult.value?.success && Array.isArray(clientsResult.value.data)) {
-          dynamicClients = clientsResult.value.data.map(item => ({
+        const data = result.data || {}
+        setVideos((data.videos || []).map(video => ({
+          id: video.id || video._id,
+          title: video.title || '',
+          description: video.description || '',
+          videoUrl: video.videoUrl || ''
+        })))
+        setTeamPhotos((data.gallery || [])
+          .filter(item => item.category === 'Company' && item.image?.url)
+          .map(item => ({
             id: item.id || item._id,
-            name: item.name || '',
-            role: item.role || 'Client',
-            location: item.location || '',
-            quote: item.quote || item.description || '',
-            image: item.image?.url || ''
-          }))
-        }
-
-        let localClients = []
-        try {
-          const stored = JSON.parse(localStorage.getItem('nsolutions_media_clients') || '[]')
-          localClients = stored.map(item => ({
-            id: item.id,
-            name: item.title || item.name || '',
-            role: item.role || item.category || 'Client',
-            location: item.location || '',
-            quote: item.quote || item.description || '',
-            image: item.imageUrl || ''
-          }))
-        } catch (e) {}
-
-        const mergedMap = new Map()
-        clientItems.forEach(c => mergedMap.set(c.id, c))
-        dynamicClients.forEach(c => mergedMap.set(c.id, c))
-        localClients.forEach(c => mergedMap.set(c.id, c))
-
-        setClients(Array.from(mergedMap.values()))
+            img: item.image.url,
+            label: item.title || '',
+            description: item.description || ''
+          })))
+        setPress((data.news || []).map(item => ({
+          id: item.id || item._id,
+          title: item.title || '',
+          description: item.summary || item.description || '',
+          url: item.articleUrl || '#'
+        })))
+        setClients((data.clients || []).map(item => ({
+          id: item.id || item._id,
+          name: item.name || '',
+          image: item.image?.url || '',
+          description: item.description || item.quote || ''
+        })))
       } catch (err) {
-        // fallback to default items
+        console.error('Failed to load media:', err)
       }
     }
-    fetchAllMedia()
+    loadMedia()
   }, [])
-  useEffect(() => {
-  const loadMedia = async () => {
-    try {
-      const result = await apiGet('/public/media')
-
-      console.log('MEDIA API RESULT:', result)
-      console.log('VIDEOS FROM API:', result?.data?.videos)
-
-      if (result.success) {
-        setGalleryItems(result.data.gallery || [])
-        setVideoItems(result.data.videos || [])
-        setPressItems(result.data.news || [])
-      }
-    } catch (error) {
-      console.error('Failed to load media:', error)
-    } finally {
-      setMediaLoading(false)
-    }
-  }
-
-  loadMedia()
-}, [])
-
-  const projectItems = galleryItems
-  .filter((item) => item.category === 'Projects')
-  .map((item) => ({
-    id: item.id,
-    title: item.title,
-    img: item.image?.url,
-    category: item.category,
-    location: '',
-    desc: item.description || '',
-    catColor: '#2563eb'
-  }))
 
   const show = (tab) => activeTab === 'all' || activeTab === tab
 
@@ -355,18 +162,16 @@ export default function MediaPage() {
 
             <div className="mg-videos-grid">
               {videos.map(v => (
-                <div key={v.id} className="mg-video-card" onClick={() => setPlayingVideo(v)}>
+                <div key={v.id} className="mg-video-card">
                   <div className="mg-vc-thumb">
-                    <img
-                      src={v.thumbnail?.url}
-                      alt={v.title}
-                      loading="lazy"
+                    <video
+                      src={v.videoUrl}
+                      controls
+                      playsInline
+                      aria-label={v.title}
                     />
-
-                    <div className="mg-vc-play"><FiPlay size={20}/></div>
                   </div>
                   <div className="mg-vc-body">
-                    <span className="mg-vc-cat">{v.category}</span>
                     <strong className="mg-vc-title">{v.title}</strong>
                     <p className="mg-vc-desc">{v.description}</p>
                   </div>
@@ -402,7 +207,7 @@ export default function MediaPage() {
                           height: '44px',
                           borderRadius: '50%',
                           objectFit: 'cover',
-                          border: '2px solid rgba(23,105,194,0.2)'
+                          flexShrink: 0
                         }}
                       />
                     ) : (
@@ -410,14 +215,9 @@ export default function MediaPage() {
                     )}
                     <div>
                       <strong className="mg-client-name">{c.name}</strong>
-                      <span className="mg-client-role">{c.role}</span>
-                      {c.location && (
-                        <p className="mg-client-loc"><FiMapPin size={11}/> {c.location}</p>
-                      )}
                     </div>
                   </div>
-                  <p className="mg-client-quote">{c.quote}</p>
-                  <span className="mg-client-arrow"><FiChevronRight size={14}/></span>
+                  <p className="mg-client-quote">{c.description}</p>
                 </div>
               ))}
             </div>
@@ -430,7 +230,7 @@ export default function MediaPage() {
             <div className="wrap">
               <div className="mg-section-head">
                 <div>
-                  <p className="mg-sec-eyebrow"><span className="mg-eyebrow-line" /> OUR TEAM</p>
+                  <p className="mg-sec-eyebrow"><span className="mg-eyebrow-line" /> OUR TEAM / Photos Archive</p>
                   <h2 className="mg-sec-h2">People Behind <em>the Progress</em></h2>
                   <p className="mg-sec-sub">Our dedicated team working together to create a cleaner and brighter tomorrow.</p>
                 </div>
@@ -441,9 +241,12 @@ export default function MediaPage() {
 
               <div className="mg-team-grid">
                 {teamPhotos.map(t => (
-                  <div key={t.id} className="mg-team-card" onClick={() => setLightbox({ type: 'photo', src: t.img, title: t.label, sub: 'N Solutions Team' })}>
+                  <div key={t.id} className="mg-team-card" onClick={() => setLightbox({ type: 'photo', src: t.img, title: t.label, description: t.description })}>
                     <img src={t.img} alt={t.label} loading="lazy"/>
-                    <span className="mg-team-label">{t.label}</span>
+                    <span className="mg-team-label">
+                      <strong>{t.label}</strong>
+                      {t.description && <small className="mg-team-description">{t.description}</small>}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -468,19 +271,9 @@ export default function MediaPage() {
             <div className="mg-press-grid">
               {press.map(pr => (
                 <a key={pr.id} className="mg-press-card" href={pr.url} target="_blank" rel="noopener noreferrer">
-                  <div className="mg-press-pub">
-                    {pr.image ? (
-                      <img src={pr.image} alt={pr.publication} style={{ maxHeight: '28px', maxWidth: '140px', objectFit: 'contain' }} />
-                    ) : (
-                      <span style={pr.logoStyle || { fontFamily: 'Georgia, serif', color: '#1e3a8a', fontSize: '17px', fontWeight: '700' }}>
-                        {pr.logo || pr.publication}
-                      </span>
-                    )}
-                  </div>
-                  <img src={pr.image} alt={pr.title}/>
                   <div className="mg-press-body">
-                    <span className="mg-press-date"><FiCalendar size={11}/> {pr.date}</span>
                     <p className="mg-press-title">{pr.title}</p>
+                    <p>{pr.description}</p>
                     <span className="mg-press-link">Read More <FiExternalLink size={11}/></span>
                   </div>
                 </a>
@@ -539,7 +332,6 @@ export default function MediaPage() {
               <FiX size={20}/>
             </button>
             <div className="mg-video-modal-meta">
-              <span className="mg-vc-cat">{playingVideo.category}</span>
               <strong>{playingVideo.title}</strong>
             </div>
             <video
@@ -566,7 +358,7 @@ export default function MediaPage() {
             <img src={lightbox.src} alt={lightbox.title} />
             <div className="mg-photo-modal-caption">
               <strong>{lightbox.title}</strong>
-              {lightbox.sub && <span><FiMapPin size={12}/> {lightbox.sub}</span>}
+              {lightbox.description && <p>{lightbox.description}</p>}
             </div>
           </div>
         </div>

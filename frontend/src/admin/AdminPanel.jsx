@@ -98,20 +98,12 @@ const [mediaData, setMediaData] = useState({
   videos: []
 })
 const [newMedia, setNewMedia] = useState({
-  type: 'photo',
+  type: 'team',
   name: '',
-  category: 'Residential',
-  location: '',
   description: '',
-  duration: '',
-  source: '',
   articleUrl: '',
-  publicationDate: new Date().toISOString().split('T')[0],
-  clientRole: 'Homeowner',
-  clientLocation: '',
   photo: null,
-  video: null,
-  file: null
+  video: null
 })
   const [showAddProductModal, setShowAddProductModal] = useState(false)
   const [newProduct, setNewProduct] = useState({
@@ -1126,54 +1118,53 @@ const handleCreateMedia = async (e) => {
   e.preventDefault()
 
   try {
-    // 1. PHOTO ARCHIVE / PROJECT GALLERY
-    if (newMedia.type === 'photo') {
+    // 1. TEAM PHOTO
+    if (newMedia.type === 'team') {
       if (!newMedia.name) {
-        showToast('Please enter project / photo title')
+        showToast('Please enter team member name')
+        return
+      }
+      if (!newMedia.description) {
+        showToast('Please enter a team photo description')
         return
       }
       if (!newMedia.photo) {
-        showToast('Please select a photo image')
+        showToast('Please select a team photo')
         return
       }
 
       const formData = new FormData()
       formData.append('title', newMedia.name)
-      formData.append('category', newMedia.category || 'Residential')
-      formData.append('location', newMedia.location || '')
-      formData.append('description', newMedia.description || '')
+      formData.append('category', 'Company')
+      formData.append('description', newMedia.description)
       formData.append('image', newMedia.photo)
 
       const result = await apiUpload('/gallery', formData)
-      await loadMedia()
       if (!result.success) {
-        throw new Error(result.message || 'Failed to create gallery item')
+        throw new Error(result.message || 'Failed to create team photo')
       }
-      showToast('Photo asset uploaded successfully')
+      showToast('Team photo added successfully')
     }
 
-    // 2. VIDEO SPOTLIGHT
+    // 2. VIDEO
     if (newMedia.type === 'video') {
       if (!newMedia.name) {
         showToast('Please enter video title')
+        return
+      }
+      if (!newMedia.description) {
+        showToast('Please enter video description')
         return
       }
       if (!newMedia.video) {
         showToast('Please select a video file')
         return
       }
-      if (!newMedia.file) {
-        showToast('Please select a video thumbnail image')
-        return
-      }
 
       const formData = new FormData()
       formData.append('title', newMedia.name)
-      formData.append('category', newMedia.category || 'Corporate')
-      formData.append('duration', newMedia.duration || '')
-      formData.append('description', newMedia.description || '')
+      formData.append('description', newMedia.description)
       formData.append('video', newMedia.video)
-      formData.append('thumbnail', newMedia.file)
 
       const result = await apiUpload('/videos', formData)
       if (!result.success) {
@@ -1189,67 +1180,24 @@ const handleCreateMedia = async (e) => {
         return
       }
       if (!newMedia.description) {
-        showToast('Please enter client quote or story')
+        showToast('Please enter client description')
+        return
+      }
+      if (!newMedia.photo) {
+        showToast('Please select a client image')
         return
       }
 
-      const clientRole = newMedia.clientRole || 'Homeowner'
-      const clientLoc = newMedia.clientLocation || newMedia.location || ''
-
       const formData = new FormData()
       formData.append('name', newMedia.name)
-      formData.append('title', newMedia.name)
-      formData.append('role', clientRole)
-      formData.append('category', clientRole)
-      formData.append('location', clientLoc)
       formData.append('description', newMedia.description)
-      formData.append('quote', newMedia.description)
-      if (newMedia.photo) {
-        formData.append('image', newMedia.photo)
+      formData.append('image', newMedia.photo)
+      const result = await apiUpload('/clients', formData)
+      if (!result.success) {
+        throw new Error(result.message || 'Failed to create client')
       }
 
-      let base64Img = ''
-      if (newMedia.photo) {
-        try {
-          base64Img = await new Promise((resolve) => {
-            const reader = new FileReader()
-            reader.onload = () => resolve(reader.result)
-            reader.onerror = () => resolve('')
-            reader.readAsDataURL(newMedia.photo)
-          })
-        } catch (err) {
-          base64Img = ''
-        }
-      }
-
-      try {
-        await apiUpload('/clients', formData)
-      } catch (err) {
-        console.warn('API /clients upload notice:', err)
-      }
-
-      try {
-        const stored = JSON.parse(localStorage.getItem('nsolutions_media_clients') || '[]')
-        const newClient = {
-          id: 'client_' + Date.now(),
-          type: 'client',
-          title: newMedia.name,
-          name: newMedia.name,
-          role: clientRole,
-          category: clientRole,
-          location: clientLoc,
-          description: newMedia.description,
-          quote: newMedia.description,
-          imageUrl: base64Img || (newMedia.photo ? URL.createObjectURL(newMedia.photo) : ''),
-          date: new Date().toISOString().split('T')[0]
-        }
-        stored.unshift(newClient)
-        localStorage.setItem('nsolutions_media_clients', JSON.stringify(stored))
-      } catch (err) {
-        console.error('Failed to save client to localStorage:', err)
-      }
-
-      showToast('Client media asset added successfully')
+      showToast('Client added successfully')
     }
 
     // 4. PRESS & NEWS
@@ -1258,19 +1206,19 @@ const handleCreateMedia = async (e) => {
         showToast('Please enter article title')
         return
       }
+      if (!newMedia.description) {
+        showToast('Please enter article description')
+        return
+      }
+      if (!newMedia.articleUrl) {
+        showToast('Please enter article link')
+        return
+      }
 
       const formData = new FormData()
       formData.append('title', newMedia.name)
-      formData.append('source', newMedia.source || 'N Solutions')
-      formData.append('articleUrl', newMedia.articleUrl || '#')
-      formData.append(
-        'publicationDate',
-        newMedia.publicationDate || new Date().toISOString().split('T')[0]
-      )
-      formData.append('summary', newMedia.name)
-      if (newMedia.photo) {
-        formData.append('image', newMedia.photo)
-      }
+      formData.append('summary', newMedia.description)
+      formData.append('articleUrl', newMedia.articleUrl)
 
       const result = await apiUpload('/news', formData)
       if (!result.success) {
@@ -1285,20 +1233,12 @@ const handleCreateMedia = async (e) => {
 
     // Reset form
     setNewMedia({
-      type: 'photo',
+      type: 'team',
       name: '',
-      category: 'Residential',
-      location: '',
       description: '',
-      duration: '',
-      source: '',
       articleUrl: '',
-      publicationDate: new Date().toISOString().split('T')[0],
-      clientRole: 'Homeowner',
-      clientLocation: '',
       photo: null,
-      video: null,
-      file: null
+      video: null
     })
 
     setShowAddMediaModal(false)
@@ -1438,27 +1378,20 @@ const handleDeleteMedia = async (id) => {
       endpoint = `/news/${id}`
     } else if (item.type === 'video') {
       endpoint = `/videos/${id}`
-    } else if (item.type === 'photo') {
+    } else if (item.type === 'photo' || item.type === 'team') {
       endpoint = `/gallery/${id}`
     } else if (item.type === 'client') {
       endpoint = `/clients/${id}`
-      try {
-        const stored = JSON.parse(localStorage.getItem('nsolutions_media_clients') || '[]')
-        const filtered = stored.filter((c) => c.id !== id)
-        localStorage.setItem('nsolutions_media_clients', JSON.stringify(filtered))
-      } catch (err) {
-        console.error('Failed to update localStorage clients:', err)
-      }
     }
 
     if (endpoint) {
       try {
         const result = await apiDelete(endpoint)
-        if (result && !result.success && item.type !== 'client') {
+        if (result && !result.success) {
           throw new Error(result.message || 'Failed to delete media')
         }
       } catch (err) {
-        if (item.type !== 'client') throw err
+        throw err
       }
     }
 
@@ -1489,7 +1422,7 @@ const loadMedia = async () => {
       galleryData?.success && Array.isArray(galleryData.data)
         ? galleryData.data.map((item) => ({
             id: item.id || item._id,
-            type: 'photo',
+            type: item.category === 'Company' ? 'team' : 'photo',
             title: item.title || '',
             description: item.description || '',
             location: item.location || '',
@@ -1506,7 +1439,6 @@ const loadMedia = async () => {
             type: 'video',
             title: item.title || '',
             description: item.description || '',
-            duration: item.duration || '',
             imageUrl: item.thumbnail?.url || '',
             videoUrl: item.videoUrl || '',
             date: item.createdAt || '',
@@ -1546,75 +1478,11 @@ const loadMedia = async () => {
           }))
         : []
 
-    // Read local clients from localStorage
-    let localClients = []
-    try {
-      localClients = JSON.parse(localStorage.getItem('nsolutions_media_clients') || '[]')
-    } catch (e) {
-      localClients = []
-    }
-
-    // Default seed clients to ensure "Clients" tab has initial content
-    const seedClients = [
-      {
-        id: 'client_c1',
-        type: 'client',
-        title: 'K. Srinivasa Rao',
-        role: 'Homeowner',
-        location: 'Vizianagaram, AP',
-        description: '"Our electricity bill reduced significantly. Great service and professional team!"',
-        imageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80',
-        date: '2025-01-15',
-        category: 'Homeowner'
-      },
-      {
-        id: 'client_c2',
-        type: 'client',
-        title: 'V. Ramakrishna Murthy',
-        role: 'Business Owner',
-        location: 'Hyderabad, TG',
-        description: '"Professional team and excellent execution across our entire facility."',
-        imageUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80',
-        date: '2025-02-10',
-        category: 'Business Owner'
-      },
-      {
-        id: 'client_c3',
-        type: 'client',
-        title: 'M. Anand Reddy',
-        role: 'Factory Manager',
-        location: 'Kurnool, AP',
-        description: '"Reliable and efficient industrial solution. ROI achieved in under 4 years."',
-        imageUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=400&q=80',
-        date: '2025-02-28',
-        category: 'Factory Manager'
-      },
-      {
-        id: 'client_c4',
-        type: 'client',
-        title: 'Ch. Venkata Narayana',
-        role: 'Farmer',
-        location: 'Anakapalli, AP',
-        description: '"Solar pump changed our farming life. We water our crops every day now."',
-        imageUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400&q=80',
-        date: '2025-03-05',
-        category: 'Farmer'
-      }
-    ]
-
-    // Deduplicate clients by id or title
-    const clientMap = new Map()
-    seedClients.forEach((c) => clientMap.set(c.id, c))
-    apiClients.forEach((c) => clientMap.set(c.id, c))
-    localClients.forEach((c) => clientMap.set(c.id, c))
-
-    const clientItems = Array.from(clientMap.values())
-
     setMediaItems([
       ...newsItems,
       ...galleryItems,
       ...videoItems,
-      ...clientItems
+      ...apiClients
     ])
   } catch (error) {
     console.error('Failed to load media', error)
@@ -3193,7 +3061,13 @@ const loadMedia = async () => {
         <button
           type="button"
           className="adm-btn-action"
-          onClick={() => setShowAddMediaModal(true)}
+          onClick={() => {
+            setNewMedia((prev) => ({
+              ...prev,
+              type: ['press', 'video', 'team', 'client'].includes(mediaTab) ? mediaTab : 'team'
+            }))
+            setShowAddMediaModal(true)
+          }}
         >
           + Add Media Asset
         </button>
@@ -3232,15 +3106,14 @@ const loadMedia = async () => {
       >
         Video Spotlights
       </button>
-
       <button
         type="button"
         className={`adm-media-tab ${
-          mediaTab === 'photo' ? 'active' : ''
+          mediaTab === 'team' ? 'active' : ''
         }`}
-        onClick={() => setMediaTab('photo')}
+        onClick={() => setMediaTab('team')}
       >
-        Photo Archive
+        Team / Photos
       </button>
 
       <button
@@ -3365,6 +3238,7 @@ const loadMedia = async () => {
                 {item.type === 'press' && (item.source || 'Press')}
                 {item.type === 'video' && (item.category || 'Video')}
                 {item.type === 'photo' && (item.category || 'Photo')}
+                {item.type === 'team' && 'Team'}
                 {item.type === 'client' && 'Client'}
                 {item.type === 'brand' && 'Media Kit'}
               </span>
@@ -3466,7 +3340,7 @@ const loadMedia = async () => {
             onClick={() => {
               setNewMedia((prev) => ({
                 ...prev,
-                type: mediaTab === 'all' ? 'press' : mediaTab
+                type: ['press', 'video', 'team', 'client'].includes(mediaTab) ? mediaTab : 'team'
               }))
               setShowAddMediaModal(true)
             }}
@@ -4302,7 +4176,7 @@ const loadMedia = async () => {
       <form onSubmit={handleCreateMedia}>
         <div className="adm-modal-body">
 
-          {/* 1. Media Type Selector at Top */}
+            {/* Media type selector */}
           <div className="adm-form-group">
             <label>Media Asset Type *</label>
             <select
@@ -4314,41 +4188,24 @@ const loadMedia = async () => {
                 setNewMedia({
                   type: e.target.value,
                   name: '',
-                  category:
-                    e.target.value === 'client'
-                      ? 'Homeowner'
-                      : e.target.value === 'video'
-                      ? 'Corporate'
-                      : 'Residential',
-                  location: '',
                   description: '',
-                  duration: '',
-                  source: '',
                   articleUrl: '',
-                  publicationDate: new Date().toISOString().split('T')[0],
-                  clientRole: 'Homeowner',
-                  clientLocation: '',
                   photo: null,
-                  video: null,
-                  file: null
+                  video: null
                 })
               }
             >
-              <option value="photo">Photo Archive / Project Gallery</option>
-              <option value="video">Video Spotlight</option>
-              <option value="client">Client Story</option>
-              <option value="press">Press & News Coverage</option>
+              <option value="team">Team / Photos</option>
+              <option value="video">Video</option>
+              <option value="client">Client</option>
+              <option value="press">Press Release</option>
             </select>
           </div>
 
-          {/* ═════════════════════════════════════════════════════════════
-              TYPE 1: PHOTO ARCHIVE / PROJECT GALLERY
-              Frontend fields: title, category, location, description, image
-          ═════════════════════════════════════════════════════════════ */}
-          {newMedia.type === 'photo' && (
+          {newMedia.type === 'team' && (
             <>
               <div className="adm-form-group">
-                <label>Project / Photo Title *</label>
+                <label>Title *</label>
                 <input
                   type="text"
                   required
@@ -4358,60 +4215,12 @@ const loadMedia = async () => {
                   onChange={(e) =>
                     setNewMedia({ ...newMedia, name: e.target.value })
                   }
-                  placeholder="e.g. 5 kW Rooftop Solar System"
+                  placeholder="e.g. Alex Morgan"
                 />
               </div>
 
               <div className="adm-form-group">
-                <label>Category *</label>
-                <select
-                  required
-                  className="adm-filter-select"
-                  style={{ width: '100%' }}
-                  value={newMedia.category}
-                  onChange={(e) =>
-                    setNewMedia({ ...newMedia, category: e.target.value })
-                  }
-                >
-                  <option value="Residential">Residential</option>
-                  <option value="Commercial">Commercial</option>
-                  <option value="Industrial">Industrial</option>
-                  <option value="Agriculture">Agriculture</option>
-                  <option value="Installations">Installations</option>
-                  <option value="Company">Company & Events</option>
-                </select>
-              </div>
-
-              <div className="adm-form-group">
-                <label>Location *</label>
-                <input
-                  type="text"
-                  required
-                  className="adm-search-input"
-                  style={{ width: '100%' }}
-                  value={newMedia.location}
-                  onChange={(e) =>
-                    setNewMedia({ ...newMedia, location: e.target.value })
-                  }
-                  placeholder="e.g. Vizianagaram, Andhra Pradesh"
-                />
-              </div>
-
-              <div className="adm-form-group">
-                <label>Description</label>
-                <textarea
-                  className="adm-search-input"
-                  style={{ width: '100%', minHeight: '70px' }}
-                  value={newMedia.description}
-                  onChange={(e) =>
-                    setNewMedia({ ...newMedia, description: e.target.value })
-                  }
-                  placeholder="Short description of the installation or project"
-                />
-              </div>
-
-              <div className="adm-form-group">
-                <label>Photo Image *</label>
+                <label>Team Photo *</label>
                 <input
                   type="file"
                   required
@@ -4429,13 +4238,23 @@ const loadMedia = async () => {
                   </small>
                 )}
               </div>
+
+              <div className="adm-form-group">
+                <label>Description *</label>
+                <textarea
+                  required
+                  className="adm-search-input"
+                  style={{ width: '100%', minHeight: '80px' }}
+                  value={newMedia.description}
+                  onChange={(e) =>
+                    setNewMedia({ ...newMedia, description: e.target.value })
+                  }
+                  placeholder="Describe this team photo"
+                />
+              </div>
             </>
           )}
 
-          {/* ═════════════════════════════════════════════════════════════
-              TYPE 2: VIDEO SPOTLIGHT
-              Frontend fields: title, category, duration, description, video, thumbnail
-          ═════════════════════════════════════════════════════════════ */}
           {newMedia.type === 'video' && (
             <>
               <div className="adm-form-group">
@@ -4454,38 +4273,6 @@ const loadMedia = async () => {
               </div>
 
               <div className="adm-form-group">
-                <label>Category *</label>
-                <select
-                  required
-                  className="adm-filter-select"
-                  style={{ width: '100%' }}
-                  value={newMedia.category}
-                  onChange={(e) =>
-                    setNewMedia({ ...newMedia, category: e.target.value })
-                  }
-                >
-                  <option value="Corporate">Corporate</option>
-                  <option value="Technical">Technical</option>
-                  <option value="Project">Project</option>
-                  <option value="Client Story">Client Story</option>
-                </select>
-              </div>
-
-              <div className="adm-form-group">
-                <label>Duration (Optional)</label>
-                <input
-                  type="text"
-                  className="adm-search-input"
-                  style={{ width: '100%' }}
-                  value={newMedia.duration}
-                  onChange={(e) =>
-                    setNewMedia({ ...newMedia, duration: e.target.value })
-                  }
-                  placeholder="e.g. 1:48 or 3:24"
-                />
-              </div>
-
-              <div className="adm-form-group">
                 <label>Description</label>
                 <textarea
                   className="adm-search-input"
@@ -4494,7 +4281,7 @@ const loadMedia = async () => {
                   onChange={(e) =>
                     setNewMedia({ ...newMedia, description: e.target.value })
                   }
-                  placeholder="Short description of the video content"
+                  placeholder="Describe the video"
                 />
               </div>
 
@@ -4518,32 +4305,9 @@ const loadMedia = async () => {
                 )}
               </div>
 
-              <div className="adm-form-group">
-                <label>Thumbnail Image *</label>
-                <input
-                  type="file"
-                  required
-                  accept="image/*"
-                  onChange={(e) =>
-                    setNewMedia({
-                      ...newMedia,
-                      file: e.target.files?.[0] || null
-                    })
-                  }
-                />
-                {newMedia.file && (
-                  <small style={{ color: 'var(--adm-text-muted)' }}>
-                    Selected: {newMedia.file.name}
-                  </small>
-                )}
-              </div>
             </>
           )}
 
-          {/* ═════════════════════════════════════════════════════════════
-              TYPE 3: CLIENT STORY
-              Frontend fields: name, role, location, quote, image
-          ═════════════════════════════════════════════════════════════ */}
           {newMedia.type === 'client' && (
             <>
               <div className="adm-form-group">
@@ -4557,54 +4321,12 @@ const loadMedia = async () => {
                   onChange={(e) =>
                     setNewMedia({ ...newMedia, name: e.target.value })
                   }
-                  placeholder="e.g. K. Srinivasa Rao"
+                  placeholder="e.g. Acme Industries"
                 />
               </div>
 
               <div className="adm-form-group">
-                <label>Client Role / Segment *</label>
-                <select
-                  required
-                  className="adm-filter-select"
-                  style={{ width: '100%' }}
-                  value={newMedia.clientRole || 'Homeowner'}
-                  onChange={(e) =>
-                    setNewMedia({
-                      ...newMedia,
-                      clientRole: e.target.value,
-                      category: e.target.value
-                    })
-                  }
-                >
-                  <option value="Homeowner">Homeowner (Residential)</option>
-                  <option value="Business Owner">Business Owner (Commercial)</option>
-                  <option value="Factory Manager">Factory Manager (Industrial)</option>
-                  <option value="Farmer">Farmer (Agriculture Solar)</option>
-                  <option value="Commercial Client">Commercial Client</option>
-                  <option value="Industrial Partner">Industrial Partner</option>
-                </select>
-              </div>
-
-              <div className="adm-form-group">
-                <label>Location *</label>
-                <input
-                  type="text"
-                  required
-                  className="adm-search-input"
-                  style={{ width: '100%' }}
-                  value={newMedia.clientLocation || ''}
-                  onChange={(e) =>
-                    setNewMedia({
-                      ...newMedia,
-                      clientLocation: e.target.value
-                    })
-                  }
-                  placeholder="e.g. Vizianagaram, AP"
-                />
-              </div>
-
-              <div className="adm-form-group">
-                <label>Review Quote / Client Story *</label>
+                <label>Client Description *</label>
                 <textarea
                   required
                   className="adm-search-input"
@@ -4616,14 +4338,15 @@ const loadMedia = async () => {
                       description: e.target.value
                     })
                   }
-                  placeholder="e.g. 'Our electricity bill reduced significantly. Great service and professional team!'"
+                  placeholder="Describe the client"
                 />
               </div>
 
               <div className="adm-form-group">
-                <label>Client Photo / Logo (Optional)</label>
+                <label>Client Image *</label>
                 <input
                   type="file"
+                  required
                   accept="image/*"
                   onChange={(e) =>
                     setNewMedia({
@@ -4641,10 +4364,6 @@ const loadMedia = async () => {
             </>
           )}
 
-          {/* ═════════════════════════════════════════════════════════════
-              TYPE 4: PRESS & NEWS
-              Frontend fields: title, publication/source, url, date, image
-          ═════════════════════════════════════════════════════════════ */}
           {newMedia.type === 'press' && (
             <>
               <div className="adm-form-group">
@@ -4658,22 +4377,21 @@ const loadMedia = async () => {
                   onChange={(e) =>
                     setNewMedia({ ...newMedia, name: e.target.value })
                   }
-                  placeholder="e.g. Solar Irrigation Changing Farmers Lives in Andhra Pradesh"
+                  placeholder="Article title"
                 />
               </div>
 
               <div className="adm-form-group">
-                <label>Publication / News Source *</label>
-                <input
-                  type="text"
+                <label>Article Description *</label>
+                <textarea
                   required
                   className="adm-search-input"
-                  style={{ width: '100%' }}
-                  value={newMedia.source}
+                  style={{ width: '100%', minHeight: '70px' }}
+                  value={newMedia.description}
                   onChange={(e) =>
-                    setNewMedia({ ...newMedia, source: e.target.value })
+                    setNewMedia({ ...newMedia, description: e.target.value })
                   }
-                  placeholder="e.g. The Hindu, BusinessLine, Times of India"
+                  placeholder="Describe the article"
                 />
               </div>
 
@@ -4688,24 +4406,7 @@ const loadMedia = async () => {
                   onChange={(e) =>
                     setNewMedia({ ...newMedia, articleUrl: e.target.value })
                   }
-                  placeholder="https://example.com/news-article"
-                />
-              </div>
-
-              <div className="adm-form-group">
-                <label>Publication Date *</label>
-                <input
-                  type="date"
-                  required
-                  className="adm-search-input"
-                  style={{ width: '100%' }}
-                  value={newMedia.publicationDate}
-                  onChange={(e) =>
-                    setNewMedia({
-                      ...newMedia,
-                      publicationDate: e.target.value
-                    })
-                  }
+                  placeholder="https://example.com/article"
                 />
               </div>
             </>
