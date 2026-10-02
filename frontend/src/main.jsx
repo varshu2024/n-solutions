@@ -11,17 +11,18 @@
 // )
 
 
-import React from "react";
-import ReactDOM from "react-dom/client";
-import { HelmetProvider } from "react-helmet-async";
-import './animations.css'
-import './styles.css'
-import App from "./App";
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { HelmetProvider } from 'react-helmet-async';
 
-ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
+import App from './App';
+import './styles.css';
+import './animations.css';
+
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
     <HelmetProvider>
       <App />
     </HelmetProvider>
-  </React.StrictMode>
+  </StrictMode>
 );
