@@ -1113,7 +1113,7 @@ const handleDeleteProduct = async (id) => {
 
     setProducts((prev) => [
       createdProduct,
-      ...prev
+      ...prev.filter((product) => product.id !== createdProduct.id)
     ])
 
     setShowAddProductModal(false)
