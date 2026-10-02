@@ -51,6 +51,13 @@ const projectSchema = new mongoose.Schema(
         required: [true, 'Image public ID is required']
       }
     },
+    images: {
+      type: [{
+        url: { type: String, required: true },
+        publicId: { type: String, required: true }
+      }],
+      default: []
+    },
     status: {
       type: String,
       enum: ['completed', 'in_progress'],

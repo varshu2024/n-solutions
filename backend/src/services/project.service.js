@@ -10,6 +10,7 @@ const projectResponse = (project) => ({
   description: project.description,
   services: project.services,
   image: project.image,
+  images: project.images?.length ? project.images : [project.image].filter(Boolean),
   status: project.status,
   createdAt: project.createdAt,
   updatedAt: project.updatedAt
@@ -52,6 +53,10 @@ export const updateProjectStatus = async (id, status) => {
 
 export const deleteProject = async (id) => {
   const project = await findProject(id);
-  await deleteProjectImage(project.image?.publicId);
+  const publicIds = new Set([
+    project.image?.publicId,
+    ...(project.images || []).map((image) => image.publicId)
+  ].filter(Boolean));
+  await Promise.all([...publicIds].map(deleteProjectImage));
   await project.deleteOne();
 };

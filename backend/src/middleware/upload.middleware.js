@@ -12,7 +12,10 @@ const upload = multer({
   }
 });
 
-export const projectImageUpload = upload.single('image');
+export const projectImageUpload = upload.fields([
+  { name: 'images', maxCount: 20 },
+  { name: 'image', maxCount: 1 }
+]);
 export const mediaImageUpload = upload.single('image');
 export const videoMediaUpload = upload.fields([
   { name: 'thumbnail', maxCount: 1 },

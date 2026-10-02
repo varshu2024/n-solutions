@@ -33,7 +33,10 @@ function mapPublicProject(project) {
         .map((item) => item.trim())
     : []
 
-  const image = project?.image?.url || ''
+  const image = project?.image?.url || project?.images?.[0]?.url || ''
+  const gallery = Array.isArray(project?.images)
+    ? project.images.map((item) => item?.url).filter(Boolean)
+    : []
   const createdAt = project?.createdAt ? new Date(project.createdAt) : null
   const year =
     createdAt && !Number.isNaN(createdAt.getTime())
@@ -53,7 +56,7 @@ function mapPublicProject(project) {
     year,
     status: '',
     image,
-    gallery: image ? [image] : [],
+    gallery: gallery.length ? gallery : image ? [image] : [],
     headline: project?.description || '',
     summary: project?.description || '',
     specs: null,

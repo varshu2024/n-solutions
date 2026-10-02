@@ -51,20 +51,27 @@ const validationError = (details) => {
 export const create = async (request, response) => {
   const input = { ...request.body, services: parseServices(request.body.services) };
   const details = validateProjectInput(input);
-  if (!request.file) details.image = 'Project image is required.';
+  const files = request.files?.images || request.files?.image || [];
+  if (!files.length) details.images = 'At least one project image is required.';
   if (Object.keys(details).length > 0) throw validationError(details);
 
-  const image = await uploadProjectImage(request.file.buffer);
+  const images = [];
   try {
+    for (const file of files) {
+      images.push(await uploadProjectImage(file.buffer));
+    }
     return sendSuccess(response, 201, 'Project created successfully.', await createProject({
       ...input,
-      image
+      image: images[0],
+      images
     }));
   } catch (error) {
-    try {
-      await deleteProjectImage(image.publicId);
-    } catch (cleanupError) {
-      console.error(`Project image cleanup failed: ${cleanupError.message}`);
+    for (const image of images) {
+      try {
+        await deleteProjectImage(image.publicId);
+      } catch (cleanupError) {
+        console.error(`Project image cleanup failed: ${cleanupError.message}`);
+      }
     }
     throw error;
   }

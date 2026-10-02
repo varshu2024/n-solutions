@@ -87,10 +87,11 @@ const [enquiriesLoading, setEnquiriesLoading] = useState(false)
   category: 'commercial',
   location: '',
   description: '',
-  services: '',
+  services: [''],
   status: 'in_progress',
-  image: null
+  images: [{ id: 0, file: null }]
 })
+const nextProjectImageId = useRef(1)
 
 const [mediaData, setMediaData] = useState({
   news: [],
@@ -968,13 +969,21 @@ const filteredLeads = leads.filter((lead) => {
     return
   }
 
-  if (!newProject.services.trim()) {
+  const services = newProject.services
+    .map((service) => service.trim())
+    .filter(Boolean)
+
+  if (!services.length) {
     showToast('At least one service is required')
     return
   }
 
-  if (!newProject.image) {
-    showToast('Project image is required')
+  const images = newProject.images
+    .map((image) => image.file)
+    .filter(Boolean)
+
+  if (!images.length) {
+    showToast('At least one project image is required')
     return
   }
 
@@ -985,14 +994,9 @@ const filteredLeads = leads.filter((lead) => {
     formData.append('category', newProject.category)
     formData.append('location', newProject.location.trim())
     formData.append('description', newProject.description.trim())
-    formData.append('services', JSON.stringify(
-      newProject.services
-        .split(',')
-        .map((service) => service.trim())
-        .filter(Boolean)
-    ))
+    formData.append('services', JSON.stringify(services))
     formData.append('status', newProject.status)
-    formData.append('image', newProject.image)
+    images.forEach((image) => formData.append('images', image))
 
     const result = await apiPost('/projects', formData)
 
@@ -1015,9 +1019,9 @@ const filteredLeads = leads.filter((lead) => {
       category: 'commercial',
       location: '',
       description: '',
-      services: '',
+      services: [''],
       status: 'in_progress',
-      image: null
+      images: [{ id: nextProjectImageId.current++, file: null }]
     })
 
     showToast('Project registered successfully')
@@ -2788,14 +2792,7 @@ const loadMedia = async () => {
                                 >
                                   <FiDownload size={13} /> Download
                                 </button>
-                                <button
-                                  type="button"
-                                  onClick={(e) => handleViewResume(app, e)}
-                                  className="adm-resume-view-btn"
-                                  title="Preview resume in new tab"
-                                >
-                                  <FiEye size={13} /> View
-                                </button>
+                                
                               </div>
                             ) : (
                               <span className="adm-no-file-pill">No file</span>
@@ -3836,31 +3833,47 @@ const loadMedia = async () => {
           {/* Services */}
           <div className="adm-form-group">
             <label>Services *</label>
-
-            <input
-              type="text"
-              required
-              className="adm-search-input"
-              style={{ width: '100%' }}
-              value={newProject.services}
-              onChange={(e) =>
-                setNewProject({
-                  ...newProject,
-                  services: e.target.value
-                })
-              }
-              placeholder="e.g. EPC, Installation, O&M"
-            />
-
-            <small
-              style={{
-                display: 'block',
-                marginTop: '6px',
-                color: 'var(--adm-text-dim)'
-              }}
+            {newProject.services.map((service, index) => (
+              <div key={index} style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+                <input
+                  type="text"
+                  required={index === 0}
+                  className="adm-search-input"
+                  style={{ width: '100%' }}
+                  value={service}
+                  onChange={(e) => setNewProject({
+                    ...newProject,
+                    services: newProject.services.map((item, itemIndex) =>
+                      itemIndex === index ? e.target.value : item
+                    )
+                  })}
+                  placeholder="e.g. EPC, Installation, O&M"
+                />
+                {newProject.services.length > 1 && (
+                  <button
+                    type="button"
+                    className="adm-btn-secondary"
+                    aria-label={`Remove service ${index + 1}`}
+                    onClick={() => setNewProject({
+                      ...newProject,
+                      services: newProject.services.filter((_, itemIndex) => itemIndex !== index)
+                    })}
+                  >
+                    <FiTrash2 />
+                  </button>
+                )}
+              </div>
+            ))}
+            <button
+              type="button"
+              className="adm-btn-secondary"
+              onClick={() => setNewProject({
+                ...newProject,
+                services: [...newProject.services, '']
+              })}
             >
-              Separate multiple services with commas.
-            </small>
+              <FiPlus /> Add Service
+            </button>
           </div>
 
           {/* Status */}
@@ -3883,45 +3896,61 @@ const loadMedia = async () => {
             </select>
           </div>
 
-          {/* Project Image */}
+          {/* Project Images */}
           <div className="adm-form-group">
-            <label>Project Image *</label>
-
-            <input
-              type="file"
-              required
-              accept="image/*"
-              className="adm-search-input"
-              style={{ width: '100%' }}
-              onChange={(e) =>
-                setNewProject({
-                  ...newProject,
-                  image: e.target.files?.[0] || null
-                })
-              }
-            />
-
-            <small
-              style={{
-                display: 'block',
-                marginTop: '6px',
-                color: 'var(--adm-text-dim)'
-              }}
-            >
-              Upload the main image for this project.
-            </small>
-
-            {newProject.image && (
-              <div
-                style={{
-                  marginTop: '10px',
-                  fontSize: '0.85rem',
-                  color: 'var(--adm-text-muted)'
-                }}
+            <label>Project Images *</label>
+            <div style={{ display: 'grid', gap: '8px' }}>
+              {newProject.images.map((image, index) => (
+                <div
+                  key={image.id}
+                  style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                >
+                  <input
+                    type="file"
+                    required={!newProject.images.some((item) => item.file) && index === 0}
+                    accept="image/*"
+                    className="adm-search-input"
+                    style={{ width: '100%' }}
+                    onChange={(e) => {
+                      const selectedImage = e.target.files?.[0] || null
+                      setNewProject((current) => ({
+                        ...current,
+                        images: current.images.map((currentImage) =>
+                          currentImage.id === image.id
+                            ? { ...currentImage, file: selectedImage }
+                            : currentImage
+                        )
+                      }))
+                    }}
+                  />
+                  <button
+                    type="button"
+                    className="adm-btn-secondary"
+                    aria-label={`Remove image ${index + 1}`}
+                    onClick={() => setNewProject((current) => ({
+                      ...current,
+                      images: current.images.filter((_, imageIndex) => imageIndex !== index)
+                    }))}
+                  >
+                    <FiTrash2 />
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                className="adm-btn-secondary"
+                disabled={newProject.images.length >= 20}
+                onClick={() => setNewProject((current) => ({
+                  ...current,
+                  images: [...current.images, { id: nextProjectImageId.current++, file: null }]
+                }))}
               >
-                Selected: {newProject.image.name}
-              </div>
-            )}
+                <FiPlus /> Add Image
+              </button>
+            </div>
+            <small style={{ display: 'block', marginTop: '6px', color: 'var(--adm-text-dim)' }}>
+              Add up to 20 images. The first selected image is used as the project cover.
+            </small>
           </div>
 
         </div>
@@ -4900,14 +4929,7 @@ const loadMedia = async () => {
                       >
                         <FiDownload size={14} /> Download Resume
                       </button>
-                      <button
-                        type="button"
-                        className="adm-resume-view-btn"
-                        onClick={(e) => handleViewResume(selectedApplication, e)}
-                        title="Preview resume in new tab"
-                      >
-                        <FiEye size={14} /> Preview
-                      </button>
+                      
                     </div>
                   )}
                 </div>

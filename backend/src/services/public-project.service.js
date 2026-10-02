@@ -11,6 +11,9 @@ const publicProjectResponse = (project) => ({
   image: {
     url: project.image?.url
   },
+  images: project.images?.length
+    ? project.images.map((image) => ({ url: image.url }))
+    : project.image?.url ? [{ url: project.image.url }] : [],
   ...(project.createdAt ? { createdAt: project.createdAt } : {})
 });
 
@@ -30,7 +33,7 @@ const findPublicProject = async (id) => {
   if (!mongoose.isValidObjectId(id)) throw invalidIdError();
 
   const project = await Project.findById(id)
-    .select('title category location description services image createdAt')
+    .select('title category location description services image images createdAt')
     .lean();
 
   if (!project) throw notFoundError();
@@ -40,7 +43,7 @@ const findPublicProject = async (id) => {
 export const listPublicProjects = async (category) => {
   const projects = await Project.find(category ? { category } : {})
     .sort({ createdAt: -1 })
-    .select('title category location description services image createdAt')
+    .select('title category location description services image images createdAt')
     .lean();
 
   return projects.map(publicProjectResponse);
