@@ -170,14 +170,30 @@ export default function MediaPage() {
 
             <div className="mg-videos-grid">
               {videos.map(v => (
-                <div key={v.id} className="mg-video-card">
+                <div
+                  key={v.id}
+                  className="mg-video-card"
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`View ${v.title} video`}
+                  onClick={() => setPlayingVideo(v)}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      setPlayingVideo(v)
+                    }
+                  }}
+                >
                   <div className="mg-vc-thumb">
                     <video
                       src={v.videoUrl}
-                      controls
                       playsInline
-                      aria-label={v.title}
+                      muted
+                      preload="metadata"
+                      tabIndex={-1}
+                      aria-hidden="true"
                     />
+                    <span className="mg-vc-play"><FiPlay size={24}/></span>
                   </div>
                   <div className="mg-vc-body">
                     <strong className="mg-vc-title">{v.title}</strong>
@@ -197,7 +213,7 @@ export default function MediaPage() {
                 <h2 className="mg-sec-h2">Clients with <em>Real Impact</em></h2>
                 <p className="mg-sec-sub">Partnering with homes, businesses, industries and farms for a sustainable future.</p>
               </div>
-              <button type="button" className="mg-view-all-btn" onClick={() => navigate('/clients')}>
+              <button type="button" className="mg-view-all-btn" onClick={() => setActiveTab('clients')}>
                 View All Clients <FiArrowRight size={14}/>
               </button>
             </div>
@@ -210,14 +226,32 @@ export default function MediaPage() {
                       <img
                         src={c.image}
                         alt={c.name}
+                        role="button"
+                        tabIndex={0}
+                        aria-label={`View ${c.name} image`}
+                        onClick={() => setLightbox({
+                          type: 'photo',
+                          src: c.image,
+                          title: c.name,
+                          description: c.description
+                        })}
+                        onKeyDown={e => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault()
+                            setLightbox({
+                              type: 'photo',
+                              src: c.image,
+                              title: c.name,
+                              description: c.description
+                            })
+                          }
+                        }}
                       />
                     ) : (
                       <div className="mg-client-initial">{c.name.charAt(0)}</div>
                     )}
-                    <div>
-                      <strong className="mg-client-name">{c.name}</strong>
-                    </div>
                   </div>
+                  <p className="mg-client-name">{c.name}</p>
                   <p className="mg-client-quote">{c.description}</p>
                 </div>
               ))}
@@ -235,7 +269,7 @@ export default function MediaPage() {
                   <h2 className="mg-sec-h2">People Behind <em>the Progress</em></h2>
                   <p className="mg-sec-sub">Our dedicated team working together to create a cleaner and brighter tomorrow.</p>
                 </div>
-                <button type="button" className="mg-view-all-btn" onClick={() => navigate('/team')}>
+                <button type="button" className="mg-view-all-btn" onClick={() => setActiveTab('team')}>
                   View All Moments <FiArrowRight size={14}/>
                 </button>
               </div>
@@ -273,7 +307,7 @@ export default function MediaPage() {
               {press.map(pr => (
                 <a key={pr.id} className="mg-press-card" href={pr.url} target="_blank" rel="noopener noreferrer">
                   <div className="mg-press-body">
-                    <p className="mg-press-title">{pr.title}</p>
+                    <p className="mg-press-title" style={{fontSize:15, fontWeight:700,color:'#1e293b'}}>{pr.title}</p>
                     <p>{pr.description}</p>
                     <span className="mg-press-link">Read More <FiExternalLink size={11}/></span>
                   </div>
@@ -334,6 +368,9 @@ export default function MediaPage() {
             </button>
             <div className="mg-video-modal-meta">
               <strong>{playingVideo.title}</strong>
+              {playingVideo.description && (
+                <p className="mg-video-modal-description">{playingVideo.description}</p>
+              )}
             </div>
             <video
               ref={videoRef}

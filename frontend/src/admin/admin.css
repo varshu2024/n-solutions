@@ -355,17 +355,10 @@
   overflow: hidden;
 }
 
-.adm-media-video-placeholder img {
+.adm-media-video-placeholder video {
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-
-.adm-media-video-placeholder span {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
 }
 
 .adm-status-select:focus {
@@ -1191,6 +1184,23 @@
   background: var(--adm-primary-hover);
   transform: translateY(-1px);
   box-shadow: 0 6px 16px rgba(8, 117, 182, 0.3);
+}
+
+.adm-btn-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+  transform: none;
+  box-shadow: none;
+}
+
+.adm-upload-spinner {
+  animation: admUploadSpin 0.8s linear infinite;
+}
+
+@keyframes admUploadSpin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Tables */

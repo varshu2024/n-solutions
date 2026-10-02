@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { adminLogout } from './adminAuth'
 import { navigate } from '../components/Shared'
 import { apiGet, apiPost, apiPut, apiPatch, apiDelete, apiRequest, apiUpload  } from '../utils/api'
@@ -31,7 +31,8 @@ import {
   FiEye,
   FiFileText,
   FiSearch,
-  FiFilter
+  FiFilter,
+  FiLoader
 } from 'react-icons/fi'
 
 import { FaSun } from 'react-icons/fa'
@@ -118,6 +119,8 @@ const [mediaTab, setMediaTab] = useState('all');
 
   // Media state
   const [showAddMediaModal, setShowAddMediaModal] = useState(false)
+  const [isUploading, setIsUploading] = useState(false)
+  const mediaUploadInProgress = useRef(false)
 
   const [mediaFilter, setMediaFilter] = useState('all')
 
@@ -1116,6 +1119,10 @@ const handleDeleteProduct = async (id) => {
 
 const handleCreateMedia = async (e) => {
   e.preventDefault()
+  if (mediaUploadInProgress.current) return
+
+  mediaUploadInProgress.current = true
+  setIsUploading(true)
 
   try {
     // 1. TEAM PHOTO
@@ -1222,8 +1229,7 @@ const handleCreateMedia = async (e) => {
 
       const result = await apiUpload('/news', formData)
       if (!result.success) {
-        showToast(result.message || 'Failed to upload press release')
-        return
+        throw new Error(result.message || 'Failed to upload press release')
       }
       showToast('Press article added successfully')
     }
@@ -1246,6 +1252,9 @@ const handleCreateMedia = async (e) => {
   } catch (error) {
     console.error('Failed to create media:', error)
     showToast(error.message || 'Failed to create media asset')
+  } finally {
+    mediaUploadInProgress.current = false
+    setIsUploading(false)
   }
 }
 
@@ -3183,12 +3192,13 @@ const loadMedia = async () => {
 
               {item.type === 'video' ? (
                 <div className="adm-media-video-placeholder">
-                  <img
-                    src={item.imageUrl}
-                    alt={item.title}
+                  <video
+                    src={item.videoUrl}
+                    controls
+                    playsInline
+                    preload="metadata"
+                    aria-label={item.title}
                   />
-
-                  <span>▶</span>
                 </div>
               ) : item.imageUrl ? (
                 <img
@@ -4427,8 +4437,14 @@ const loadMedia = async () => {
           <button
             type="submit"
             className="adm-btn-action"
+            disabled={isUploading}
           >
-            Upload Asset
+            {isUploading ? (
+              <>
+                <FiLoader className="adm-upload-spinner" size={15} aria-hidden="true" />
+                Uploading...
+              </>
+            ) : 'Upload Asset'}
           </button>
 
         </div>
@@ -4933,4 +4949,3 @@ const loadMedia = async () => {
     </div>
 )
 }
-
