@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import SEO from "../components/SEO/SEO";
 import { SiteHeader, SiteFooter, Arrow, Reveal } from '../components/Shared'
 import { apiPost } from '../utils/api'
 import { useSEO } from '../utils/useSEO'
@@ -145,6 +146,14 @@ export default function ContactPage() {
   ]
 
   return (
+    <>
+    <SEO
+        title="Contact N Solutions | Solar EPC & Renewable Energy Solutions"
+        description="Contact N Solutions for solar EPC, rooftop solar, commercial, industrial and renewable energy solutions. Discuss your solar project requirements with our team."
+        keywords="contact N Solutions, solar EPC company contact, solar company India, solar installation company contact"
+        path="/contact"
+ 
+      />
     <div className="contact-page">
       <SiteHeader activePath="/contact" />
 
@@ -440,5 +449,6 @@ export default function ContactPage() {
 
       <SiteFooter />
     </div>
+    </>
   )
 }

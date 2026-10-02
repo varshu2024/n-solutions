@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import SEO from "./components/SEO/SEO";
 import ProjectsPage, { projectsData } from './pages/ProjectsPage'
 import ProductsPage from './pages/ProductsPage'
 import MediaPage from './pages/MediaPage'
@@ -1121,7 +1122,15 @@ function AboutPage() {
     canonical: 'https://nsolutions.in/about',
   })
 
-  return <div className="about-page"><ScrollProgressBar /><SiteHeader activePath="/about" /><main>
+  return (
+    <>
+     <SEO
+        title="About N Solutions | 16+ Years of Solar & EPC Experience"
+        description="Discover N Solutions, a solar EPC and renewable energy company with 16+ years of experience delivering solar solutions across residential, commercial, industrial and government sectors."
+        keywords="about N Solutions, solar company India, solar EPC company, renewable energy company, solar engineering company"
+        path="/about"
+          />
+  <div className="about-page"><ScrollProgressBar /><SiteHeader activePath="/about" /><main>
 
     <section className="about-hero">
       {/* Solar energy background video — download from pixabay.com/videos/solar-panels-solar-power-plant-177600/ and place in public/media/solar-hero.mp4 */}
@@ -1455,6 +1464,8 @@ function AboutPage() {
       </div>
     </section>
   </main><SiteFooter /></div>
+  </>
+  )
 }
 
 function ServicesPage() {
@@ -1468,6 +1479,13 @@ function ServicesPage() {
   })
 
   return (
+    <>
+    <SEO
+        title="Solar Services & Solutions | N Solutions India"
+        description="Explore N Solutions' complete solar services including solar EPC, commercial and industrial installation, rooftop solar, O&M, open access, asset management and renewable energy solutions."
+        keywords="solar services India, solar EPC services, solar installation, solar O&M, rooftop solar, open access solar, asset management"
+        path="/services"
+           />
     <div className="services-page">
       <ScrollProgressBar />
       <SiteHeader activePath="/services" />
@@ -1632,6 +1650,7 @@ function ServicesPage() {
       </main>
       <SiteFooter />
     </div>
+    </>
   )
 }
 
@@ -1694,7 +1713,15 @@ function App() {
   if (currentPath !== '/') return <RouteShell />
 
 
-  return <div className="site-shell home-page">
+  return (
+    <>
+    <SEO
+        title="N Solutions | Solar EPC & Renewable Energy Solutions in India"
+        description="N Solutions provides end-to-end solar EPC and renewable energy solutions for residential, commercial, industrial and government projects across India."
+        keywords="solar EPC company India, solar energy solutions, solar installation company, commercial solar, industrial solar, rooftop solar"
+        path="/"
+      />
+  <div className="site-shell home-page">
     <ScrollProgressBar />
     <SiteHeader />
 
@@ -1849,6 +1876,8 @@ function App() {
 
     <SiteFooter />
   </div>
+  </>
+  )
 }
 
 export default App

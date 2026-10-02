@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import SEO from "../components/SEO/SEO";
 import { SiteHeader, SiteFooter, Arrow, Reveal, navigate } from '../components/Shared'
 import { apiGet, apiPost } from '../utils/api'
 import { useSEO } from '../utils/useSEO'
@@ -329,6 +330,13 @@ export default function CareersPage() {
   setApplicationSuccess(true)
 }
   return (
+    <>
+    <SEO
+        title="Careers at N Solutions | Solar & Renewable Energy Jobs"
+        description="Explore career opportunities at N Solutions and join a growing team working across solar EPC, engineering, project execution, operations and renewable energy."
+        keywords="solar jobs India, renewable energy careers, solar EPC jobs, solar engineer jobs, renewable energy jobs"
+        path="/careers"
+      />
     <div className="careers-page">
       <SiteHeader activePath="/careers" />
 
@@ -752,5 +760,6 @@ export default function CareersPage() {
 
       <SiteFooter />
     </div>
+    </>
   )
 }

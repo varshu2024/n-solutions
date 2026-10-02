@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import SEO from "../components/SEO/SEO";
 import { SiteHeader, SiteFooter, Arrow, navigate } from '../components/Shared'
 import { apiGet } from '../utils/api'
 import { useSEO } from '../utils/useSEO'
@@ -88,6 +89,13 @@ export default function MediaPage() {
   const show = (tab) => activeTab === 'all' || activeTab === tab
 
   return (
+    <>
+      <SEO
+        title="Media & Gallery | Solar Projects, Videos & News | N Solutions"
+        description="Explore N Solutions through project photographs, solar installation videos, team activities, client project stories, company updates, press coverage and renewable energy news."
+        keywords="N Solutions media, solar project gallery, solar installation videos, solar company news, renewable energy media"
+        path="/media"
+      />
     <div className="mg-page">
       <SiteHeader activePath="/media" />
 
@@ -359,5 +367,6 @@ export default function MediaPage() {
 
       <SiteFooter />
     </div>
+    </>
   )
 }

@@ -664,8 +664,15 @@ const filteredProjects = projects.filter((project) => {
 })
 
   return (
-    <div className="projects-page" >
-      <SiteHeader activePath="/projects" />
+    <>  
+      <SEO
+        title="Solar Projects & Case Studies | N Solutions India"
+        description="Explore N Solutions' portfolio of solar projects and case studies across residential, commercial, industrial and government sectors."
+        keywords="solar projects India, solar case studies, renewable energy projects, solar installation projects"
+        path="/projects"
+      />
+      <div className="projects-page" >
+        <SiteHeader activePath="/projects" />
 
       <main>
         {/* HERO SECTION */}
@@ -1675,5 +1682,6 @@ const filteredProjects = projects.filter((project) => {
 
       <SiteFooter />
     </div>
+    </>
   )
 }

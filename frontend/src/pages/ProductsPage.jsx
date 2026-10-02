@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { SiteHeader, SiteFooter, Arrow, AnimatedMetric, Reveal, navigate } from '../components/Shared'
 import { apiGet } from '../utils/api'
+import SEO from "../components/SEO/SEO";
 import { useSEO } from '../utils/useSEO'
 import {
   FiArrowDown,
@@ -565,6 +566,13 @@ export default function ProductsPage() {
   })
 
   return (
+    <>
+        <SEO
+        title="Solar Products & Equipment | N Solutions India"
+        description="Explore solar products and equipment from N Solutions including solar modules, inverters, batteries, solar lighting, solar geysers, pumps and other renewable energy products."
+        keywords="solar products India, solar panels, solar modules, solar inverter, solar batteries, solar lighting, solar pumps"
+        path="/products"
+      />
     <div className="products-page">
       <SiteHeader activePath="/products" />
 
@@ -1008,5 +1016,6 @@ selectedProduct.features.length > 0 ? (
 
       <SiteFooter />
     </div>
+    </>
   )
 }
