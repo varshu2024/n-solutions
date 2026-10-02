@@ -1109,12 +1109,7 @@ const handleDeleteProduct = async (id) => {
       return
     }
 
-    const createdProduct = result.data
-
-    setProducts((prev) => [
-      createdProduct,
-      ...prev.filter((product) => product.id !== createdProduct.id)
-    ])
+    await fetchProducts()
 
     setShowAddProductModal(false)
 
