@@ -139,6 +139,8 @@ const [mediaTab, setMediaTab] = useState('all');
   // Admin Profile state
   const [profilePassword, setProfilePassword] = useState('')
   const [profileConfirmPassword, setProfileConfirmPassword] = useState('')
+  const [submittingForms, setSubmittingForms] = useState({})
+  const submittingFormIds = useRef(new Set())
 
   // Toast helper
   const showToast = (msg) => {
@@ -146,11 +148,33 @@ const [mediaTab, setMediaTab] = useState('all');
     setTimeout(() => setToastMessage(''), 3000)
   }
 
+  const handleAdminFormSubmit = async (formId, handler, event) => {
+    event.preventDefault()
+    if (submittingFormIds.current.has(formId)) return
+
+    submittingFormIds.current.add(formId)
+    setSubmittingForms((current) => ({ ...current, [formId]: true }))
+    try {
+      await handler(event)
+    } finally {
+      submittingFormIds.current.delete(formId)
+      setSubmittingForms((current) => ({ ...current, [formId]: false }))
+    }
+  }
+
+  const getSubmitLabel = (formId, idleLabel, loadingLabel) => (
+    submittingForms[formId] ? (
+      <>
+        <FiLoader className="adm-upload-spinner" size={15} aria-hidden="true" />
+        {loadingLabel}
+      </>
+    ) : idleLabel
+  )
+
 const [jobs, setJobs] = useState([]);
 const [jobsLoading, setJobsLoading] = useState(false);
 
 const [showJobModal, setShowJobModal] = useState(false);
-const [jobSubmitting, setJobSubmitting] = useState(false);
 
 const [jobForm, setJobForm] = useState({
   jobTitle: '',
@@ -345,8 +369,6 @@ const handleCreateJob = async (e) => {
   e.preventDefault();
 
   try {
-    setJobSubmitting(true);
-
     const payload = {
       ...jobForm,
       jobResponsibilities:
@@ -405,8 +427,6 @@ const handleCreateJob = async (e) => {
         'Failed to post job.',
       'error'
     );
-  } finally {
-    setJobSubmitting(false);
   }
 };
 
@@ -1084,7 +1104,6 @@ const handleDeleteProduct = async (id) => {
     formData.append('image', newProduct.image)
 
     const result = await apiPost('/products', formData)
-    await fetchProducts()
     if (!result.success) {
       showToast(result.message || 'Failed to create product')
       return
@@ -3499,7 +3518,7 @@ const loadMedia = async () => {
                 <div className="adm-card-header">
                   <h3 className="adm-card-title">Update Administrator Password</h3>
                 </div>
-                <form onSubmit={handleUpdateProfilePassword} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <form onSubmit={(e) => handleAdminFormSubmit('profile', handleUpdateProfilePassword, e)} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                   <div className="adm-form-group" style={{ margin: 0 }}>
                     <label>New Password</label>
                     <input
@@ -3525,8 +3544,8 @@ const loadMedia = async () => {
                     />
                   </div>
                   <div style={{ paddingTop: '8px' }}>
-                    <button type="submit" className="adm-btn-action">
-                      Save New Credentials
+                    <button type="submit" className="adm-btn-action" disabled={submittingForms.profile}>
+                      {getSubmitLabel('profile', 'Save New Credentials', 'Saving...')}
                     </button>
                   </div>
                 </form>
@@ -3602,7 +3621,7 @@ const loadMedia = async () => {
               <h3>Add New Customer Lead</h3>
               <button className="adm-modal-close" onClick={() => setShowAddLeadModal(false)}><FiX /></button>
             </div>
-            <form onSubmit={handleCreateLead}>
+            <form onSubmit={(e) => handleAdminFormSubmit('lead', handleCreateLead, e)}>
               <div className="adm-modal-body">
                 <div className="adm-form-group">
                   <label>Customer / Contact Name *</label>
@@ -3699,8 +3718,8 @@ const loadMedia = async () => {
                 >
                   Cancel
                 </button>
-                <button type="submit" className="adm-btn-action">
-                  Save Lead
+                <button type="submit" className="adm-btn-action" disabled={submittingForms.lead}>
+                  {getSubmitLabel('lead', 'Save Lead', 'Saving Lead...')}
                 </button>
               </div>
             </form>
@@ -3730,7 +3749,7 @@ const loadMedia = async () => {
         </button>
       </div>
 
-      <form onSubmit={handleCreateProject}>
+      <form onSubmit={(e) => handleAdminFormSubmit('project', handleCreateProject, e)}>
         <div className="adm-modal-body">
 
           {/* Project Title */}
@@ -3924,8 +3943,9 @@ const loadMedia = async () => {
           <button
             type="submit"
             className="adm-btn-action"
+            disabled={submittingForms.project}
           >
-            Register Project
+            {getSubmitLabel('project', 'Register Project', 'Saving Project...')}
           </button>
         </div>
       </form>
@@ -3956,7 +3976,7 @@ const loadMedia = async () => {
         </button>
       </div>
 
-      <form onSubmit={handleCreateProduct}>
+      <form onSubmit={(e) => handleAdminFormSubmit('product', handleCreateProduct, e)}>
 
         <div className="adm-modal-body">
 
@@ -4149,8 +4169,9 @@ const loadMedia = async () => {
           <button
             type="submit"
             className="adm-btn-action"
+            disabled={submittingForms.product}
           >
-            Add Product
+            {getSubmitLabel('product', 'Add Product', 'Adding Product...')}
           </button>
 
         </div>
@@ -4462,7 +4483,7 @@ const loadMedia = async () => {
               <h3>Add Client Testimonial</h3>
               <button type="button" className="adm-modal-close" onClick={() => setShowAddTestimonialModal(false)}><FiX /></button>
             </div>
-            <form onSubmit={handleCreateTestimonial}>
+            <form onSubmit={(e) => handleAdminFormSubmit('testimonial', handleCreateTestimonial, e)}>
               <div className="adm-modal-body">
                 <div className="adm-form-group">
                   <label>Client / Customer Name *</label>
@@ -4532,8 +4553,8 @@ const loadMedia = async () => {
                 >
                   Cancel
                 </button>
-                <button type="submit" className="adm-btn-action">
-                  Save Testimonial
+                <button type="submit" className="adm-btn-action" disabled={submittingForms.testimonial}>
+                  {getSubmitLabel('testimonial', 'Save Testimonial', 'Saving Testimonial...')}
                 </button>
               </div>
             </form>
@@ -4563,7 +4584,7 @@ const loadMedia = async () => {
             </button>
           </div>
 
-          <form onSubmit={handleCreateJob}>
+          <form onSubmit={(e) => handleAdminFormSubmit('job', handleCreateJob, e)}>
             <div className="adm-form-grid">
 
               {/* JOB TITLE */}
@@ -4775,11 +4796,9 @@ const loadMedia = async () => {
               <button
                 type="submit"
                 className="adm-primary-btn"
-                disabled={jobSubmitting}
+                disabled={submittingForms.job}
               >
-                {jobSubmitting
-                  ? 'Posting...'
-                  : 'Post Job'}
+                {getSubmitLabel('job', 'Post Job', 'Posting...')}
               </button>
             </div>
           </form>
