@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { SiteHeader, SiteFooter, Arrow, AnimatedMetric, Reveal, navigate } from '../components/Shared'
 import { apiGet } from '../utils/api'
 import { useSEO } from '../utils/useSEO'
+import SEO from "../components/SEO/SEO";
 import { 
   FiMapPin, FiX, FiArrowDown, FiChevronRight, FiChevronLeft,
   FiSun, FiZap, FiTrendingUp, FiAward, FiShield, FiLayers, 
