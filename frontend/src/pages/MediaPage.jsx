@@ -19,7 +19,7 @@ const TABS = [
   { id: 'all',     label: 'All',          icon: <FiCamera size={14}/> },
   { id: 'videos',  label: 'Videos',       icon: <FiVideo size={14}/> },
   { id: 'clients', label: 'Clients',      icon: <FiUsers size={14}/> },
-  { id: 'team',    label: 'Team / Photos',         icon: <FiUsers size={14}/> },
+  { id: 'team',    label: 'Team / Photos',icon: <FiUsers size={14}/> },
   { id: 'press',   label: 'Press & News', icon: <FiFileText size={14}/> },
 ]
 
@@ -197,7 +197,7 @@ export default function MediaPage() {
                 <h2 className="mg-sec-h2">Clients with <em>Real Impact</em></h2>
                 <p className="mg-sec-sub">Partnering with homes, businesses, industries and farms for a sustainable future.</p>
               </div>
-              <button type="button" className="mg-view-all-btn" onClick={() => navigate('/projects')}>
+              <button type="button" className="mg-view-all-btn" onClick={() => navigate('/clients')}>
                 View All Clients <FiArrowRight size={14}/>
               </button>
             </div>
@@ -235,7 +235,7 @@ export default function MediaPage() {
                   <h2 className="mg-sec-h2">People Behind <em>the Progress</em></h2>
                   <p className="mg-sec-sub">Our dedicated team working together to create a cleaner and brighter tomorrow.</p>
                 </div>
-                <button type="button" className="mg-view-all-btn">
+                <button type="button" className="mg-view-all-btn" onClick={() => navigate('/team')}>
                   View All Moments <FiArrowRight size={14}/>
                 </button>
               </div>
