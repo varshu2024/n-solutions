@@ -1639,7 +1639,6 @@ function ServicesPage() {
         <section className="services-cta">
           <div className="wrap">
             <p className="eyebrow"><span /> {cta.eyebrow}</p>
-            
             <h2>{cta.title}<br /><em>{cta.subtitle}</em></h2>
             <p>{cta.text}</p>
             <p className="cta-flow">{cta.flow}</p>
@@ -1725,12 +1724,23 @@ function App() {
   <div className="site-shell home-page">
     <ScrollProgressBar />
     <SiteHeader />
-
+    
     <main id="top">
-      <section className="hero">
+      <section className="hero" >
         <div className="hero-image" /><video className="hero-video" autoPlay muted loop playsInline preload="auto" aria-hidden="true"><source src="/media/hero-solar.mp4" type="video/mp4" /></video><div className="hero-shade" />
         <div className="hero-content wrap"><p className="eyebrow light"><span /> 16+ years of solar experience</p><h1>Built on <em>experience.</em><br />Driven by solar.</h1><p className="hero-copy">N Solutions delivers customized solar solutions through engineering, procurement, installation, commissioning, and ongoing support.</p><div className="hero-actions"><a className="button button-accent" href="/contact" onClick={(e) => { e.preventDefault(); navigate('/contact') }}>Talk to N Solutions <Arrow /></a><a className="button button-ghost" href="/projects" onClick={(e) => { e.preventDefault(); navigate('/projects') }}>Explore our projects <Arrow /></a></div></div>
-        <div className="hero-note"><span>01</span><div><strong>Solar, engineered.</strong><small>Residential to MW-scale projects</small></div></div><a className="scroll-cue" href="#proof"><span>Scroll to explore</span><i><FiArrowDown style={{ verticalAlign: 'middle' }} /></i></a>
+        <div className="hero-note"><span>01</span><div><strong>Solar, engineered.</strong><small>Residential to MW-scale projects</small></div></div>
+      </section>
+      <section className="home-video-section" aria-labelledby="home-video-title">
+        <div className="home-video-content">
+          <h2 id="home-video-title">Our Work in Action</h2>
+          <p>Discover how we turn solar energy into reliable power through expertise, innovation, and precision.</p>
+          <div className="home-video-frame">
+            <video className="hero-video" autoPlay muted loop playsInline aria-hidden="true">
+              <source src="/about/solar-video.mp4" type="video/mp4" />
+            </video>
+          </div>
+        </div>
       </section>
 
       <section className="proof" id="proof"><div className="wrap proof-grid"><p className="eyebrow"><span /> Experience that speaks for itself</p><div className="proof-intro"><h2>Built on experience.<br /><em>Driven by solar.</em></h2><p>N Solutions is an Engineering, Procurement and Construction solar company with 16+ years of experience across 9 states in India.</p><p>We combine engineering expertise, reliable solar technology, and professional project execution to help customers move towards cleaner energy, improved efficiency, and sustainable growth.</p></div><div className="proof-aside proof-aside-video"><video className="proof-video" autoPlay muted loop playsInline preload="auto" aria-hidden="true"><source src="/media/proof-solar.mp4" type="video/mp4" /></video><span className="proof-aside-mark">16+</span><div><strong>Years of solar operations</strong><p>From MW-scale solar power projects to residential rooftop installations under PM Surya Ghar.</p></div><span className="proof-aside-line" /></div><div className="stats"><AnimatedMetric value={16} suffix="+" label="Years of experience" /><AnimatedMetric value={9} label="States across India" /><AnimatedMetric value={360} suffix="°" label="End-to-end solar EPC" /><AnimatedMetric value={500} suffix="+" label="PM Surya Ghar sites" /></div></div></section>
