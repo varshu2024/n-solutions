@@ -1455,7 +1455,7 @@ function AboutPage() {
     {/* CTA */}
     <section className="about-cta">
       <div className="wrap">
-        <p className="eyebrow light"><span /> One partner. Complete solar solutions.</p>
+        <p className="eyebrow"><span /> One partner. Complete solar solutions.</p>
         <h2>From experience<br /><em>to a sustainable future.</em></h2>
         <p>Assess <FiChevronRight style={{ verticalAlign: 'middle' }} /> Design <FiChevronRight style={{ verticalAlign: 'middle' }} /> Supply <FiChevronRight style={{ verticalAlign: 'middle' }} /> Install <FiChevronRight style={{ verticalAlign: 'middle' }} /> Commission <FiChevronRight style={{ verticalAlign: 'middle' }} /> Operate <FiChevronRight style={{ verticalAlign: 'middle' }} /> Maintain</p>
         <a className="button button-accent" href="/contact" onClick={(e) => { e.preventDefault(); navigate('/contact') }}>
@@ -1638,7 +1638,8 @@ function ServicesPage() {
         {/* CTA section */}
         <section className="services-cta">
           <div className="wrap">
-            <p className="eyebrow light"><span /> {cta.eyebrow}</p>
+            <p className="eyebrow"><span /> {cta.eyebrow}</p>
+            
             <h2>{cta.title}<br /><em>{cta.subtitle}</em></h2>
             <p>{cta.text}</p>
             <p className="cta-flow">{cta.flow}</p>
@@ -1870,7 +1871,15 @@ function App() {
 
       </section>
 
-      <section className="contact-band" id="contact"><div className="wrap contact-inner"><p className="eyebrow light"><span /> One partner. Complete solar solutions.</p><h2>Assess. Design.<br /><em>Supply. Install.</em></h2><p>Talk to N Solutions about your project, from first requirement through operate and maintain.</p><a className="button button-accent" href="/contact" onClick={(e) => { e.preventDefault(); navigate('/contact') }}>Talk to N Solutions <Arrow /></a></div></section>
+      <section className="contact-band" id="contact">
+        <div className="wrap contact-inner">
+          <p className="eyebrow">
+            <span /> One partner. Complete solar solutions.</p>
+            <h2>Assess. Design.<br /><em>Supply. Install.</em></h2>
+            <p>Talk to N Solutions about your project, from first requirement through operate and maintain.</p>
+            <a className="button button-accent" href="/contact" onClick={(e) => { e.preventDefault(); navigate('/contact') }}>Talk to N Solutions <Arrow /></a>
+        </div>
+      </section>
 
     </main>
 

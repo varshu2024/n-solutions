@@ -678,9 +678,6 @@ button {
   background: #ffffff !important;
 }
 
-.about-credentials {
-  background: #eef3fa !important;
-}
 
 .about-process {
   background: var(--section-alt) !important;
@@ -870,9 +867,6 @@ button {
 /* =====================================================
    TESTIMONIALS
    ===================================================== */
-.testimonials-showcase-section {
-  background: var(--section-alt) !important;
-}
 
 .testimonials-showcase-section h2 {
   color: var(--ink) !important;

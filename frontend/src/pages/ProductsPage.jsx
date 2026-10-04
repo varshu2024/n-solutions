@@ -810,7 +810,7 @@ export default function ProductsPage() {
         <section className="projects-cta-section">
           <div className="wrap">
             <Reveal className="projects-cta-box">
-              <p className="eyebrow light"><span /> Direct Hardware Supply & Turnkey EPC</p>
+              <p className="eyebrow"><span /> Direct Hardware Supply & Turnkey EPC</p>
               <h2>Need a specific product specification or bulk procurement?<br /><em>Our technical supply desk is ready to assist.</em></h2>
               <p>
                 Whether you need a single 3 kW residential kit under PM Surya Ghar or megawatt-scale utility equipment for an industrial power plant, we provide certified genuine hardware with warranty assurance.
