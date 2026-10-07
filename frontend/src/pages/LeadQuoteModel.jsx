@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import './lead-quote-modal.css'
 
 const API_BASE_URL = (
@@ -19,6 +20,36 @@ export default function LeadQuoteModal({ onClose }) {
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
+
+  useEffect(() => {
+    const scrollY = window.scrollY
+    const body = document.body
+    const originalStyles = {
+      position: body.style.position,
+      top: body.style.top,
+      left: body.style.left,
+      right: body.style.right,
+      width: body.style.width,
+      overflow: body.style.overflow,
+      paddingRight: body.style.paddingRight
+    }
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
+    const bodyPaddingRight =
+      Number.parseFloat(window.getComputedStyle(body).paddingRight) || 0
+
+    body.style.position = 'fixed'
+    body.style.top = `-${scrollY}px`
+    body.style.left = '0'
+    body.style.right = '0'
+    body.style.width = 'auto'
+    body.style.overflow = 'hidden'
+    body.style.paddingRight = `${bodyPaddingRight + scrollbarWidth}px`
+
+    return () => {
+      Object.assign(body.style, originalStyles)
+      window.scrollTo(0, scrollY)
+    }
+  }, [])
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -75,7 +106,7 @@ export default function LeadQuoteModal({ onClose }) {
     }
   }
 
-  return (
+  return createPortal(
     <div
       className="lead-modal-overlay"
       onMouseDown={(e) => {
@@ -223,6 +254,7 @@ export default function LeadQuoteModal({ onClose }) {
           </button>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }

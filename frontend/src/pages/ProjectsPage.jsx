@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { SiteHeader, SiteFooter, Arrow, AnimatedMetric, Reveal, navigate } from '../components/Shared'
 import { apiGet } from '../utils/api'
 import { useSEO } from '../utils/useSEO'
@@ -613,6 +614,41 @@ export default function ProjectsPage() {
   window.scrollTo({ top: 0, behavior: 'smooth' })
   loadProjects()
 }, [])
+
+  const isProjectModalOpen = selectedProject !== null
+
+  useEffect(() => {
+    if (!isProjectModalOpen) return
+
+    const scrollY = window.scrollY
+    const body = document.body
+    const originalStyles = {
+      position: body.style.position,
+      top: body.style.top,
+      left: body.style.left,
+      right: body.style.right,
+      width: body.style.width,
+      overflow: body.style.overflow,
+      paddingRight: body.style.paddingRight
+    }
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
+
+    body.style.position = 'fixed'
+    body.style.top = `-${scrollY}px`
+    body.style.left = '0'
+    body.style.right = '0'
+    body.style.width = 'auto'
+    body.style.overflow = 'hidden'
+    body.style.paddingRight = `${
+      parseFloat(window.getComputedStyle(body).paddingRight) + scrollbarWidth
+    }px`
+
+    return () => {
+      Object.assign(body.style, originalStyles)
+      window.scrollTo(0, scrollY)
+    }
+  }, [isProjectModalOpen])
+
   // Update modal active image when selectedProject changes
   useEffect(() => {
     if (selectedProject) {
@@ -1221,7 +1257,7 @@ const filteredProjects = projects.filter((project) => {
         </section>
 
         {/* TECHNICAL DETAILS & GALLERY MODAL */}
-        {selectedProject && (
+        {selectedProject && createPortal(
           <div className="project-modal-backdrop" onClick={() => setSelectedProject(null)}>
             <div className="project-modal-card" onClick={(e) => e.stopPropagation()}>
               <button 
@@ -1680,7 +1716,8 @@ const filteredProjects = projects.filter((project) => {
                   </a>
                 </div>
               </div>
-            </div>
+            </div>,
+          document.body
         )}
       </main>
 

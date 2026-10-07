@@ -9028,6 +9028,7 @@ button:focus-visible {
   position: relative;
   width: min(840px, 100%);
   max-height: 90vh;
+  max-height: 90dvh;
   overflow-y: auto;
   border-radius: 12px;
   background: var(--white);
@@ -14214,7 +14215,6 @@ button:focus-visible {
   font-weight: 400;
   line-height: 1.35;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
 }
 
 /* ─────────────────────────────────────────────

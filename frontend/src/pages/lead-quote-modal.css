@@ -10,16 +10,11 @@
   overflow-y: auto;
 }
 
-.lead-modal-overlay {
-  align-items: flex-start;
-  justify-content: center;
-  padding-top: 90px;
-}
-
 .lead-modal {
   position: relative;
   width: min(680px, 100%);
   max-height: 90vh;
+  max-height: 90dvh;
   overflow-y: auto;
   background: #fff;
   border-radius: 18px;

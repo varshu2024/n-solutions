@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { SiteHeader, SiteFooter, Arrow, AnimatedMetric, Reveal, navigate } from '../components/Shared'
 import { apiGet } from '../utils/api'
 import SEO from "../components/SEO/SEO";
@@ -521,6 +522,40 @@ export default function ProductsPage() {
     loadProducts()
   }, [])
 
+  const isProductModalOpen = selectedProduct !== null
+
+  useEffect(() => {
+    if (!isProductModalOpen) return
+
+    const scrollY = window.scrollY
+    const body = document.body
+    const originalStyles = {
+      position: body.style.position,
+      top: body.style.top,
+      left: body.style.left,
+      right: body.style.right,
+      width: body.style.width,
+      overflow: body.style.overflow,
+      paddingRight: body.style.paddingRight
+    }
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
+
+    body.style.position = 'fixed'
+    body.style.top = `-${scrollY}px`
+    body.style.left = '0'
+    body.style.right = '0'
+    body.style.width = 'auto'
+    body.style.overflow = 'hidden'
+    body.style.paddingRight = `${
+      parseFloat(window.getComputedStyle(body).paddingRight) + scrollbarWidth
+    }px`
+
+    return () => {
+      Object.assign(body.style, originalStyles)
+      window.scrollTo(0, scrollY)
+    }
+  }, [isProductModalOpen])
+
   const categories = [
     { id: 'ALL', label: 'All Products', count: products.length },
     {
@@ -835,7 +870,7 @@ export default function ProductsPage() {
         </section>
 
         {/* DETAILED TECHNICAL SPECIFICATIONS MODAL */}
-        {selectedProduct && (
+        {selectedProduct && createPortal(
           <div className="project-modal-backdrop" onClick={() => setSelectedProduct(null)}>
             <div className="project-modal-card" onClick={(e) => e.stopPropagation()}>
               <button 
@@ -1010,7 +1045,8 @@ selectedProduct.features.length > 0 ? (
                 </div>
               </div>
             </div>
-          </div>
+          </div>,
+          document.body
         )}
       </main>
 
